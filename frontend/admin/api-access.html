@@ -1,0 +1,3391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PrimePay Admin | API Access</title>
+
+<style>
+:root{
+  --bg:#06101f;
+  --bg-soft:#091729;
+  --panel:#0d1b2f;
+  --panel-2:#10233b;
+  --border:rgba(148,163,184,.15);
+  --border-strong:rgba(148,163,184,.26);
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --muted-2:#64748b;
+  --primary:#38bdf8;
+  --primary-soft:rgba(56,189,248,.11);
+  --success:#22c55e;
+  --success-soft:rgba(34,197,94,.11);
+  --warning:#f59e0b;
+  --warning-soft:rgba(245,158,11,.11);
+  --danger:#ef4444;
+  --danger-soft:rgba(239,68,68,.11);
+  --purple:#a78bfa;
+  --purple-soft:rgba(167,139,250,.11);
+  --radius:18px;
+  --sidebar:270px;
+  --shadow:0 20px 60px rgba(0,0,0,.24);
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 10% 10%,rgba(56,189,248,.055),transparent 28%),
+    radial-gradient(circle at 90% 15%,rgba(167,139,250,.045),transparent 30%),
+    var(--bg);
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  overflow-x:hidden;
+}
+
+button,
+input,
+select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+body.light{
+  --bg:#f1f5f9;
+  --bg-soft:#e8eef5;
+  --panel:#fff;
+  --panel-2:#f8fafc;
+  --border:rgba(15,23,42,.09);
+  --border-strong:rgba(15,23,42,.18);
+  --text:#0f172a;
+  --muted:#64748b;
+  --muted-2:#94a3b8;
+  --primary:#0284c7;
+  --primary-soft:rgba(2,132,199,.09);
+  --success:#16a34a;
+  --success-soft:rgba(22,163,74,.09);
+  --warning:#d97706;
+  --warning-soft:rgba(217,119,6,.09);
+  --danger:#dc2626;
+  --danger-soft:rgba(220,38,38,.09);
+  --purple:#7c3aed;
+  --purple-soft:rgba(124,58,237,.09);
+  --shadow:0 18px 45px rgba(15,23,42,.08);
+}
+
+.app{
+  min-height:100vh;
+  display:flex;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:var(--sidebar);
+  z-index:100;
+  padding:22px 16px;
+  display:flex;
+  flex-direction:column;
+  background:rgba(6,16,31,.96);
+  border-right:1px solid var(--border);
+  backdrop-filter:blur(18px);
+  transition:.25s ease;
+}
+
+body.light .sidebar{
+  background:rgba(255,255,255,.96);
+}
+
+.sidebar.collapsed{
+  width:82px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:4px 10px 24px;
+}
+
+.brand-mark{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#0ea5e9,#2563eb);
+  color:#fff;
+  font-weight:900;
+  box-shadow:0 10px 25px rgba(14,165,233,.2);
+  flex:none;
+}
+
+.brand-copy strong{
+  display:block;
+  font-size:16px;
+}
+
+.brand-copy span{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:2px;
+}
+
+.sidebar.collapsed .brand-copy,
+.sidebar.collapsed .nav-label,
+.sidebar.collapsed .nav-section,
+.sidebar.collapsed .sidebar-footer-text{
+  display:none;
+}
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  overflow:auto;
+  scrollbar-width:none;
+}
+
+.nav::-webkit-scrollbar{
+  display:none;
+}
+
+.nav-section{
+  color:var(--muted-2);
+  font-size:10px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  padding:16px 12px 7px;
+}
+
+.nav-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:11px 12px;
+  border-radius:12px;
+  border:1px solid transparent;
+  color:var(--muted);
+  transition:.2s;
+}
+
+.nav-item:hover{
+  color:var(--text);
+  background:var(--panel-2);
+  border-color:var(--border);
+}
+
+.nav-item.active{
+  color:var(--text);
+  background:var(--primary-soft);
+  border-color:rgba(56,189,248,.2);
+}
+
+.nav-icon{
+  width:21px;
+  text-align:center;
+  flex:none;
+  font-size:16px;
+}
+
+.nav-label{
+  font-size:13px;
+  font-weight:650;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.sidebar-footer{
+  margin-top:auto;
+  border-top:1px solid var(--border);
+  padding-top:14px;
+}
+
+.sidebar-control{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  border-radius:10px;
+}
+
+.sidebar-control:hover{
+  color:var(--text);
+  background:var(--panel-2);
+}
+
+/* MAIN */
+
+.main{
+  width:calc(100% - var(--sidebar));
+  margin-left:var(--sidebar);
+  transition:.25s ease;
+}
+
+.sidebar.collapsed + .main{
+  width:calc(100% - 82px);
+  margin-left:82px;
+}
+
+/* TOPBAR */
+
+.topbar{
+  height:72px;
+  position:sticky;
+  top:0;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:0 28px;
+  border-bottom:1px solid var(--border);
+  background:rgba(6,16,31,.78);
+  backdrop-filter:blur(18px);
+}
+
+body.light .topbar{
+  background:rgba(241,245,249,.82);
+}
+
+.top-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.mobile-menu{
+  display:none;
+}
+
+.page-context strong{
+  display:block;
+  font-size:14px;
+}
+
+.page-context span{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:2px;
+}
+
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.icon-btn{
+  width:38px;
+  height:38px;
+  border-radius:11px;
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:var(--muted);
+  display:grid;
+  place-items:center;
+  transition:.2s;
+}
+
+.icon-btn:hover{
+  color:var(--text);
+  border-color:var(--border-strong);
+  transform:translateY(-1px);
+}
+
+.user-chip{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:5px 9px 5px 5px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--panel);
+}
+
+.avatar{
+  width:30px;
+  height:30px;
+  border-radius:9px;
+  display:grid;
+  place-items:center;
+  background:var(--primary-soft);
+  color:var(--primary);
+  font-size:12px;
+  font-weight:900;
+}
+
+.user-copy strong{
+  display:block;
+  font-size:11px;
+}
+
+.user-copy span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+}
+
+/* CONTENT */
+
+.content{
+  max-width:1800px;
+  margin:auto;
+  padding:28px;
+}
+
+.hero{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:24px;
+  margin-bottom:22px;
+}
+
+.hero h1{
+  font-size:clamp(28px,3vw,42px);
+  line-height:1.05;
+  letter-spacing:-.04em;
+}
+
+.hero p{
+  max-width:800px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.6;
+  margin-top:10px;
+}
+
+.hero-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:10px 14px;
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:var(--panel);
+  color:var(--text);
+  font-size:12px;
+  font-weight:750;
+  transition:.2s;
+}
+
+.btn:hover{
+  transform:translateY(-1px);
+  border-color:var(--border-strong);
+}
+
+.btn.primary{
+  color:#fff;
+  background:var(--primary);
+  border-color:var(--primary);
+}
+
+.btn.small{
+  padding:7px 10px;
+  font-size:10px;
+}
+
+.btn.danger{
+  color:#fff;
+  background:var(--danger);
+  border-color:var(--danger);
+}
+
+.notice{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:15px 17px;
+  border:1px solid rgba(56,189,248,.18);
+  border-radius:15px;
+  background:var(--primary-soft);
+  margin-bottom:20px;
+}
+
+.notice-icon{
+  width:35px;
+  height:35px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  background:rgba(56,189,248,.12);
+  color:var(--primary);
+  flex:none;
+}
+
+.notice strong{
+  display:block;
+  font-size:12px;
+  margin-bottom:4px;
+}
+
+.notice span{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.55;
+}
+
+/* GRID */
+
+.grid{
+  display:grid;
+  gap:16px;
+}
+
+.stats{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  margin-bottom:18px;
+}
+
+.two{
+  grid-template-columns:1.3fr .7fr;
+  margin-bottom:18px;
+}
+
+.three{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  margin-bottom:18px;
+}
+
+.card{
+  background:linear-gradient(145deg,var(--panel),var(--panel-2));
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+
+.card.hidden-card{
+  display:none;
+}
+
+.stat-card{
+  position:relative;
+  min-height:145px;
+  padding:19px;
+  overflow:hidden;
+}
+
+.stat-card::after{
+  content:"";
+  position:absolute;
+  right:-45px;
+  bottom:-50px;
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  background:var(--primary-soft);
+}
+
+.stat-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.stat-label{
+  color:var(--muted);
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.stat-icon{
+  width:35px;
+  height:35px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:var(--primary-soft);
+  color:var(--primary);
+}
+
+.stat-value{
+  margin-top:18px;
+  font-size:28px;
+  font-weight:850;
+  letter-spacing:-.03em;
+}
+
+.stat-meta{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:10px;
+}
+
+.stat-meta.good{
+  color:var(--success);
+}
+
+.stat-meta.warn{
+  color:var(--warning);
+}
+
+.stat-meta.bad{
+  color:var(--danger);
+}
+
+/* CARD HEADER */
+
+.card-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:18px 19px;
+  border-bottom:1px solid var(--border);
+}
+
+.card-title strong{
+  display:block;
+  font-size:14px;
+}
+
+.card-title span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:3px;
+}
+
+.card-body{
+  padding:18px;
+}
+
+/* STATUS */
+
+.status-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.status-row:last-child{
+  border-bottom:0;
+}
+
+.status-info{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.status-dot{
+  width:9px;
+  height:9px;
+  flex:none;
+  border-radius:50%;
+  background:var(--muted-2);
+}
+
+.status-dot.good{
+  background:var(--success);
+  box-shadow:0 0 0 4px var(--success-soft);
+}
+
+.status-dot.warn{
+  background:var(--warning);
+  box-shadow:0 0 0 4px var(--warning-soft);
+}
+
+.status-dot.bad{
+  background:var(--danger);
+  box-shadow:0 0 0 4px var(--danger-soft);
+}
+
+.status-info strong{
+  display:block;
+  font-size:12px;
+}
+
+.status-info span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:2px;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  padding:5px 8px;
+  font-size:9px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  white-space:nowrap;
+}
+
+.badge.good{
+  color:var(--success);
+  background:var(--success-soft);
+}
+
+.badge.warn{
+  color:var(--warning);
+  background:var(--warning-soft);
+}
+
+.badge.bad{
+  color:var(--danger);
+  background:var(--danger-soft);
+}
+
+.badge.neutral{
+  color:var(--muted);
+  background:rgba(148,163,184,.1);
+}
+
+.badge.purple{
+  color:var(--purple);
+  background:var(--purple-soft);
+}
+
+/* API ACCESS CARDS */
+
+.access-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
+.access-card{
+  padding:16px;
+  border:1px solid var(--border);
+  border-radius:15px;
+  background:rgba(255,255,255,.012);
+}
+
+body.light .access-card{
+  background:rgba(15,23,42,.012);
+}
+
+.access-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.access-icon{
+  width:40px;
+  height:40px;
+  border-radius:11px;
+  display:grid;
+  place-items:center;
+  background:var(--primary-soft);
+  color:var(--primary);
+  font-weight:900;
+}
+
+.access-card h3{
+  font-size:13px;
+  margin-top:14px;
+}
+
+.access-card p{
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.55;
+  margin-top:5px;
+}
+
+.access-actions{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+
+/* ENVIRONMENT */
+
+.environment{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.environment-card{
+  padding:17px;
+  border-radius:15px;
+  border:1px solid var(--border);
+}
+
+.environment-card.sandbox{
+  background:var(--primary-soft);
+  border-color:rgba(56,189,248,.17);
+}
+
+.environment-card.live{
+  background:var(--success-soft);
+  border-color:rgba(34,197,94,.17);
+}
+
+.environment-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.environment-card strong{
+  font-size:13px;
+}
+
+.environment-card p{
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.55;
+  margin-top:8px;
+}
+
+.environment-code{
+  margin-top:12px;
+  padding:9px 10px;
+  border-radius:9px;
+  background:rgba(0,0,0,.18);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:9px;
+  color:var(--muted);
+  word-break:break-all;
+}
+
+/* TABLE */
+
+.table-wrap{
+  overflow:auto;
+}
+
+table{
+  width:100%;
+  min-width:720px;
+  border-collapse:collapse;
+}
+
+th{
+  padding:11px 13px;
+  border-bottom:1px solid var(--border);
+  color:var(--muted-2);
+  text-align:left;
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  white-space:nowrap;
+}
+
+td{
+  padding:13px;
+  border-bottom:1px solid var(--border);
+  font-size:11px;
+}
+
+tbody tr:hover{
+  background:rgba(148,163,184,.025);
+}
+
+body.dense td{
+  padding:8px 13px;
+}
+
+body.dense th{
+  padding:8px 13px;
+}
+
+.mono{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:9px;
+}
+
+.muted{
+  color:var(--muted);
+}
+
+.empty{
+  padding:30px 20px;
+  text-align:center;
+  color:var(--muted);
+  font-size:11px;
+}
+
+/* ENDPOINT MATRIX */
+
+.endpoint{
+  display:grid;
+  grid-template-columns:95px 1fr auto;
+  align-items:center;
+  gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.endpoint:last-child{
+  border-bottom:0;
+}
+
+.method{
+  display:inline-flex;
+  justify-content:center;
+  min-width:55px;
+  padding:5px 7px;
+  border-radius:7px;
+  font-size:9px;
+  font-weight:900;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+
+.method.get{
+  color:#38bdf8;
+  background:rgba(56,189,248,.1);
+}
+
+.method.post{
+  color:#22c55e;
+  background:rgba(34,197,94,.1);
+}
+
+.method.patch{
+  color:#f59e0b;
+  background:rgba(245,158,11,.1);
+}
+
+.method.delete{
+  color:#ef4444;
+  background:rgba(239,68,68,.1);
+}
+
+.endpoint-path{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:10px;
+  word-break:break-word;
+}
+
+.endpoint-desc{
+  color:var(--muted);
+  font-size:9px;
+  margin-top:3px;
+}
+
+/* CONTROL PANEL */
+
+.controls{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+
+.control{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:11px 12px;
+  border:1px solid var(--border);
+  border-radius:12px;
+}
+
+.control-info strong{
+  display:block;
+  font-size:11px;
+}
+
+.control-info span{
+  display:block;
+  color:var(--muted);
+  font-size:9px;
+  margin-top:2px;
+}
+
+.switch{
+  width:39px;
+  height:21px;
+  padding:2px;
+  border:0;
+  border-radius:999px;
+  background:var(--muted-2);
+  transition:.2s;
+  flex:none;
+}
+
+.switch span{
+  display:block;
+  width:17px;
+  height:17px;
+  border-radius:50%;
+  background:#fff;
+  transition:.2s;
+}
+
+.switch.on{
+  background:var(--primary);
+}
+
+.switch.on span{
+  transform:translateX(18px);
+}
+
+/* SECURITY */
+
+.security-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.security-item{
+  display:flex;
+  align-items:flex-start;
+  gap:11px;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:12px;
+}
+
+.security-icon{
+  width:30px;
+  height:30px;
+  border-radius:9px;
+  display:grid;
+  place-items:center;
+  background:var(--success-soft);
+  color:var(--success);
+  flex:none;
+}
+
+.security-item strong{
+  display:block;
+  font-size:11px;
+}
+
+.security-item span{
+  display:block;
+  color:var(--muted);
+  font-size:9px;
+  line-height:1.45;
+  margin-top:3px;
+}
+
+/* MODAL */
+
+.modal-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:500;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(2,6,23,.72);
+  backdrop-filter:blur(8px);
+}
+
+.modal-backdrop.open{
+  display:flex;
+}
+
+.modal{
+  width:min(480px,100%);
+  overflow:hidden;
+  border-radius:18px;
+  border:1px solid var(--border-strong);
+  background:var(--panel);
+  box-shadow:0 30px 90px rgba(0,0,0,.4);
+}
+
+.modal-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:18px;
+  border-bottom:1px solid var(--border);
+}
+
+.modal-header strong{
+  font-size:14px;
+}
+
+.modal-body{
+  padding:18px;
+}
+
+.modal-body p{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6;
+}
+
+.modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  padding:14px 18px;
+  border-top:1px solid var(--border);
+}
+
+/* TOAST */
+
+.toast-stack{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:800;
+  width:min(360px,calc(100vw - 40px));
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+
+.toast{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:13px 15px;
+  border:1px solid var(--border-strong);
+  border-radius:13px;
+  background:var(--panel);
+  box-shadow:var(--shadow);
+  animation:toastIn .22s ease;
+}
+
+@keyframes toastIn{
+  from{
+    opacity:0;
+    transform:translateY(8px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.toast strong{
+  display:block;
+  font-size:11px;
+}
+
+.toast span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.45;
+  margin-top:2px;
+}
+
+/* LOADING */
+
+.loading{
+  opacity:.62;
+  pointer-events:none;
+}
+
+.footer{
+  padding:24px 0 10px;
+  color:var(--muted-2);
+  font-size:10px;
+  text-align:center;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1200px){
+  .stats{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .two{
+    grid-template-columns:1fr;
+  }
+
+  .three{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media(max-width:900px){
+
+  .sidebar{
+    width:270px;
+    transform:translateX(-100%);
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .sidebar.collapsed{
+    width:270px;
+  }
+
+  .sidebar.collapsed .brand-copy,
+  .sidebar.collapsed .nav-label,
+  .sidebar.collapsed .nav-section,
+  .sidebar.collapsed .sidebar-footer-text{
+    display:block;
+  }
+
+  .main,
+  .sidebar.collapsed + .main{
+    width:100%;
+    margin-left:0;
+  }
+
+  .mobile-menu{
+    display:grid;
+  }
+
+  .topbar{
+    padding:0 16px;
+  }
+
+  .content{
+    padding:20px 16px;
+  }
+
+  .hero{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .hero-actions{
+    justify-content:flex-start;
+  }
+}
+
+@media(max-width:700px){
+
+  .stats,
+  .three,
+  .access-grid,
+  .environment,
+  .controls{
+    grid-template-columns:1fr;
+  }
+
+  .endpoint{
+    grid-template-columns:70px 1fr;
+  }
+
+  .endpoint .badge{
+    grid-column:2;
+    justify-self:start;
+  }
+
+  .user-copy{
+    display:none;
+  }
+
+  .hero h1{
+    font-size:30px;
+  }
+
+  .top-actions .hide-mobile{
+    display:none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+
+  <div class="brand">
+    <div class="brand-mark">P</div>
+    <div class="brand-copy">
+      <strong>PrimePay</strong>
+      <span>Administration</span>
+    </div>
+  </div>
+
+  <nav class="nav">
+
+    <div class="nav-section">Overview</div>
+
+    <a class="nav-item" href="dashboard.html">
+      <span class="nav-icon">⌂</span>
+      <span class="nav-label">Dashboard</span>
+    </a>
+
+    <a class="nav-item" href="transactions.html">
+      <span class="nav-icon">↔</span>
+      <span class="nav-label">Transactions</span>
+    </a>
+
+    <a class="nav-item" href="providers.html">
+      <span class="nav-icon">◈</span>
+      <span class="nav-label">Providers</span>
+    </a>
+
+    <div class="nav-section">Operations</div>
+
+    <a class="nav-item" href="merchants.html">
+      <span class="nav-icon">♙</span>
+      <span class="nav-label">Merchants</span>
+    </a>
+
+    <a class="nav-item" href="applications.html">
+      <span class="nav-icon">▣</span>
+      <span class="nav-label">Applications</span>
+    </a>
+
+    <a class="nav-item active" href="api-access.html">
+      <span class="nav-icon">⌘</span>
+      <span class="nav-label">API Access</span>
+    </a>
+
+    <div class="nav-section">Controls</div>
+
+    <a class="nav-item" href="fees.html">
+      <span class="nav-icon">%</span>
+      <span class="nav-label">Fees</span>
+    </a>
+
+    <a class="nav-item" href="settlements.html">
+      <span class="nav-icon">▤</span>
+      <span class="nav-label">Settlements</span>
+    </a>
+
+    <a class="nav-item" href="risk.html">
+      <span class="nav-icon">△</span>
+      <span class="nav-label">Risk</span>
+    </a>
+
+    <a class="nav-item" href="audit-logs.html">
+      <span class="nav-icon">≡</span>
+      <span class="nav-label">Audit Logs</span>
+    </a>
+
+  </nav>
+
+  <div class="sidebar-footer">
+
+    <button class="sidebar-control" id="collapseBtn">
+      <span class="nav-icon">⇥</span>
+      <span class="sidebar-footer-text">Collapse navigation</span>
+    </button>
+
+    <button class="sidebar-control" id="logoutBtn">
+      <span class="nav-icon">↪</span>
+      <span class="sidebar-footer-text">Sign out</span>
+    </button>
+
+  </div>
+
+</aside>
+
+
+<main class="main">
+
+<header class="topbar">
+
+  <div class="top-left">
+
+    <button class="icon-btn mobile-menu" id="mobileMenuBtn">☰</button>
+
+    <div class="page-context">
+      <strong>API Access Control</strong>
+      <span>PrimePay developer and credential infrastructure</span>
+    </div>
+
+  </div>
+
+  <div class="top-actions">
+
+    <button class="icon-btn hide-mobile" id="refreshBtn">
+      ↻
+    </button>
+
+    <button class="icon-btn" id="themeBtn">
+      ☾
+    </button>
+
+    <div class="user-chip">
+      <div class="avatar" id="avatar">AD</div>
+      <div class="user-copy">
+        <strong id="adminName">Administrator</strong>
+        <span id="adminEmail">Authenticated session</span>
+      </div>
+    </div>
+
+  </div>
+
+</header>
+
+
+<section class="content">
+
+  <div class="hero">
+
+    <div>
+      <h1>API Access</h1>
+
+      <p>
+        Administrative visibility into PrimePay's API access architecture,
+        authentication model, environments, security controls and developer
+        surfaces. Merchant credentials remain isolated from global administration,
+        because giving one admin page every secret in the database would be a
+        spectacularly creative way to ruin a payment platform.
+      </p>
+    </div>
+
+    <div class="hero-actions">
+      <a class="btn primary" href="../developer/api-keys.html">
+        ⌘ Developer API Keys
+      </a>
+
+      <a class="btn" href="../developer/docs.html">
+        Docs
+      </a>
+
+      <a class="btn" href="../developer/sandbox.html">
+        Sandbox
+      </a>
+
+      <button class="btn" id="refreshHero">
+        ↻ Refresh
+      </button>
+    </div>
+
+  </div>
+
+
+  <div class="notice">
+
+    <div class="notice-icon">🔐</div>
+
+    <div>
+      <strong>API security boundary</strong>
+
+      <span>
+        PrimePay V1 separates administrative authorization from merchant API
+        credentials. This page exposes architectural and operational status.
+        Merchant API secrets are created, rotated and revoked through the
+        authenticated business API-key lifecycle rather than exposed globally
+        to administrators.
+      </span>
+    </div>
+
+  </div>
+
+
+  <!-- STATS -->
+
+  <div class="grid stats">
+
+    <div class="card stat-card" data-card="stat-auth">
+
+      <div class="stat-top">
+        <span class="stat-label">Admin session</span>
+        <span class="stat-icon">✓</span>
+      </div>
+
+      <div class="stat-value" id="authStatus">
+        Active
+      </div>
+
+      <div class="stat-meta good">
+        JWT authentication detected
+      </div>
+
+    </div>
+
+
+    <div class="card stat-card" data-card="stat-environments">
+
+      <div class="stat-top">
+        <span class="stat-label">Environments</span>
+        <span class="stat-icon">◇</span>
+      </div>
+
+      <div class="stat-value">
+        2
+      </div>
+
+      <div class="stat-meta">
+        Sandbox + Live architecture
+      </div>
+
+    </div>
+
+
+    <div class="card stat-card" data-card="stat-api">
+
+      <div class="stat-top">
+        <span class="stat-label">API state</span>
+        <span class="stat-icon">⌘</span>
+      </div>
+
+      <div class="stat-value" id="apiState">
+        Checking
+      </div>
+
+      <div class="stat-meta" id="apiStateMeta">
+        Testing backend availability
+      </div>
+
+    </div>
+
+
+    <div class="card stat-card" data-card="stat-secrets">
+
+      <div class="stat-top">
+        <span class="stat-label">Secrets exposure</span>
+        <span class="stat-icon">▣</span>
+      </div>
+
+      <div class="stat-value">
+        Restricted
+      </div>
+
+      <div class="stat-meta good">
+        Secrets are not rendered here
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- HEALTH + ACCESS MODEL -->
+
+  <div class="grid two">
+
+    <section class="card" data-card="health">
+
+      <div class="card-header">
+
+        <div class="card-title">
+          <strong>API control-plane health</strong>
+          <span>Live PrimePay backend availability</span>
+        </div>
+
+        <button class="btn small" id="healthBtn">
+          Check now
+        </button>
+
+      </div>
+
+      <div class="card-body">
+
+        <div class="status-row">
+
+          <div class="status-info">
+            <span class="status-dot" id="healthDot"></span>
+
+            <div>
+              <strong>PrimePay API</strong>
+              <span>GET /api/v1/health</span>
+            </div>
+          </div>
+
+          <span class="badge neutral" id="healthBadge">
+            Checking
+          </span>
+
+        </div>
+
+
+        <div class="status-row">
+
+          <div class="status-info">
+            <span class="status-dot good"></span>
+
+            <div>
+              <strong>JWT authentication</strong>
+              <span>Administrative requests use Bearer authentication</span>
+            </div>
+          </div>
+
+          <span class="badge good">
+            Enabled
+          </span>
+
+        </div>
+
+
+        <div class="status-row">
+
+          <div class="status-info">
+            <span class="status-dot good"></span>
+
+            <div>
+              <strong>Role authorization</strong>
+              <span>Admin routes enforce administrative role access</span>
+            </div>
+          </div>
+
+          <span class="badge good">
+            Enabled
+          </span>
+
+        </div>
+
+
+        <div class="status-row">
+
+          <div class="status-info">
+            <span class="status-dot good"></span>
+
+            <div>
+              <strong>API key secret hashing</strong>
+              <span>Merchant API secrets are not stored as plaintext</span>
+            </div>
+          </div>
+
+          <span class="badge good">
+            Protected
+          </span>
+
+        </div>
+
+
+        <div class="status-row">
+
+          <div class="status-info">
+            <span class="status-dot good"></span>
+
+            <div>
+              <strong>Environment separation</strong>
+              <span>Sandbox and live key prefixes are distinct</span>
+            </div>
+          </div>
+
+          <span class="badge good">
+            Enabled
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="card" data-card="model">
+
+      <div class="card-header">
+
+        <div class="card-title">
+          <strong>Access model</strong>
+          <span>How PrimePay authenticates requests</span>
+        </div>
+
+      </div>
+
+      <div class="card-body">
+
+        <div class="status-row">
+
+          <div class="status-info">
+            <span class="status-dot good"></span>
+            <div>
+              <strong>Admin web console</strong>
+              <span>JWT + admin role</span>
+            </div>
+          </div>
+
+          <span class="badge purple">
+            Admin
+          </span>
+
+        </div>
+
+
+        <div class="status-row">
+
+          <div class="status-info">
+            <span class="status-dot good"></span>
+            <div>
+              <strong>Merchant dashboard</strong>
+              <span>JWT + active user</span>
+            </div>
+          </div>
+
+          <span class="badge neutral">
+            Merchant
+          </span>
+
+        </div>
+
+
+        <div class="status-row">
+
+          <div class="status-info">
+            <span class="status-dot good"></span>
+            <div>
+              <strong>Developer API</strong>
+              <span>X-API-Key + X-API-Secret</span>
+            </div>
+          </div>
+
+          <span class="badge good">
+            API
+          </span>
+
+        </div>
+
+
+        <div class="status-row">
+
+          <div class="status-info">
+            <span class="status-dot good"></span>
+            <div>
+              <strong>Payment creation</strong>
+              <span>Idempotency-Key required</span>
+            </div>
+          </div>
+
+          <span class="badge good">
+            Protected
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <!-- ACCESS SURFACES -->
+
+  <section class="card" data-card="surfaces" style="margin-bottom:18px">
+
+    <div class="card-header">
+
+      <div class="card-title">
+        <strong>API access surfaces</strong>
+        <span>PrimePay's current credential and integration interfaces</span>
+      </div>
+
+      <a class="btn small" href="../developer/docs.html">
+        Open documentation
+      </a>
+
+    </div>
+
+    <div class="card-body">
+
+      <div class="access-grid">
+
+        <div class="access-card">
+
+          <div class="access-top">
+            <div class="access-icon">⌘</div>
+            <span class="badge good">Available</span>
+          </div>
+
+          <h3>Developer API Keys</h3>
+
+          <p>
+            Businesses can create sandbox or live API credentials,
+            rotate secrets and revoke credentials through the authenticated
+            API-key lifecycle.
+          </p>
+
+          <div class="access-actions">
+            <a class="btn small primary" href="../developer/api-keys.html">
+              Manage keys
+            </a>
+
+            <a class="btn small" href="../developer/docs.html">
+              View docs
+            </a>
+          </div>
+
+        </div>
+
+
+        <div class="access-card">
+
+          <div class="access-top">
+            <div class="access-icon">◇</div>
+            <span class="badge good">Available</span>
+          </div>
+
+          <h3>Sandbox Payments</h3>
+
+          <p>
+            The developer sandbox accepts sandbox API credentials and
+            idempotent payment requests for integration testing without
+            pretending those requests are live money.
+          </p>
+
+          <div class="access-actions">
+            <a class="btn small primary" href="../developer/sandbox.html">
+              Open sandbox
+            </a>
+
+            <a class="btn small" href="../developer/logs.html">
+              Activity
+            </a>
+          </div>
+
+        </div>
+
+
+        <div class="access-card">
+
+          <div class="access-top">
+            <div class="access-icon">↗</div>
+            <span class="badge good">Available</span>
+          </div>
+
+          <h3>Webhooks</h3>
+
+          <p>
+            Developers can register HTTPS endpoints, subscribe to supported
+            payment events, inspect delivery history and retry failed
+            deliveries.
+          </p>
+
+          <div class="access-actions">
+            <a class="btn small primary" href="../developer/webhooks.html">
+              Webhooks
+            </a>
+
+            <a class="btn small" href="../developer/docs.html">
+              Signing docs
+            </a>
+          </div>
+
+        </div>
+
+
+        <div class="access-card">
+
+          <div class="access-top">
+            <div class="access-icon">▤</div>
+            <span class="badge good">Available</span>
+          </div>
+
+          <h3>Transaction API</h3>
+
+          <p>
+            Authenticated users can access transaction records and individual
+            transaction details. The admin transaction workspace consumes the
+            currently exposed transaction API.
+          </p>
+
+          <div class="access-actions">
+            <a class="btn small primary" href="transactions.html">
+              Transactions
+            </a>
+
+            <a class="btn small" href="../developer/logs.html">
+              Activity
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ENVIRONMENTS -->
+
+  <div class="grid two">
+
+    <section class="card" data-card="environments">
+
+      <div class="card-header">
+
+        <div class="card-title">
+          <strong>Environment control</strong>
+          <span>Sandbox and live credential architecture</span>
+        </div>
+
+      </div>
+
+      <div class="card-body">
+
+        <div class="environment">
+
+          <div class="environment-card sandbox">
+
+            <div class="environment-top">
+              <strong>Sandbox</strong>
+              <span class="badge good">Test</span>
+            </div>
+
+            <p>
+              Used for integration testing. Developer payment requests
+              must use sandbox credentials.
+            </p>
+
+            <div class="environment-code">
+              pk_test_••••••••••••••••••••••••••••••••
+            </div>
+
+            <div style="margin-top:12px">
+              <a class="btn small" href="../developer/sandbox.html">
+                Open sandbox
+              </a>
+            </div>
+
+          </div>
+
+
+          <div class="environment-card live">
+
+            <div class="environment-top">
+              <strong>Live</strong>
+              <span class="badge good">Production</span>
+            </div>
+
+            <p>
+              Production credentials are restricted to approved businesses
+              with live API access enabled.
+            </p>
+
+            <div class="environment-code">
+              pk_live_••••••••••••••••••••••••••••••••
+            </div>
+
+            <div style="margin-top:12px">
+              <a class="btn small" href="../developer/api-keys.html">
+                API key controls
+              </a>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="card" data-card="key-rules">
+
+      <div class="card-header">
+
+        <div class="card-title">
+          <strong>Credential rules</strong>
+          <span>Current backend enforcement</span>
+        </div>
+
+      </div>
+
+      <div class="card-body">
+
+        <div class="status-row">
+          <div class="status-info">
+            <span class="status-dot good"></span>
+            <div>
+              <strong>Key environment prefix</strong>
+              <span>Sandbox and live prefixes must match</span>
+            </div>
+          </div>
+          <span class="badge good">Enforced</span>
+        </div>
+
+        <div class="status-row">
+          <div class="status-info">
+            <span class="status-dot good"></span>
+            <div>
+              <strong>Secret hashing</strong>
+              <span>API secrets are verified against stored hashes</span>
+            </div>
+          </div>
+          <span class="badge good">Enforced</span>
+        </div>
+
+        <div class="status-row">
+          <div class="status-info">
+            <span class="status-dot good"></span>
+            <div>
+              <strong>Rotation</strong>
+              <span>Old secret is invalidated after rotation</span>
+            </div>
+          </div>
+          <span class="badge good">Enforced</span>
+        </div>
+
+        <div class="status-row">
+          <div class="status-info">
+            <span class="status-dot good"></span>
+            <div>
+              <strong>Revocation</strong>
+              <span>Revoked keys cannot authenticate</span>
+            </div>
+          </div>
+          <span class="badge good">Enforced</span>
+        </div>
+
+        <div class="status-row">
+          <div class="status-info">
+            <span class="status-dot good"></span>
+            <div>
+              <strong>Live approval</strong>
+              <span>Live keys require approved business access</span>
+            </div>
+          </div>
+          <span class="badge good">Enforced</span>
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <!-- ENDPOINT MATRIX -->
+
+  <section class="card" data-card="endpoints" style="margin-bottom:18px">
+
+    <div class="card-header">
+
+      <div class="card-title">
+        <strong>Administrative API matrix</strong>
+        <span>Currently exposed endpoints relevant to API administration</span>
+      </div>
+
+      <a class="btn small" href="../developer/docs.html">
+        Full API documentation
+      </a>
+
+    </div>
+
+    <div class="card-body">
+
+      <div class="endpoint">
+        <span class="method get">GET</span>
+
+        <div>
+          <div class="endpoint-path">
+            /api/v1/api-keys
+          </div>
+          <div class="endpoint-desc">
+            List API keys for the authenticated business
+          </div>
+        </div>
+
+        <span class="badge good">Available</span>
+      </div>
+
+
+      <div class="endpoint">
+        <span class="method post">POST</span>
+
+        <div>
+          <div class="endpoint-path">
+            /api/v1/api-keys
+          </div>
+          <div class="endpoint-desc">
+            Create a sandbox or approved live API key
+          </div>
+        </div>
+
+        <span class="badge good">Available</span>
+      </div>
+
+
+      <div class="endpoint">
+        <span class="method post">POST</span>
+
+        <div>
+          <div class="endpoint-path">
+            /api/v1/api-keys/:id/rotate
+          </div>
+          <div class="endpoint-desc">
+            Rotate an existing API credential
+          </div>
+        </div>
+
+        <span class="badge good">Available</span>
+      </div>
+
+
+      <div class="endpoint">
+        <span class="method post">POST</span>
+
+        <div>
+          <div class="endpoint-path">
+            /api/v1/api-keys/:id/revoke
+          </div>
+          <div class="endpoint-desc">
+            Revoke an existing API credential
+          </div>
+        </div>
+
+        <span class="badge good">Available</span>
+      </div>
+
+
+      <div class="endpoint">
+        <span class="method get">GET</span>
+
+        <div>
+          <div class="endpoint-path">
+            /api/v1/developer/test
+          </div>
+          <div class="endpoint-desc">
+            Test developer authentication with API credentials
+          </div>
+        </div>
+
+        <span class="badge good">Available</span>
+      </div>
+
+
+      <div class="endpoint">
+        <span class="method post">POST</span>
+
+        <div>
+          <div class="endpoint-path">
+            /api/v1/developer/payments
+          </div>
+          <div class="endpoint-desc">
+            Sandbox developer payment creation with idempotency
+          </div>
+        </div>
+
+        <span class="badge good">Available</span>
+      </div>
+
+
+      <div class="endpoint">
+        <span class="method get">GET</span>
+
+        <div>
+          <div class="endpoint-path">
+            /api/v1/transactions
+          </div>
+          <div class="endpoint-desc">
+            Authenticated transaction listing with filters
+          </div>
+        </div>
+
+        <span class="badge good">Available</span>
+      </div>
+
+
+      <div class="endpoint">
+        <span class="method get">GET</span>
+
+        <div>
+          <div class="endpoint-path">
+            /api/v1/webhooks
+          </div>
+          <div class="endpoint-desc">
+            Webhook endpoint management
+          </div>
+        </div>
+
+        <span class="badge good">Available</span>
+      </div>
+
+
+      <div class="endpoint">
+        <span class="method post">POST</span>
+
+        <div>
+          <div class="endpoint-path">
+            /api/v1/webhooks/:id/deliveries/:deliveryId/retry
+          </div>
+          <div class="endpoint-desc">
+            Retry failed or pending webhook delivery
+          </div>
+        </div>
+
+        <span class="badge good">Available</span>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- SECURITY ARCHITECTURE -->
+
+  <div class="grid three">
+
+    <section class="card" data-card="security">
+
+      <div class="card-header">
+        <div class="card-title">
+          <strong>Credential security</strong>
+          <span>Current protection model</span>
+        </div>
+      </div>
+
+      <div class="card-body">
+
+        <div class="security-list">
+
+          <div class="security-item">
+            <div class="security-icon">✓</div>
+            <div>
+              <strong>Secret hashing</strong>
+              <span>
+                API secrets are validated against stored password-style hashes
+                instead of being retained as readable values.
+              </span>
+            </div>
+          </div>
+
+          <div class="security-item">
+            <div class="security-icon">✓</div>
+            <div>
+              <strong>One-time secret display</strong>
+              <span>
+                Newly created or rotated secrets are returned once by the
+                credential lifecycle.
+              </span>
+            </div>
+          </div>
+
+          <div class="security-item">
+            <div class="security-icon">✓</div>
+            <div>
+              <strong>Revocation</strong>
+              <span>
+                Revoked credentials are rejected by API authentication.
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="card" data-card="idempotency">
+
+      <div class="card-header">
+        <div class="card-title">
+          <strong>Payment request protection</strong>
+          <span>Why idempotency matters</span>
+        </div>
+      </div>
+
+      <div class="card-body">
+
+        <div class="security-list">
+
+          <div class="security-item">
+            <div class="security-icon">↺</div>
+            <div>
+              <strong>Idempotency-Key</strong>
+              <span>
+                Payment creation requires an idempotency key so retries do
+                not casually create duplicate payments.
+              </span>
+            </div>
+          </div>
+
+          <div class="security-item">
+            <div class="security-icon">✓</div>
+            <div>
+              <strong>Request consistency</strong>
+              <span>
+                Reusing a key with a conflicting payload is rejected instead
+                of silently changing the original request.
+              </span>
+            </div>
+          </div>
+
+          <div class="security-item">
+            <div class="security-icon">⌁</div>
+            <div>
+              <strong>Concurrency protection</strong>
+              <span>
+                Backend uniqueness and payment completion controls protect
+                against duplicate concurrent operations.
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="card" data-card="webhook-security">
+
+      <div class="card-header">
+        <div class="card-title">
+          <strong>Webhook security</strong>
+          <span>Signed event delivery</span>
+        </div>
+      </div>
+
+      <div class="card-body">
+
+        <div class="security-list">
+
+          <div class="security-item">
+            <div class="security-icon">H</div>
+            <div>
+              <strong>HMAC-SHA256</strong>
+              <span>
+                Webhook deliveries are signed using the configured webhook
+                secret.
+              </span>
+            </div>
+          </div>
+
+          <div class="security-item">
+            <div class="security-icon">↻</div>
+            <div>
+              <strong>Retry control</strong>
+              <span>
+                Failed deliveries can be retried through the delivery
+                management flow.
+              </span>
+            </div>
+          </div>
+
+          <div class="security-item">
+            <div class="security-icon">ID</div>
+            <div>
+              <strong>Duplicate protection</strong>
+              <span>
+                Webhook event identity is persisted to prevent duplicate
+                event processing.
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <!-- ADMIN LIMITS -->
+
+  <section class="card" data-card="boundaries" style="margin-bottom:18px">
+
+    <div class="card-header">
+
+      <div class="card-title">
+        <strong>Administrative capability boundary</strong>
+        <span>What this console can and cannot currently control</span>
+      </div>
+
+      <span class="badge warn">
+        V1
+      </span>
+
+    </div>
+
+    <div class="card-body">
+
+      <div class="grid three" style="margin:0">
+
+        <div>
+
+          <div class="status-row">
+            <div class="status-info">
+              <span class="status-dot good"></span>
+              <div>
+                <strong>Provider administration</strong>
+                <span>Activation, deactivation and validation</span>
+              </div>
+            </div>
+
+            <span class="badge good">Live</span>
+          </div>
+
+          <div class="status-row">
+            <div class="status-info">
+              <span class="status-dot good"></span>
+              <div>
+                <strong>Transaction workspace</strong>
+                <span>Available transaction records</span>
+              </div>
+            </div>
+
+            <span class="badge good">Live</span>
+          </div>
+
+        </div>
+
+
+        <div>
+
+          <div class="status-row">
+            <div class="status-info">
+              <span class="status-dot warn"></span>
+              <div>
+                <strong>Global API-key registry</strong>
+                <span>No admin-wide credential listing endpoint</span>
+              </div>
+            </div>
+
+            <span class="badge warn">Pending</span>
+          </div>
+
+          <div class="status-row">
+            <div class="status-info">
+              <span class="status-dot warn"></span>
+              <div>
+                <strong>Global request analytics</strong>
+                <span>No dedicated request-log API</span>
+              </div>
+            </div>
+
+            <span class="badge warn">Pending</span>
+          </div>
+
+        </div>
+
+
+        <div>
+
+          <div class="status-row">
+            <div class="status-info">
+              <span class="status-dot warn"></span>
+              <div>
+                <strong>Credential policy engine</strong>
+                <span>No global admin policy editor yet</span>
+              </div>
+            </div>
+
+            <span class="badge warn">Pending</span>
+          </div>
+
+          <div class="status-row">
+            <div class="status-info">
+              <span class="status-dot warn"></span>
+              <div>
+                <strong>Global developer analytics</strong>
+                <span>No platform-wide API analytics endpoint</span>
+              </div>
+            </div>
+
+            <span class="badge warn">Pending</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- DASHBOARD CONTROLS -->
+
+  <section class="card" data-card="controls" style="margin-bottom:18px">
+
+    <div class="card-header">
+
+      <div class="card-title">
+        <strong>API Access dashboard controls</strong>
+        <span>Customize this administrative workspace</span>
+      </div>
+
+      <button class="btn small" id="resetPreferences">
+        Reset preferences
+      </button>
+
+    </div>
+
+    <div class="card-body">
+
+      <div class="controls">
+
+        <div class="control">
+
+          <div class="control-info">
+            <strong>Compact tables</strong>
+            <span>Reduce endpoint and access-table spacing</span>
+          </div>
+
+          <button class="switch" id="densitySwitch">
+            <span></span>
+          </button>
+
+        </div>
+
+
+        <div class="control">
+
+          <div class="control-info">
+            <strong>Security panels</strong>
+            <span>Show credential and security sections</span>
+          </div>
+
+          <button class="switch on" id="securitySwitch">
+            <span></span>
+          </button>
+
+        </div>
+
+
+        <div class="control">
+
+          <div class="control-info">
+            <strong>Environment panels</strong>
+            <span>Show sandbox and live environment controls</span>
+          </div>
+
+          <button class="switch on" id="environmentSwitch">
+            <span></span>
+          </button>
+
+        </div>
+
+
+        <div class="control">
+
+          <div class="control-info">
+            <strong>API matrix</strong>
+            <span>Show the current endpoint capability matrix</span>
+          </div>
+
+          <button class="switch on" id="matrixSwitch">
+            <span></span>
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <div class="footer">
+    PrimePay Administration · API Access Control ·
+    Last checked <span id="lastChecked">—</span>
+  </div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<!-- MODAL -->
+
+<div class="modal-backdrop" id="modal">
+
+  <div class="modal">
+
+    <div class="modal-header">
+      <strong id="modalTitle">Information</strong>
+
+      <button class="icon-btn" id="modalClose">
+        ×
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <p id="modalText"></p>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn" id="modalCancel">
+        Close
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="toast-stack" id="toastStack"></div>
+
+
+<script>
+const API_URL = "http://localhost:5001/api/v1";
+
+const token = localStorage.getItem("primepay_token");
+const savedUser = JSON.parse(
+  localStorage.getItem("primepay_user") || "null"
+);
+
+if(!token){
+  window.location.href = "../login.html";
+}
+
+
+/* -----------------------------
+   USER
+----------------------------- */
+
+if(savedUser){
+
+  const name = savedUser.name || "Administrator";
+  const email = savedUser.email || "Authenticated session";
+
+  document.getElementById("adminName").textContent = name;
+  document.getElementById("adminEmail").textContent = email;
+
+  const initials = name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0,2)
+    .map(part => part[0])
+    .join("")
+    .toUpperCase();
+
+  document.getElementById("avatar").textContent =
+    initials || "AD";
+}
+
+
+/* -----------------------------
+   HELPERS
+----------------------------- */
+
+function escapeHTML(value){
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function showToast(title,message,type="info"){
+
+  const stack =
+    document.getElementById("toastStack");
+
+  const toast =
+    document.createElement("div");
+
+  toast.className = "toast";
+
+  const color =
+    type === "success"
+      ? "var(--success)"
+      : type === "error"
+        ? "var(--danger)"
+        : "var(--primary)";
+
+  const background =
+    type === "success"
+      ? "var(--success-soft)"
+      : type === "error"
+        ? "var(--danger-soft)"
+        : "var(--primary-soft)";
+
+  toast.innerHTML = `
+    <div style="
+      width:28px;
+      height:28px;
+      border-radius:9px;
+      display:grid;
+      place-items:center;
+      background:${background};
+      color:${color};
+      flex:none;
+    ">
+      ${type === "success" ? "✓" : type === "error" ? "!" : "i"}
+    </div>
+
+    <div>
+      <strong>${escapeHTML(title)}</strong>
+      <span>${escapeHTML(message)}</span>
+    </div>
+  `;
+
+  stack.appendChild(toast);
+
+  setTimeout(() => {
+
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(8px)";
+
+    setTimeout(
+      () => toast.remove(),
+      220
+    );
+
+  },4200);
+}
+
+
+async function apiFetch(path,options={}){
+
+  const controller =
+    new AbortController();
+
+  const timeout =
+    setTimeout(
+      () => controller.abort(),
+      15000
+    );
+
+  try{
+
+    const response =
+      await fetch(API_URL + path,{
+        ...options,
+        signal:controller.signal,
+        headers:{
+          ...(options.headers || {}),
+          Authorization:`Bearer ${token}`,
+          "Content-Type":"application/json"
+        }
+      });
+
+    const text =
+      await response.text();
+
+    let data = {};
+
+    try{
+      data =
+        text ? JSON.parse(text) : {};
+    }catch{
+      data = {
+        success:false,
+        message:text || "Invalid server response"
+      };
+    }
+
+    if(response.status === 401){
+
+      localStorage.removeItem(
+        "primepay_token"
+      );
+
+      localStorage.removeItem(
+        "primepay_user"
+      );
+
+      window.location.href =
+        "../login.html";
+
+      throw new Error(
+        "Your session has expired."
+      );
+    }
+
+    if(!response.ok){
+
+      throw new Error(
+        data.message ||
+        data.error ||
+        `Request failed with HTTP ${response.status}`
+      );
+    }
+
+    return data;
+
+  }catch(error){
+
+    if(error.name === "AbortError"){
+      throw new Error(
+        "Request timed out. Check that the PrimePay backend is reachable."
+      );
+    }
+
+    throw error;
+
+  }finally{
+
+    clearTimeout(timeout);
+  }
+}
+
+
+/* -----------------------------
+   HEALTH
+----------------------------- */
+
+async function checkHealth(){
+
+  const started =
+    performance.now();
+
+  try{
+
+    const response =
+      await fetch(
+        API_URL + "/health",
+        {
+          cache:"no-store"
+        }
+      );
+
+    const elapsed =
+      Math.round(
+        performance.now() - started
+      );
+
+    const data =
+      await response.json()
+        .catch(() => ({}));
+
+    if(!response.ok){
+      throw new Error(
+        data.message ||
+        `HTTP ${response.status}`
+      );
+    }
+
+    document.getElementById(
+      "apiState"
+    ).textContent = "Online";
+
+    document.getElementById(
+      "apiStateMeta"
+    ).textContent =
+      `Health response: ${elapsed} ms`;
+
+    document.getElementById(
+      "apiStateMeta"
+    ).className =
+      "stat-meta good";
+
+    document.getElementById(
+      "healthDot"
+    ).className =
+      "status-dot good";
+
+    document.getElementById(
+      "healthBadge"
+    ).className =
+      "badge good";
+
+    document.getElementById(
+      "healthBadge"
+    ).textContent =
+      "Online";
+
+    document.getElementById(
+      "lastChecked"
+    ).textContent =
+      new Date().toLocaleTimeString();
+
+    return true;
+
+  }catch(error){
+
+    document.getElementById(
+      "apiState"
+    ).textContent = "Offline";
+
+    document.getElementById(
+      "apiStateMeta"
+    ).textContent =
+      error.message;
+
+    document.getElementById(
+      "apiStateMeta"
+    ).className =
+      "stat-meta bad";
+
+    document.getElementById(
+      "healthDot"
+    ).className =
+      "status-dot bad";
+
+    document.getElementById(
+      "healthBadge"
+    ).className =
+      "badge bad";
+
+    document.getElementById(
+      "healthBadge"
+    ).textContent =
+      "Unavailable";
+
+    document.getElementById(
+      "lastChecked"
+    ).textContent =
+      new Date().toLocaleTimeString();
+
+    return false;
+  }
+}
+
+
+/* -----------------------------
+   SESSION CHECK
+----------------------------- */
+
+async function checkAdminAccess(){
+
+  try{
+
+    await apiFetch(
+      "/admin/providers"
+    );
+
+    document.getElementById(
+      "authStatus"
+    ).textContent =
+      "Verified";
+
+    return true;
+
+  }catch(error){
+
+    document.getElementById(
+      "authStatus"
+    ).textContent =
+      "Restricted";
+
+    showToast(
+      "Admin access check failed",
+      error.message,
+      "error"
+    );
+
+    return false;
+  }
+}
+
+
+/* -----------------------------
+   THEME
+----------------------------- */
+
+function setTheme(theme){
+
+  document.body.classList.toggle(
+    "light",
+    theme === "light"
+  );
+
+  localStorage.setItem(
+    "primepay_admin_theme",
+    theme
+  );
+
+  document.getElementById(
+    "themeBtn"
+  ).textContent =
+    theme === "light"
+      ? "☀"
+      : "☾";
+}
+
+setTheme(
+  localStorage.getItem(
+    "primepay_admin_theme"
+  ) || "dark"
+);
+
+document.getElementById(
+  "themeBtn"
+).addEventListener(
+  "click",
+  () => {
+
+    setTheme(
+      document.body.classList.contains("light")
+        ? "dark"
+        : "light"
+    );
+  }
+);
+
+
+/* -----------------------------
+   CARD CONTROLS
+----------------------------- */
+
+function getPreference(key,fallback){
+
+  const raw =
+    localStorage.getItem(key);
+
+  if(raw === null){
+    return fallback;
+  }
+
+  try{
+    return JSON.parse(raw);
+  }catch{
+    return fallback;
+  }
+}
+
+function setSwitch(id,on){
+
+  const element =
+    document.getElementById(id);
+
+  if(element){
+    element.classList.toggle(
+      "on",
+      on
+    );
+  }
+}
+
+function applyPreferences(){
+
+  const security =
+    getPreference(
+      "primepay_api_security",
+      true
+    );
+
+  const environment =
+    getPreference(
+      "primepay_api_environment",
+      true
+    );
+
+  const matrix =
+    getPreference(
+      "primepay_api_matrix",
+      true
+    );
+
+  document
+    .querySelectorAll(
+      '[data-card="security"]'
+    )
+    .forEach(card => {
+      card.classList.toggle(
+        "hidden-card",
+        !security
+      );
+    });
+
+  document
+    .querySelectorAll(
+      '[data-card="environments"]'
+    )
+    .forEach(card => {
+      card.classList.toggle(
+        "hidden-card",
+        !environment
+      );
+    });
+
+  document
+    .querySelectorAll(
+      '[data-card="endpoints"]'
+    )
+    .forEach(card => {
+      card.classList.toggle(
+        "hidden-card",
+        !matrix
+      );
+    });
+
+  setSwitch(
+    "securitySwitch",
+    security
+  );
+
+  setSwitch(
+    "environmentSwitch",
+    environment
+  );
+
+  setSwitch(
+    "matrixSwitch",
+    matrix
+);
+
+  setSwitch(
+    "densitySwitch",
+    document.body.classList.contains("dense")
+  );
+}
+
+const density =
+  getPreference(
+    "primepay_api_density",
+    false
+  );
+
+if(density){
+  document.body.classList.add("dense");
+}
+
+applyPreferences();
+
+
+document.getElementById(
+  "densitySwitch"
+).addEventListener(
+  "click",
+  () => {
+
+    const enabled =
+      !document.body.classList.contains("dense");
+
+    document.body.classList.toggle(
+      "dense",
+      enabled
+    );
+
+    localStorage.setItem(
+      "primepay_api_density",
+      JSON.stringify(enabled)
+    );
+
+    setSwitch(
+      "densitySwitch",
+      enabled
+    );
+  }
+);
+
+
+document.getElementById(
+  "securitySwitch"
+).addEventListener(
+  "click",
+  () => {
+
+    const enabled =
+      !getPreference(
+        "primepay_api_security",
+        true
+      );
+
+    localStorage.setItem(
+      "primepay_api_security",
+      JSON.stringify(enabled)
+    );
+
+    applyPreferences();
+  }
+);
+
+
+document.getElementById(
+  "environmentSwitch"
+).addEventListener(
+  "click",
+  () => {
+
+    const enabled =
+      !getPreference(
+        "primepay_api_environment",
+        true
+      );
+
+    localStorage.setItem(
+      "primepay_api_environment",
+      JSON.stringify(enabled)
+    );
+
+    applyPreferences();
+  }
+);
+
+
+document.getElementById(
+  "matrixSwitch"
+).addEventListener(
+  "click",
+  () => {
+
+    const enabled =
+      !getPreference(
+        "primepay_api_matrix",
+        true
+      );
+
+    localStorage.setItem(
+      "primepay_api_matrix",
+      JSON.stringify(enabled)
+    );
+
+    applyPreferences();
+  }
+);
+
+
+document.getElementById(
+  "resetPreferences"
+).addEventListener(
+  "click",
+  () => {
+
+    [
+      "primepay_api_density",
+      "primepay_api_security",
+      "primepay_api_environment",
+      "primepay_api_matrix"
+    ].forEach(
+      key => localStorage.removeItem(key)
+    );
+
+    document.body.classList.remove(
+      "dense"
+    );
+
+    applyPreferences();
+
+    showToast(
+      "Preferences reset",
+      "API Access dashboard preferences restored.",
+      "success"
+    );
+  }
+);
+
+
+/* -----------------------------
+   MODAL
+----------------------------- */
+
+function showModal(title,text){
+
+  document.getElementById(
+    "modalTitle"
+  ).textContent = title;
+
+  document.getElementById(
+    "modalText"
+  ).textContent = text;
+
+  document.getElementById(
+    "modal"
+  ).classList.add("open");
+}
+
+function closeModal(){
+
+  document.getElementById(
+    "modal"
+  ).classList.remove("open");
+}
+
+document.getElementById(
+  "modalClose"
+).addEventListener(
+  "click",
+  closeModal
+);
+
+document.getElementById(
+  "modalCancel"
+).addEventListener(
+  "click",
+  closeModal
+);
+
+document.getElementById(
+  "modal"
+).addEventListener(
+  "click",
+  event => {
+
+    if(
+      event.target.id === "modal"
+    ){
+      closeModal();
+    }
+  }
+);
+
+
+/* -----------------------------
+   NAVIGATION
+----------------------------- */
+
+document.getElementById(
+  "collapseBtn"
+).addEventListener(
+  "click",
+  () => {
+
+    const sidebar =
+      document.getElementById("sidebar");
+
+    sidebar.classList.toggle(
+      "collapsed"
+    );
+
+    localStorage.setItem(
+      "primepay_admin_sidebar_collapsed",
+      JSON.stringify(
+        sidebar.classList.contains("collapsed")
+      )
+    );
+  }
+);
+
+if(
+  getPreference(
+    "primepay_admin_sidebar_collapsed",
+    false
+  )
+){
+  document
+    .getElementById("sidebar")
+    .classList.add("collapsed");
+}
+
+
+document.getElementById(
+  "mobileMenuBtn"
+).addEventListener(
+  "click",
+  () => {
+
+    document
+      .getElementById("sidebar")
+      .classList.toggle("open");
+  }
+);
+
+
+/* -----------------------------
+   REFRESH
+----------------------------- */
+
+async function refresh(){
+
+  document.body.classList.add(
+    "loading"
+  );
+
+  try{
+
+    await Promise.all([
+      checkHealth(),
+      checkAdminAccess()
+    ]);
+
+    showToast(
+      "API Access refreshed",
+      "Current API health and administrative access state have been checked.",
+      "success"
+    );
+
+  }finally{
+
+    document.body.classList.remove(
+      "loading"
+    );
+  }
+}
+
+document.getElementById(
+  "refreshBtn"
+).addEventListener(
+  "click",
+  refresh
+);
+
+document.getElementById(
+  "refreshHero"
+).addEventListener(
+  "click",
+  refresh
+);
+
+document.getElementById(
+  "healthBtn"
+).addEventListener(
+  "click",
+  async () => {
+
+    await checkHealth();
+
+    showToast(
+      "Health check complete",
+      "PrimePay API availability has been checked.",
+      "success"
+    );
+  }
+);
+
+
+/* -----------------------------
+   LOGOUT
+----------------------------- */
+
+document.getElementById(
+  "logoutBtn"
+).addEventListener(
+  "click",
+  () => {
+
+    localStorage.removeItem(
+      "primepay_token"
+    );
+
+    localStorage.removeItem(
+      "primepay_user"
+    );
+
+    window.location.href =
+      "../login.html";
+  }
+);
+
+
+/* -----------------------------
+   INITIAL LOAD
+----------------------------- */
+
+refresh();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Merchants | PrimePay Admin</title>
+
+<style>
+:root{
+    --bg:#030712;
+    --bg-soft:#07101f;
+    --panel:#0a1325;
+    --panel-2:#0e1a2f;
+    --panel-3:#111f38;
+
+    --border:rgba(148,163,184,.14);
+    --border-strong:rgba(148,163,184,.22);
+
+    --text:#f8fafc;
+    --text-soft:#cbd5e1;
+    --muted:#94a3b8;
+
+    --blue:#3b82f6;
+    --blue-2:#60a5fa;
+    --cyan:#22d3ee;
+
+    --green:#22c55e;
+    --yellow:#f59e0b;
+    --red:#ef4444;
+    --purple:#a78bfa;
+
+    --shadow:0 24px 70px rgba(0,0,0,.28);
+    --shadow-small:0 12px 35px rgba(0,0,0,.18);
+
+    --radius:18px;
+}
+
+body.light{
+    --bg:#f1f5f9;
+    --bg-soft:#e2e8f0;
+    --panel:#ffffff;
+    --panel-2:#f8fafc;
+    --panel-3:#f1f5f9;
+
+    --border:rgba(15,23,42,.10);
+    --border-strong:rgba(15,23,42,.18);
+
+    --text:#0f172a;
+    --text-soft:#334155;
+    --muted:#64748b;
+
+    --shadow:0 24px 60px rgba(15,23,42,.10);
+    --shadow-small:0 10px 30px rgba(15,23,42,.08);
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+    background:
+        radial-gradient(
+            circle at 15% 5%,
+            rgba(37,99,235,.08),
+            transparent 28%
+        ),
+        var(--bg);
+
+    color:var(--text);
+
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    line-height:1.5;
+}
+
+body.light{
+    background:
+        radial-gradient(
+            circle at 15% 5%,
+            rgba(59,130,246,.08),
+            transparent 30%
+        ),
+        var(--bg);
+}
+
+button,
+input,
+select{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+a{
+    color:inherit;
+}
+
+/* =========================================================
+   LAYOUT
+========================================================= */
+
+.layout{
+    min-height:100vh;
+    display:flex;
+}
+
+.sidebar{
+    width:270px;
+    position:fixed;
+    inset:0 auto 0 0;
+
+    z-index:100;
+
+    padding:20px 15px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(4,10,23,.98),
+            rgba(3,7,18,.98)
+        );
+
+    border-right:1px solid var(--border);
+
+    overflow-y:auto;
+
+    transition:
+        transform .25s ease;
+}
+
+body.light .sidebar{
+    background:#ffffff;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    padding:8px 10px 27px;
+
+    border-bottom:1px solid var(--border);
+    margin-bottom:18px;
+}
+
+.brand-mark{
+    width:43px;
+    height:43px;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:13px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #38bdf8
+        );
+
+    color:#ffffff;
+
+    font-size:18px;
+    font-weight:900;
+
+    box-shadow:
+        0 10px 30px rgba(37,99,235,.25);
+}
+
+.brand-text strong{
+    display:block;
+    font-size:16px;
+    letter-spacing:-.02em;
+}
+
+.brand-text span{
+    display:block;
+    color:var(--muted);
+    font-size:10px;
+    margin-top:2px;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+}
+
+.nav-section{
+    color:#64748b;
+
+    font-size:10px;
+    font-weight:900;
+
+    letter-spacing:.14em;
+    text-transform:uppercase;
+
+    padding:14px 12px 7px;
+}
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.nav a{
+    display:flex;
+    align-items:center;
+    gap:11px;
+
+    text-decoration:none;
+
+    color:var(--muted);
+
+    padding:11px 12px;
+
+    border-radius:11px;
+
+    border:1px solid transparent;
+
+    font-size:13px;
+    font-weight:600;
+
+    transition:
+        background .18s ease,
+        border-color .18s ease,
+        color .18s ease,
+        transform .18s ease;
+}
+
+.nav a:hover{
+    color:var(--text);
+
+    background:
+        rgba(96,165,250,.07);
+
+    border-color:
+        rgba(96,165,250,.08);
+
+    transform:translateX(2px);
+}
+
+.nav a.active{
+    color:#ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(37,99,235,.20),
+            rgba(56,189,248,.07)
+        );
+
+    border-color:
+        rgba(96,165,250,.18);
+
+    box-shadow:
+        inset 3px 0 0 #3b82f6;
+}
+
+body.light .nav a.active{
+    color:#0f172a;
+}
+
+.nav-icon{
+    width:20px;
+    text-align:center;
+
+    font-size:14px;
+}
+
+.sidebar-bottom{
+    margin-top:24px;
+
+    padding:15px 0 4px;
+
+    border-top:1px solid var(--border);
+}
+
+.admin-status{
+    padding:12px;
+
+    margin-bottom:10px;
+
+    background:var(--panel-2);
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+}
+
+.admin-status-label{
+    font-size:9px;
+
+    text-transform:uppercase;
+    letter-spacing:.12em;
+
+    color:var(--muted);
+
+    margin-bottom:5px;
+}
+
+.admin-status-value{
+    display:flex;
+    align-items:center;
+    gap:7px;
+
+    font-size:12px;
+    font-weight:700;
+}
+
+.status-dot{
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:var(--green);
+
+    box-shadow:
+        0 0 0 4px rgba(34,197,94,.08);
+}
+
+.signout{
+    width:100%;
+
+    padding:11px 12px;
+
+    border-radius:10px;
+
+    background:transparent;
+
+    color:var(--muted);
+
+    border:1px solid var(--border);
+
+    font-size:12px;
+    font-weight:700;
+
+    transition:.18s;
+}
+
+.signout:hover{
+    color:#fca5a5;
+
+    border-color:
+        rgba(239,68,68,.28);
+
+    background:
+        rgba(239,68,68,.06);
+}
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.main{
+    width:calc(100% - 270px);
+
+    margin-left:270px;
+
+    padding:22px;
+
+    min-height:100vh;
+}
+
+.topbar{
+    display:flex;
+
+    align-items:center;
+    justify-content:space-between;
+
+    gap:16px;
+
+    margin-bottom:20px;
+}
+
+.topbar-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.mobile-menu{
+    display:none;
+
+    padding:9px 12px;
+
+    border:1px solid var(--border);
+
+    background:var(--panel);
+
+    color:var(--text);
+
+    border-radius:10px;
+
+    font-size:12px;
+    font-weight:700;
+}
+
+.identity{
+    color:var(--muted);
+
+    font-size:12px;
+}
+
+.identity strong{
+    color:var(--text);
+}
+
+.top-controls{
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    flex-wrap:wrap;
+}
+
+.tool-btn{
+    border:1px solid var(--border);
+
+    background:var(--panel);
+
+    color:var(--text);
+
+    padding:9px 11px;
+
+    border-radius:9px;
+
+    font-size:11px;
+    font-weight:700;
+
+    transition:.18s;
+}
+
+.tool-btn:hover{
+    border-color:
+        rgba(96,165,250,.3);
+
+    background:var(--panel-2);
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero{
+    position:relative;
+
+    overflow:hidden;
+
+    padding:30px;
+
+    border-radius:22px;
+
+    border:1px solid var(--border);
+
+    background:
+        radial-gradient(
+            circle at 88% 10%,
+            rgba(56,189,248,.14),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 65% 100%,
+            rgba(37,99,235,.11),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(37,99,235,.11),
+            rgba(15,23,42,.12)
+        );
+
+    box-shadow:var(--shadow);
+
+    margin-bottom:18px;
+}
+
+.hero-kicker{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+
+    padding:6px 9px;
+
+    border-radius:999px;
+
+    background:
+        rgba(96,165,250,.09);
+
+    border:1px solid
+        rgba(96,165,250,.15);
+
+    color:var(--blue-2);
+
+    font-size:10px;
+    font-weight:900;
+
+    letter-spacing:.1em;
+    text-transform:uppercase;
+
+    margin-bottom:13px;
+}
+
+.hero h1{
+    font-size:
+        clamp(28px,4vw,43px);
+
+    line-height:1.08;
+
+    letter-spacing:-.045em;
+
+    margin-bottom:10px;
+}
+
+.hero p{
+    max-width:800px;
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    line-height:1.75;
+}
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.stats{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,minmax(0,1fr));
+
+    gap:13px;
+
+    margin-bottom:18px;
+}
+
+.stat-card{
+    position:relative;
+
+    overflow:hidden;
+
+    padding:18px;
+
+    background:var(--panel);
+
+    border:1px solid var(--border);
+
+    border-radius:16px;
+
+    box-shadow:var(--shadow-small);
+
+    transition:
+        transform .18s ease,
+        border-color .18s ease;
+}
+
+.stat-card:hover{
+    transform:translateY(-2px);
+
+    border-color:
+        rgba(96,165,250,.22);
+}
+
+.stat-card.hidden{
+    display:none;
+}
+
+.stat-top{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:11px;
+}
+
+.stat-label{
+    color:var(--muted);
+
+    font-size:11px;
+    font-weight:700;
+}
+
+.stat-icon{
+    width:30px;
+    height:30px;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:9px;
+
+    background:
+        rgba(96,165,250,.09);
+
+    color:var(--blue-2);
+
+    font-size:12px;
+    font-weight:900;
+}
+
+.stat-value{
+    font-size:27px;
+
+    font-weight:850;
+
+    letter-spacing:-.035em;
+}
+
+.stat-note{
+    color:var(--muted);
+
+    font-size:10px;
+
+    margin-top:5px;
+}
+
+/* =========================================================
+   PANELS
+========================================================= */
+
+.panel{
+    background:var(--panel);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    box-shadow:var(--shadow-small);
+
+    padding:21px;
+
+    margin-bottom:18px;
+}
+
+.panel-header{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:15px;
+
+    margin-bottom:17px;
+}
+
+.panel-title h2{
+    font-size:18px;
+
+    letter-spacing:-.02em;
+}
+
+.panel-title p{
+    color:var(--muted);
+
+    font-size:11px;
+
+    margin-top:4px;
+}
+
+.panel-actions{
+    display:flex;
+
+    gap:7px;
+
+    flex-wrap:wrap;
+}
+
+.action-btn{
+    border:1px solid var(--border);
+
+    background:var(--panel-2);
+
+    color:var(--text);
+
+    padding:9px 12px;
+
+    border-radius:9px;
+
+    font-size:11px;
+
+    font-weight:750;
+}
+
+.action-btn:hover{
+    border-color:
+        rgba(96,165,250,.28);
+}
+
+.action-btn.primary{
+    color:#ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #0ea5e9
+        );
+
+    border-color:
+        rgba(59,130,246,.65);
+}
+
+/* =========================================================
+   CAPABILITY NOTICE
+========================================================= */
+
+.notice{
+    display:flex;
+
+    gap:13px;
+
+    align-items:flex-start;
+
+    padding:16px;
+
+    border-radius:14px;
+
+    background:
+        rgba(245,158,11,.055);
+
+    border:1px solid
+        rgba(245,158,11,.17);
+
+    margin-bottom:18px;
+}
+
+.notice-icon{
+    width:36px;
+    height:36px;
+
+    flex:none;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:10px;
+
+    color:#fbbf24;
+
+    background:
+        rgba(245,158,11,.10);
+
+    font-weight:900;
+}
+
+.notice h3{
+    font-size:13px;
+
+    margin-bottom:4px;
+}
+
+.notice p{
+    color:var(--muted);
+
+    font-size:11px;
+
+    line-height:1.65;
+}
+
+/* =========================================================
+   SEARCH / FILTERS
+========================================================= */
+
+.filters{
+    display:grid;
+
+    grid-template-columns:
+        minmax(220px,1.8fr)
+        minmax(150px,1fr)
+        minmax(150px,1fr)
+        auto;
+
+    gap:9px;
+
+    margin-bottom:15px;
+}
+
+.field{
+    position:relative;
+}
+
+.field input,
+.field select{
+    width:100%;
+
+    padding:11px 12px;
+
+    border-radius:10px;
+
+    border:1px solid var(--border);
+
+    background:var(--panel-2);
+
+    color:var(--text);
+
+    outline:none;
+
+    font-size:12px;
+}
+
+.field input::placeholder{
+    color:#64748b;
+}
+
+.field input:focus,
+.field select:focus{
+    border-color:
+        rgba(96,165,250,.5);
+
+    box-shadow:
+        0 0 0 3px rgba(59,130,246,.08);
+}
+
+.filter-btn{
+    padding:11px 14px;
+
+    border-radius:10px;
+
+    border:1px solid var(--border);
+
+    background:var(--panel-2);
+
+    color:var(--text);
+
+    font-size:11px;
+
+    font-weight:800;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table-wrap{
+    overflow-x:auto;
+
+    border:1px solid var(--border);
+
+    border-radius:13px;
+}
+
+table{
+    width:100%;
+
+    border-collapse:collapse;
+
+    min-width:920px;
+}
+
+thead{
+    background:
+        rgba(148,163,184,.035);
+}
+
+th{
+    padding:12px 13px;
+
+    text-align:left;
+
+    color:var(--muted);
+
+    font-size:9px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.1em;
+
+    font-weight:900;
+
+    border-bottom:1px solid var(--border);
+
+    white-space:nowrap;
+}
+
+td{
+    padding:14px 13px;
+
+    border-bottom:1px solid var(--border);
+
+    color:var(--text-soft);
+
+    font-size:11px;
+
+    vertical-align:middle;
+}
+
+tbody tr:last-child td{
+    border-bottom:none;
+}
+
+tbody tr:hover{
+    background:
+        rgba(96,165,250,.035);
+}
+
+.empty-row td{
+    text-align:center;
+
+    padding:50px 20px;
+
+    color:var(--muted);
+}
+
+.merchant-cell{
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+.merchant-avatar{
+    width:34px;
+    height:34px;
+
+    flex:none;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(37,99,235,.2),
+            rgba(34,211,238,.08)
+        );
+
+    border:1px solid
+        rgba(96,165,250,.13);
+
+    color:var(--blue-2);
+
+    font-size:11px;
+
+    font-weight:900;
+}
+
+.merchant-name{
+    color:var(--text);
+
+    font-weight:750;
+
+    font-size:11px;
+}
+
+.merchant-email{
+    color:var(--muted);
+
+    font-size:10px;
+
+    margin-top:2px;
+}
+
+.badge{
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:5px;
+
+    padding:5px 8px;
+
+    border-radius:999px;
+
+    font-size:9px;
+
+    font-weight:850;
+
+    white-space:nowrap;
+}
+
+.badge.pending{
+    color:#fbbf24;
+
+    background:
+        rgba(245,158,11,.08);
+}
+
+.badge.approved{
+    color:#4ade80;
+
+    background:
+        rgba(34,197,94,.08);
+}
+
+.badge.rejected{
+    color:#f87171;
+
+    background:
+        rgba(239,68,68,.08);
+}
+
+.badge.active{
+    color:#60a5fa;
+
+    background:
+        rgba(59,130,246,.08);
+}
+
+.badge.suspended{
+    color:#fb7185;
+
+    background:
+        rgba(244,63,94,.08);
+}
+
+.muted{
+    color:var(--muted);
+}
+
+.pagination{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:12px;
+
+    margin-top:14px;
+}
+
+.pagination-info{
+    color:var(--muted);
+
+    font-size:10px;
+}
+
+.pagination-actions{
+    display:flex;
+
+    gap:7px;
+}
+
+.page-btn{
+    border:1px solid var(--border);
+
+    background:var(--panel-2);
+
+    color:var(--text);
+
+    border-radius:8px;
+
+    padding:8px 11px;
+
+    font-size:10px;
+
+    font-weight:800;
+}
+
+.page-btn:disabled{
+    opacity:.4;
+
+    cursor:not-allowed;
+}
+
+/* =========================================================
+   DETAIL / CAPABILITY CARDS
+========================================================= */
+
+.grid-2{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+
+    gap:15px;
+}
+
+.info-card{
+    background:var(--panel-2);
+
+    border:1px solid var(--border);
+
+    border-radius:14px;
+
+    padding:18px;
+}
+
+.info-icon{
+    width:38px;
+    height:38px;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:11px;
+
+    background:
+        rgba(96,165,250,.09);
+
+    color:var(--blue-2);
+
+    font-weight:900;
+
+    margin-bottom:12px;
+}
+
+.info-card h3{
+    font-size:13px;
+
+    margin-bottom:6px;
+}
+
+.info-card p{
+    color:var(--muted);
+
+    font-size:11px;
+
+    line-height:1.65;
+}
+
+.check-list{
+    display:grid;
+
+    gap:9px;
+
+    margin-top:14px;
+}
+
+.check-item{
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:9px;
+
+    color:var(--text-soft);
+
+    font-size:11px;
+}
+
+.check{
+    width:19px;
+    height:19px;
+
+    flex:none;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:6px;
+
+    background:
+        rgba(34,197,94,.08);
+
+    color:#4ade80;
+
+    font-size:9px;
+
+    font-weight:900;
+}
+
+.future{
+    background:
+        rgba(167,139,250,.045);
+
+    border:
+        1px solid rgba(167,139,250,.14);
+}
+
+.future .info-icon{
+    background:
+        rgba(167,139,250,.09);
+
+    color:#c4b5fd;
+}
+
+/* =========================================================
+   EMPTY / BOUNDARY
+========================================================= */
+
+.boundary{
+    text-align:center;
+
+    padding:43px 22px;
+
+    border:
+        1px dashed
+        rgba(148,163,184,.22);
+
+    border-radius:15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(96,165,250,.025),
+            transparent
+        );
+}
+
+.boundary-icon{
+    width:58px;
+    height:58px;
+
+    display:grid;
+    place-items:center;
+
+    margin:0 auto 15px;
+
+    border-radius:17px;
+
+    background:
+        rgba(96,165,250,.08);
+
+    color:var(--blue-2);
+
+    font-size:23px;
+
+    font-weight:900;
+}
+
+.boundary h3{
+    font-size:17px;
+
+    margin-bottom:7px;
+}
+
+.boundary p{
+    max-width:650px;
+
+    margin:0 auto;
+
+    color:var(--muted);
+
+    font-size:11px;
+
+    line-height:1.7;
+}
+
+.boundary-actions{
+    display:flex;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    margin-top:19px;
+}
+
+.boundary-actions a{
+    text-decoration:none;
+}
+
+/* =========================================================
+   DENSITY
+========================================================= */
+
+body.compact .panel{
+    padding:16px;
+}
+
+body.compact td{
+    padding:9px 11px;
+}
+
+body.compact th{
+    padding:9px 11px;
+}
+
+body.compact .stat-card{
+    padding:14px;
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast{
+    position:fixed;
+
+    right:20px;
+    bottom:20px;
+
+    z-index:300;
+
+    min-width:250px;
+    max-width:380px;
+
+    padding:13px 15px;
+
+    border-radius:12px;
+
+    background:
+        rgba(15,23,42,.96);
+
+    border:1px solid
+        rgba(148,163,184,.18);
+
+    color:#f8fafc;
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.3);
+
+    font-size:11px;
+
+    transform:
+        translateY(20px);
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:.25s;
+}
+
+.toast.show{
+    transform:translateY(0);
+
+    opacity:1;
+}
+
+.toast.success{
+    border-color:
+        rgba(34,197,94,.25);
+}
+
+.toast.error{
+    border-color:
+        rgba(239,68,68,.25);
+}
+
+/* =========================================================
+   OVERLAY
+========================================================= */
+
+.overlay{
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:90;
+
+    background:
+        rgba(0,0,0,.58);
+}
+
+.overlay.show{
+    display:block;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1150px){
+
+    .stats{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+    }
+
+    .filters{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+    }
+}
+
+@media(max-width:900px){
+
+    .sidebar{
+        transform:
+            translateX(-100%);
+    }
+
+    .sidebar.open{
+        transform:
+            translateX(0);
+    }
+
+    .main{
+        width:100%;
+
+        margin-left:0;
+
+        padding:16px;
+    }
+
+    .mobile-menu{
+        display:block;
+    }
+
+    .grid-2{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:650px){
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .filters{
+        grid-template-columns:1fr;
+    }
+
+    .hero{
+        padding:23px;
+    }
+
+    .hero h1{
+        font-size:30px;
+    }
+
+    .topbar{
+        align-items:flex-start;
+    }
+
+    .top-controls{
+        justify-content:flex-end;
+    }
+
+    .panel{
+        padding:16px;
+    }
+
+    .panel-header{
+        flex-direction:column;
+    }
+
+    .pagination{
+        align-items:flex-start;
+
+        flex-direction:column;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="layout">
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+
+        <div class="brand-mark">
+            P
+        </div>
+
+        <div class="brand-text">
+            <strong>PrimePay</strong>
+            <span>Administration</span>
+        </div>
+
+    </div>
+
+    <nav class="nav">
+
+        <a href="dashboard.html">
+            <span class="nav-icon">▦</span>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="applications.html">
+            <span class="nav-icon">◉</span>
+            <span>Applications</span>
+        </a>
+
+        <a class="active" href="merchants.html">
+            <span class="nav-icon">▣</span>
+            <span>Merchants</span>
+        </a>
+
+        <a href="transactions.html">
+            <span class="nav-icon">⇄</span>
+            <span>Transactions</span>
+        </a>
+
+        <a href="providers.html">
+            <span class="nav-icon">◈</span>
+            <span>Providers</span>
+        </a>
+
+        <a href="api-access.html">
+            <span class="nav-icon">⌁</span>
+            <span>API Access</span>
+        </a>
+
+        <div class="nav-section">
+            Operations
+        </div>
+
+        <a href="fees.html">
+            <span class="nav-icon">◇</span>
+            <span>Fees</span>
+        </a>
+
+        <a href="settlements.html">
+            <span class="nav-icon">◫</span>
+            <span>Settlements</span>
+        </a>
+
+        <a href="risk.html">
+            <span class="nav-icon">△</span>
+            <span>Risk</span>
+        </a>
+
+        <a href="audit-logs.html">
+            <span class="nav-icon">☷</span>
+            <span>Audit Logs</span>
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+
+        <div class="admin-status">
+
+            <div class="admin-status-label">
+                System access
+            </div>
+
+            <div class="admin-status-value">
+                <span class="status-dot"></span>
+                Administrator session
+            </div>
+
+        </div>
+
+        <button class="signout" id="signOut">
+            Sign out
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="main">
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+        <div class="topbar-left">
+
+            <button
+                class="mobile-menu"
+                id="menuBtn"
+            >
+                ☰ Menu
+            </button>
+
+            <div class="identity" id="adminIdentity">
+                PrimePay administrator
+            </div>
+
+        </div>
+
+        <div class="top-controls">
+
+            <button
+                class="tool-btn"
+                id="themeBtn"
+            >
+                ☀ Light
+            </button>
+
+            <button
+                class="tool-btn"
+                id="cardsBtn"
+            >
+                ◉ Cards
+            </button>
+
+            <button
+                class="tool-btn"
+                id="densityBtn"
+            >
+                ↔ Compact
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="hero-kicker">
+            MERCHANT CONTROL CENTER
+        </div>
+
+        <h1>
+            Merchant Management
+        </h1>
+
+        <p>
+            The administrative home for merchant identity, verification,
+            account status, API eligibility and operational oversight.
+            PrimePay V1 currently exposes merchant self-service business
+            endpoints, but does not yet expose an administrator-wide merchant
+            registry. This interface therefore keeps the operational design
+            ready without fabricating merchant records.
+        </p>
+
+    </section>
+
+
+    <!-- STATS -->
+
+    <section
+        class="stats"
+        id="stats"
+    >
+
+        <article class="stat-card">
+
+            <div class="stat-top">
+
+                <span class="stat-label">
+                    Merchants
+                </span>
+
+                <span class="stat-icon">
+                    M
+                </span>
+
+            </div>
+
+            <div class="stat-value">
+                —
+            </div>
+
+            <div class="stat-note">
+                Admin registry endpoint required
+            </div>
+
+        </article>
+
+
+        <article class="stat-card">
+
+            <div class="stat-top">
+
+                <span class="stat-label">
+                    Approved
+                </span>
+
+                <span class="stat-icon">
+                    ✓
+                </span>
+
+            </div>
+
+            <div class="stat-value">
+                —
+            </div>
+
+            <div class="stat-note">
+                Based on Business.verificationStatus
+            </div>
+
+        </article>
+
+
+        <article class="stat-card">
+
+            <div class="stat-top">
+
+                <span class="stat-label">
+                    Live API
+                </span>
+
+                <span class="stat-icon">
+                    API
+                </span>
+
+            </div>
+
+            <div class="stat-value">
+                —
+            </div>
+
+            <div class="stat-note">
+                Requires admin-wide merchant query
+            </div>
+
+        </article>
+
+
+        <article class="stat-card">
+
+            <div class="stat-top">
+
+                <span class="stat-label">
+                    Suspended
+                </span>
+
+                <span class="stat-icon">
+                    !
+                </span>
+
+            </div>
+
+            <div class="stat-value">
+                —
+            </div>
+
+            <div class="stat-note">
+                Business suspension field exists
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- BACKEND NOTICE -->
+
+    <section class="panel">
+
+        <div class="notice">
+
+            <div class="notice-icon">
+                !
+            </div>
+
+            <div>
+
+                <h3>
+                    Merchant registry is not exposed by the current V1 API
+                </h3>
+
+                <p>
+                    The current backend provides
+                    <strong>POST /api/v1/businesses</strong>,
+                    <strong>GET /api/v1/businesses/me</strong>, and
+                    <strong>GET /api/v1/businesses/balance</strong>.
+                    These endpoints are scoped to the authenticated merchant.
+                    There is currently no administrator endpoint for listing
+                    every business, searching merchants, opening a merchant
+                    profile, suspending a business, approving verification,
+                    or changing live API eligibility.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- SEARCH PREVIEW -->
+
+        <div class="panel-header">
+
+            <div class="panel-title">
+
+                <h2>
+                    Merchant Registry
+                </h2>
+
+                <p>
+                    The intended administrative registry interface.
+                </p>
+
+            </div>
+
+            <div class="panel-actions">
+
+                <button
+                    class="action-btn"
+                    id="refreshPreview"
+                >
+                    ↻ Refresh
+                </button>
+
+                <a
+                    class="action-btn primary"
+                    href="../merchant/onboarding.html"
+                    style="text-decoration:none;"
+                >
+                    View Onboarding
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="filters">
+
+            <div class="field">
+
+                <input
+                    id="search"
+                    type="search"
+                    placeholder="Search merchant, email, ID or registration..."
+                    disabled
+                >
+
+            </div>
+
+            <div class="field">
+
+                <select disabled>
+
+                    <option>
+                        All verification states
+                    </option>
+
+                    <option>
+                        Pending
+                    </option>
+
+                    <option>
+                        Approved
+                    </option>
+
+                    <option>
+                        Rejected
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="field">
+
+                <select disabled>
+
+                    <option>
+                        All account states
+                    </option>
+
+                    <option>
+                        Active
+                    </option>
+
+                    <option>
+                        Suspended
+                    </option>
+
+                </select>
+
+            </div>
+
+            <button
+                class="filter-btn"
+                disabled
+            >
+                Filters
+            </button>
+
+        </div>
+
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Merchant
+                        </th>
+
+                        <th>
+                            Business
+                        </th>
+
+                        <th>
+                            Verification
+                        </th>
+
+                        <th>
+                            API access
+                        </th>
+
+                        <th>
+                            Account
+                        </th>
+
+                        <th>
+                            Currency
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr class="empty-row">
+
+                        <td colspan="7">
+
+                            <strong
+                                style="
+                                display:block;
+                                color:var(--text);
+                                margin-bottom:5px;
+                                "
+                            >
+                                No merchant records loaded
+                            </strong>
+
+                            Merchant-wide administrative data will appear
+                            here once the backend exposes the admin merchant
+                            registry.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <div class="pagination">
+
+            <div class="pagination-info">
+                Registry unavailable in V1
+            </div>
+
+            <div class="pagination-actions">
+
+                <button
+                    class="page-btn"
+                    disabled
+                >
+                    Previous
+                </button>
+
+                <button
+                    class="page-btn"
+                    disabled
+                >
+                    Next
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- WHAT WILL EXIST -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div class="panel-title">
+
+                <h2>
+                    Merchant Operations
+                </h2>
+
+                <p>
+                    The administrative capabilities this workspace is designed
+                    to support once the corresponding API surface exists.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="grid-2">
+
+            <article class="info-card">
+
+                <div class="info-icon">
+                    V
+                </div>
+
+                <h3>
+                    Verification management
+                </h3>
+
+                <p>
+                    Review merchant business information and manage the
+                    verification lifecycle without bypassing backend
+                    authorization.
+                </p>
+
+                <div class="check-list">
+
+                    <div class="check-item">
+
+                        <span class="check">
+                            ✓
+                        </span>
+
+                        Pending applications
+
+                    </div>
+
+                    <div class="check-item">
+
+                        <span class="check">
+                            ✓
+                        </span>
+
+                        Verification status
+
+                    </div>
+
+                    <div class="check-item">
+
+                        <span class="check">
+                            ✓
+                        </span>
+
+                        Approval and rejection actions
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <article class="info-card">
+
+                <div class="info-icon">
+                    A
+                </div>
+
+                <h3>
+                    Account oversight
+                </h3>
+
+                <p>
+                    Give administrators a central view of merchant account
+                    status, suspension state, currency and business identity.
+                </p>
+
+                <div class="check-list">
+
+                    <div class="check-item">
+
+                        <span class="check">
+                            ✓
+                        </span>
+
+                        Active or suspended state
+
+                    </div>
+
+                    <div class="check-item">
+
+                        <span class="check">
+                            ✓
+                        </span>
+
+                        Business identity
+
+                    </div>
+
+                    <div class="check-item">
+
+                        <span class="check">
+                            ✓
+                        </span>
+
+                        Account currency
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <article class="info-card">
+
+                <div class="info-icon">
+                    API
+                </div>
+
+                <h3>
+                    API eligibility
+                </h3>
+
+                <p>
+                    Surface whether a merchant has been approved for live API
+                    access and whether the production API capability is
+                    currently enabled.
+                </p>
+
+                <div class="check-list">
+
+                    <div class="check-item">
+
+                        <span class="check">
+                            ✓
+                        </span>
+
+                        Live API eligibility
+
+                    </div>
+
+                    <div class="check-item">
+
+                        <span class="check">
+                            ✓
+                        </span>
+
+                        Production access state
+
+                    </div>
+
+                    <div class="check-item">
+
+                        <span class="check">
+                            ✓
+                        </span>
+
+                        API credential oversight
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <article class="info-card future">
+
+                <div class="info-icon">
+                    +
+                </div>
+
+                <h3>
+                    Merchant actions
+                </h3>
+
+                <p>
+                    These actions should only become interactive after
+                    protected administrator endpoints are implemented.
+                </p>
+
+                <div class="check-list">
+
+                    <div class="check-item">
+
+                        <span class="check">
+                            •
+                        </span>
+
+                        Suspend merchant
+
+                    </div>
+
+                    <div class="check-item">
+
+                        <span class="check">
+                            •
+                        </span>
+
+                        Restore merchant
+
+                    </div>
+
+                    <div class="check-item">
+
+                        <span class="check">
+                            •
+                        </span>
+
+                        Approve verification
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- DATA MODEL -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div class="panel-title">
+
+                <h2>
+                    Merchant data model
+                </h2>
+
+                <p>
+                    Fields already represented by the current Business model.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="grid-2">
+
+            <article class="info-card">
+
+                <div class="info-icon">
+                    B
+                </div>
+
+                <h3>
+                    Business identity
+                </h3>
+
+                <p>
+                    PrimePay's Business model already contains the core
+                    merchant identity required for an administrative profile.
+                </p>
+
+                <div class="check-list">
+
+                    <div class="check-item">
+                        <span class="check">✓</span>
+                        Business name
+                    </div>
+
+                    <div class="check-item">
+                        <span class="check">✓</span>
+                        Business type
+                    </div>
+
+                    <div class="check-item">
+                        <span class="check">✓</span>
+                        Registration number
+                    </div>
+
+                    <div class="check-item">
+                        <span class="check">✓</span>
+                        Country
+                    </div>
+
+                    <div class="check-item">
+                        <span class="check">✓</span>
+                        Currency
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <article class="info-card">
+
+                <div class="info-icon">
+                    S
+                </div>
+
+                <h3>
+                    Operational state
+                </h3>
+
+                <p>
+                    The backend already contains fields that can later power
+                    merchant administration, subject to protected admin
+                    controllers and routes.
+                </p>
+
+                <div class="check-list">
+
+                    <div class="check-item">
+                        <span class="check">✓</span>
+                        Verification status
+                    </div>
+
+                    <div class="check-item">
+                        <span class="check">✓</span>
+                        Live API enabled
+                    </div>
+
+                    <div class="check-item">
+                        <span class="check">✓</span>
+                        Suspended state
+                    </div>
+
+                    <div class="check-item">
+                        <span class="check">✓</span>
+                        Owner relationship
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- SECURITY -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div class="panel-title">
+
+                <h2>
+                    Administrative security principles
+                </h2>
+
+                <p>
+                    Merchant management should remain server-authoritative.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="grid-2">
+
+            <article class="info-card">
+
+                <div class="info-icon">
+                    01
+                </div>
+
+                <h3>
+                    Never trust frontend state
+                </h3>
+
+                <p>
+                    The browser should display the backend's merchant state.
+                    It must never decide that a merchant is approved,
+                    suspended, or production-ready simply because somebody
+                    changed a JavaScript variable.
+                </p>
+
+            </article>
+
+
+            <article class="info-card">
+
+                <div class="info-icon">
+                    02
+                </div>
+
+                <h3>
+                    Protected administrator routes
+                </h3>
+
+                <p>
+                    Merchant-wide queries and mutations should require JWT
+                    authentication plus administrator authorization on the
+                    backend.
+                </p>
+
+            </article>
+
+
+            <article class="info-card">
+
+                <div class="info-icon">
+                    03
+                </div>
+
+                <h3>
+                    Auditable changes
+                </h3>
+
+                <p>
+                    Approval, rejection, suspension and production-access
+                    changes should produce durable audit events rather than
+                    disappearing into the browser like so many questionable
+                    human decisions.
+                </p>
+
+            </article>
+
+
+            <article class="info-card">
+
+                <div class="info-icon">
+                    04
+                </div>
+
+                <h3>
+                    No secret exposure
+                </h3>
+
+                <p>
+                    Merchant API secrets, passwords and other sensitive
+                    credentials must never appear in merchant registry
+                    responses or ordinary administrative tables.
+                </p>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- FINAL BOUNDARY -->
+
+    <section class="panel">
+
+        <div class="boundary">
+
+            <div class="boundary-icon">
+                M
+            </div>
+
+            <h3>
+                Merchant registry backend is the next missing piece
+            </h3>
+
+            <p>
+                The frontend structure is now prepared for a real merchant
+                registry. To activate it, PrimePay needs administrator-only
+                business endpoints for listing, searching, filtering,
+                pagination and merchant detail retrieval, followed by protected
+                mutation endpoints for verification and account operations.
+            </p>
+
+            <div class="boundary-actions">
+
+                <a
+                    class="action-btn primary"
+                    href="applications.html"
+                >
+                    Applications
+                </a>
+
+                <a
+                    class="action-btn"
+                    href="transactions.html"
+                >
+                    Transactions
+                </a>
+
+                <a
+                    class="action-btn"
+                    href="providers.html"
+                >
+                    Providers
+                </a>
+
+                <a
+                    class="action-btn"
+                    href="dashboard.html"
+                >
+                    Admin Dashboard
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+<script>
+/* =========================================================
+   AUTH
+========================================================= */
+
+const token =
+    localStorage.getItem("primepay_token");
+
+const userRaw =
+    localStorage.getItem("primepay_user");
+
+if(!token){
+    window.location.href = "../login.html";
+}
+
+let user = null;
+
+try{
+    user =
+        userRaw
+        ? JSON.parse(userRaw)
+        : null;
+}catch(error){
+    user = null;
+}
+
+if(
+    user &&
+    user.role &&
+    user.role !== "admin"
+){
+    window.location.href =
+        "../merchant/dashboard.html";
+}
+
+
+/* =========================================================
+   IDENTITY
+========================================================= */
+
+const identity =
+    document.getElementById("adminIdentity");
+
+if(user){
+
+    const name =
+        user.name ||
+        "Administrator";
+
+    const email =
+        user.email ||
+        "Admin account";
+
+    identity.innerHTML =
+        `<strong>${escapeHTML(name)}</strong> · ${escapeHTML(email)}`;
+}
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function escapeHTML(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer = null;
+
+function showToast(
+    message,
+    type="success"
+){
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent =
+        message;
+
+    toast.className =
+        `toast ${type} show`;
+
+    clearTimeout(toastTimer);
+
+    toastTimer =
+        setTimeout(
+            () => {
+                toast.classList.remove("show");
+            },
+            3200
+        );
+}
+
+
+/* =========================================================
+   THEME
+========================================================= */
+
+const themeBtn =
+    document.getElementById("themeBtn");
+
+const savedTheme =
+    localStorage.getItem(
+        "primepay_admin_theme"
+    );
+
+if(savedTheme === "light"){
+    document.body.classList.add("light");
+}
+
+function updateThemeButton(){
+
+    themeBtn.textContent =
+        document.body.classList.contains("light")
+        ? "☾ Dark"
+        : "☀ Light";
+}
+
+themeBtn.addEventListener(
+    "click",
+    () => {
+
+        document.body.classList.toggle(
+            "light"
+        );
+
+        localStorage.setItem(
+            "primepay_admin_theme",
+            document.body.classList.contains("light")
+            ? "light"
+            : "dark"
+        );
+
+        updateThemeButton();
+    }
+);
+
+updateThemeButton();
+
+
+/* =========================================================
+   CARD TOGGLE
+========================================================= */
+
+const cardsBtn =
+    document.getElementById("cardsBtn");
+
+const stats =
+    document.getElementById("stats");
+
+const savedCards =
+    localStorage.getItem(
+        "primepay_admin_cards"
+    );
+
+if(savedCards === "hidden"){
+    stats.classList.add("hidden");
+}
+
+function updateCardsButton(){
+
+    cardsBtn.textContent =
+        stats.classList.contains("hidden")
+        ? "◉ Show cards"
+        : "◉ Hide cards";
+}
+
+cardsBtn.addEventListener(
+    "click",
+    () => {
+
+        stats.classList.toggle(
+            "hidden"
+        );
+
+        localStorage.setItem(
+            "primepay_admin_cards",
+            stats.classList.contains("hidden")
+            ? "hidden"
+            : "shown"
+        );
+
+        updateCardsButton();
+    }
+);
+
+updateCardsButton();
+
+
+/* =========================================================
+   DENSITY
+========================================================= */
+
+const densityBtn =
+    document.getElementById("densityBtn");
+
+const savedDensity =
+    localStorage.getItem(
+        "primepay_admin_density"
+    );
+
+if(savedDensity === "compact"){
+    document.body.classList.add("compact");
+}
+
+function updateDensityButton(){
+
+    densityBtn.textContent =
+        document.body.classList.contains("compact")
+        ? "↔ Comfortable"
+        : "↔ Compact";
+}
+
+densityBtn.addEventListener(
+    "click",
+    () => {
+
+        document.body.classList.toggle(
+            "compact"
+        );
+
+        localStorage.setItem(
+            "primepay_admin_density",
+            document.body.classList.contains("compact")
+            ? "compact"
+            : "comfortable"
+        );
+
+        updateDensityButton();
+    }
+);
+
+updateDensityButton();
+
+
+/* =========================================================
+   MOBILE SIDEBAR
+========================================================= */
+
+const sidebar =
+    document.getElementById("sidebar");
+
+const overlay =
+    document.getElementById("overlay");
+
+const menuBtn =
+    document.getElementById("menuBtn");
+
+menuBtn.addEventListener(
+    "click",
+    () => {
+
+        sidebar.classList.add("open");
+
+        overlay.classList.add("show");
+    }
+);
+
+overlay.addEventListener(
+    "click",
+    closeSidebar
+);
+
+document
+    .querySelectorAll(".nav a")
+    .forEach(
+        link => {
+
+            link.addEventListener(
+                "click",
+                closeSidebar
+            );
+        }
+    );
+
+function closeSidebar(){
+
+    sidebar.classList.remove("open");
+
+    overlay.classList.remove("show");
+}
+
+
+/* =========================================================
+   SIGN OUT
+========================================================= */
+
+document
+    .getElementById("signOut")
+    .addEventListener(
+        "click",
+        () => {
+
+            localStorage.removeItem(
+                "primepay_token"
+            );
+
+            localStorage.removeItem(
+                "primepay_user"
+            );
+
+            window.location.href =
+                "../login.html";
+        }
+    );
+
+
+/* =========================================================
+   REFRESH PREVIEW
+========================================================= */
+
+document
+    .getElementById("refreshPreview")
+    .addEventListener(
+        "click",
+        () => {
+
+            showToast(
+                "Merchant registry is not exposed by the current V1 backend.",
+                "error"
+            );
+        }
+    );
+
+
+/* =========================================================
+   DISABLED FILTER EXPLANATION
+========================================================= */
+
+document
+    .querySelectorAll(
+        ".filters input, .filters select, .filters button"
+    )
+    .forEach(
+        control => {
+
+            control.addEventListener(
+                "click",
+                () => {
+
+                    showToast(
+                        "Merchant filtering will activate with the admin registry API.",
+                        "error"
+                    );
+                }
+            );
+        }
+    );
+
+
+/* =========================================================
+   INITIAL STATE
+========================================================= */
+
+console.log(
+    "[PrimePay Admin] Merchant registry page loaded."
+);
+
+console.log(
+    "[PrimePay Admin] Current V1 backend does not expose admin-wide merchant endpoints."
+);
+
+</script>
+
+</body>
+</html>

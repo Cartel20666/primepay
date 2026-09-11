@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PrimePay transaction details">
+<title>PrimePay | Transaction</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+ --bg:#020617;--sidebar:#050b18;--panel:#08101f;
+ --border:rgba(148,163,184,.14);--text:#f8fafc;
+ --muted:#94a3b8;--accent:#38bdf8;--blue:#2563eb;
+ --green:#4ade80;--yellow:#facc15;--red:#f87171
+}
+body{
+ min-height:100vh;background:var(--bg);color:var(--text);
+ font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit}
+.app{min-height:100vh;display:flex}
+
+.sidebar{
+ width:250px;position:fixed;inset:0 auto 0 0;z-index:50;
+ padding:22px 15px;background:rgba(5,11,24,.97);
+ border-right:1px solid var(--border);overflow-y:auto
+}
+.logo{
+ display:flex;align-items:center;gap:11px;padding:4px 10px 28px;
+ font-size:1.2rem;font-weight:800
+}
+.logo-mark{
+ width:38px;height:38px;display:grid;place-items:center;border-radius:11px;
+ background:linear-gradient(135deg,var(--blue),var(--accent));
+ box-shadow:0 8px 25px rgba(37,99,235,.23);font-weight:900
+}
+.nav-label{
+ padding:0 11px 8px;color:#475569;font-size:.67rem;font-weight:750;
+ text-transform:uppercase;letter-spacing:.1em
+}
+.nav{display:grid;gap:4px;margin-bottom:24px}
+.nav a,.logout-btn{
+ width:100%;display:flex;align-items:center;gap:12px;padding:11px 12px;
+ border:1px solid transparent;border-radius:10px;background:transparent;
+ color:var(--muted);cursor:pointer;text-align:left;font-size:.84rem
+}
+.nav a:hover,.logout-btn:hover{color:white;background:rgba(30,41,59,.5)}
+.nav a.active{
+ color:white;background:rgba(37,99,235,.12);
+ border-color:rgba(56,189,248,.1)
+}
+.nav-icon{width:20px;text-align:center}
+.sidebar-bottom{padding-top:18px;border-top:1px solid var(--border)}
+
+.main{width:calc(100% - 250px);margin-left:250px;min-height:100vh}
+.topbar{
+ height:74px;position:sticky;top:0;z-index:30;padding:0 30px;
+ display:flex;align-items:center;justify-content:space-between;
+ background:rgba(2,6,23,.85);backdrop-filter:blur(14px);
+ border-bottom:1px solid var(--border)
+}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.mobile-menu{
+ display:none;width:40px;height:40px;border:1px solid var(--border);
+ border-radius:10px;background:var(--panel);color:white;cursor:pointer
+}
+.page-title{font-size:.92rem;font-weight:750}
+.page-subtitle{margin-top:2px;color:var(--muted);font-size:.73rem}
+.account{display:flex;align-items:center;gap:10px}
+.account-info{text-align:right}
+.account-name{font-size:.8rem;font-weight:700}
+.account-role{margin-top:2px;color:var(--muted);font-size:.68rem}
+.avatar{
+ width:38px;height:38px;display:grid;place-items:center;border-radius:11px;
+ background:linear-gradient(135deg,#1d4ed8,#0ea5e9);
+ font-size:.78rem;font-weight:800
+}
+
+.content{max-width:1250px;padding:30px}
+.page-heading{
+ display:flex;align-items:flex-start;justify-content:space-between;
+ gap:20px;margin-bottom:24px
+}
+.page-heading h1{
+ margin-bottom:7px;font-size:clamp(1.5rem,3vw,2rem);letter-spacing:-1px
+}
+.page-heading p{color:var(--muted);font-size:.82rem}
+
+.back{
+ display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 13px;
+ border:1px solid var(--border);border-radius:9px;
+ background:rgba(15,23,42,.65);color:#cbd5e1;
+ font-size:.72rem;font-weight:650
+}
+.back:hover{color:white;border-color:rgba(56,189,248,.3)}
+
+.error{
+ display:none;margin-bottom:18px;padding:14px;
+ border:1px solid rgba(248,113,113,.2);border-radius:11px;
+ background:rgba(239,68,68,.07);color:#fca5a5;
+ font-size:.78rem;line-height:1.5
+}
+.error.show{display:block}
+
+.loading{
+ padding:80px 20px;text-align:center;color:var(--muted);font-size:.8rem
+}
+
+.detail-grid{
+ display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);
+ gap:20px
+}
+.stack{display:grid;gap:20px}
+
+.panel{
+ overflow:hidden;border:1px solid var(--border);border-radius:18px;
+ background:linear-gradient(145deg,rgba(15,23,42,.88),rgba(8,16,31,.97))
+}
+.panel-head{
+ padding:18px 21px;border-bottom:1px solid var(--border);
+ display:flex;align-items:center;justify-content:space-between
+}
+.panel-title{font-size:.9rem;font-weight:750}
+.panel-body{padding:21px}
+
+.status{
+ display:inline-flex;align-items:center;gap:7px;padding:6px 10px;
+ border-radius:999px;font-size:.64rem;font-weight:750;text-transform:capitalize
+}
+.status:before{
+ content:"";width:6px;height:6px;border-radius:50%;background:currentColor
+}
+.status.completed{color:var(--green);background:rgba(74,222,128,.08)}
+.status.pending,.status.processing{color:var(--yellow);background:rgba(250,204,21,.08)}
+.status.failed,.status.cancelled{color:var(--red);background:rgba(248,113,113,.08)}
+.status.refunded{color:var(--accent);background:rgba(56,189,248,.08)}
+
+.amount-box{
+ padding:22px;border:1px solid rgba(56,189,248,.1);
+ border-radius:13px;
+ background:radial-gradient(circle at top right,rgba(56,189,248,.08),transparent 55%)
+}
+.amount-label{
+ color:#64748b;font-size:.65rem;text-transform:uppercase;
+ letter-spacing:.07em
+}
+.amount{
+ margin-top:7px;font-size:1.9rem;font-weight:800;letter-spacing:-1px
+}
+.reference{
+ margin-top:8px;color:#94a3b8;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+ font-size:.68rem;word-break:break-all
+}
+
+.fields{
+ display:grid;grid-template-columns:1fr 1fr
+}
+.field{
+ padding:15px 12px;border-bottom:1px solid rgba(148,163,184,.07)
+}
+.field:nth-last-child(-n+2){border-bottom:0}
+.field-label{
+ margin-bottom:5px;color:#64748b;font-size:.63rem;
+ text-transform:uppercase;letter-spacing:.05em
+}
+.field-value{
+ color:#dbe4ef;font-size:.76rem;word-break:break-word
+}
+
+.provider-box{
+ display:flex;align-items:center;gap:12px
+}
+.provider-icon{
+ width:42px;height:42px;display:grid;place-items:center;border-radius:11px;
+ background:rgba(56,189,248,.08);color:var(--accent);
+ font-size:.72rem;font-weight:800
+}
+.provider-name{font-size:.8rem;font-weight:750;text-transform:capitalize}
+.provider-sub{margin-top:3px;color:var(--muted);font-size:.65rem}
+
+.note{
+ padding:14px;border-radius:11px;
+ background:rgba(15,23,42,.5);border:1px solid rgba(148,163,184,.08);
+ color:var(--muted);font-size:.7rem;line-height:1.55
+}
+
+.meta{
+ max-height:300px;overflow:auto;padding:13px;
+ border-radius:10px;background:#020617;
+ border:1px solid rgba(148,163,184,.09);
+ color:#a5f3fc;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+ font-size:.66rem;line-height:1.6;white-space:pre-wrap;word-break:break-word
+}
+
+.retry{
+ height:40px;padding:0 13px;border:1px solid var(--border);
+ border-radius:9px;background:rgba(15,23,42,.6);
+ color:#cbd5e1;cursor:pointer;font-size:.7rem
+}
+.retry:hover{color:white;border-color:rgba(56,189,248,.3)}
+
+@media(max-width:950px){
+ .detail-grid{grid-template-columns:1fr}
+}
+@media(max-width:800px){
+ .sidebar{transform:translateX(-100%);transition:transform .25s ease}
+ .sidebar.open{transform:translateX(0);box-shadow:20px 0 50px rgba(0,0,0,.4)}
+ .main{width:100%;margin-left:0}
+ .mobile-menu{display:block}
+ .topbar{padding:0 18px}
+ .content{padding:22px 17px 40px}
+}
+@media(max-width:600px){
+ .page-heading{flex-direction:column}
+ .fields{grid-template-columns:1fr}
+ .field:nth-last-child(-n+2){border-bottom:1px solid rgba(148,163,184,.07)}
+ .field:last-child{border-bottom:0}
+ .account-info{display:none}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+
+<a href="dashboard.html" class="logo">
+    <span class="logo-mark">P</span>
+    <span>PrimePay</span>
+</a>
+
+<div class="nav-label">Workspace</div>
+
+<nav class="nav">
+
+<a href="dashboard.html">
+    <span class="nav-icon">⌂</span>
+    Dashboard
+</a>
+
+<a href="payments.html">
+    <span class="nav-icon">↗</span>
+    Payments
+</a>
+
+<a href="transactions.html" class="active">
+    <span class="nav-icon">≡</span>
+    Transactions
+</a>
+
+<a href="customers.html">
+    <span class="nav-icon">◎</span>
+    Customers
+</a>
+
+<a href="wallet.html">
+    <span class="nav-icon">▣</span>
+    Wallet
+</a>
+
+</nav>
+
+<div class="nav-label">Business</div>
+
+<nav class="nav">
+
+<a href="settings.html">
+    <span class="nav-icon">⚙</span>
+    Settings
+</a>
+
+</nav>
+
+<div class="sidebar-bottom">
+
+<button class="logout-btn" id="logoutBtn">
+    <span class="nav-icon">↪</span>
+    Sign out
+</button>
+
+</div>
+
+</aside>
+
+<section class="main">
+
+<header class="topbar">
+
+<div class="topbar-left">
+
+<button class="mobile-menu" id="mobileMenu">☰</button>
+
+<div>
+    <div class="page-title">Transaction</div>
+    <div class="page-subtitle">Transaction details</div>
+</div>
+
+</div>
+
+<div class="account">
+
+<div class="account-info">
+    <div class="account-name" id="accountName">Loading...</div>
+    <div class="account-role">Merchant</div>
+</div>
+
+<div class="avatar" id="avatar">P</div>
+
+</div>
+
+</header>
+
+<main class="content">
+
+<section class="page-heading">
+
+<div>
+    <h1>Transaction details</h1>
+    <p id="headingReference">
+        Loading transaction...
+    </p>
+</div>
+
+<a href="transactions.html" class="back">
+    ← Transactions
+</a>
+
+</section>
+
+<div class="error" id="errorBox"></div>
+
+<div id="loadingBox" class="loading">
+    Loading transaction details...
+</div>
+
+<section id="detailContent" style="display:none">
+
+<div class="detail-grid">
+
+<div class="stack">
+
+<section class="panel">
+
+<div class="panel-head">
+
+<div class="panel-title">
+    Transaction
+</div>
+
+<div id="statusContainer"></div>
+
+</div>
+
+<div class="panel-body">
+
+<div class="amount-box">
+
+<div class="amount-label">
+    Transaction amount
+</div>
+
+<div class="amount" id="amount">
+    —
+</div>
+
+<div class="reference" id="reference">
+    —
+</div>
+
+</div>
+
+<div style="height:18px"></div>
+
+<div class="fields">
+
+<div class="field">
+    <div class="field-label">Type</div>
+    <div class="field-value" id="type">—</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Currency</div>
+    <div class="field-value" id="currency">—</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Provider</div>
+    <div class="field-value" id="provider">—</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Payment method</div>
+    <div class="field-value" id="paymentMethod">—</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Created</div>
+    <div class="field-value" id="createdAt">—</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Updated</div>
+    <div class="field-value" id="updatedAt">—</div>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="panel">
+
+<div class="panel-head">
+
+<div class="panel-title">
+    Provider information
+</div>
+
+</div>
+
+<div class="panel-body">
+
+<div class="provider-box">
+
+<div class="provider-icon" id="providerIcon">
+    PP
+</div>
+
+<div>
+
+<div class="provider-name" id="providerName">
+    —
+</div>
+
+<div class="provider-sub">
+    Payment provider
+</div>
+
+</div>
+
+</div>
+
+<div style="height:18px"></div>
+
+<div class="fields">
+
+<div class="field">
+    <div class="field-label">Provider transaction ID</div>
+    <div class="field-value" id="providerTransactionId">—</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Provider reference</div>
+    <div class="field-value" id="providerReference">—</div>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+<div class="stack">
+
+<section class="panel">
+
+<div class="panel-head">
+
+<div class="panel-title">
+    Customer
+</div>
+
+</div>
+
+<div class="panel-body">
+
+<div class="fields">
+
+<div class="field">
+    <div class="field-label">Customer</div>
+    <div class="field-value" id="customer">—</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Country</div>
+    <div class="field-value" id="country">—</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Email</div>
+    <div class="field-value" id="customerEmail">—</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Phone</div>
+    <div class="field-value" id="customerPhone">—</div>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="panel">
+
+<div class="panel-head">
+
+<div class="panel-title">
+    Financial breakdown
+</div>
+
+</div>
+
+<div class="panel-body">
+
+<div class="fields">
+
+<div class="field">
+    <div class="field-label">Amount</div>
+    <div class="field-value" id="feeAmount">—</div>
+</div>
+
+<div class="field">
+    <div class="field-label">PrimePay fee</div>
+    <div class="field-value" id="primePayFee">—</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Provider fee</div>
+    <div class="field-value" id="providerFee">—</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Total fee</div>
+    <div class="field-value" id="totalFee">—</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Net amount</div>
+    <div class="field-value" id="netAmount">—</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Settlement currency</div>
+    <div class="field-value" id="settlementCurrency">—</div>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="panel">
+
+<div class="panel-head">
+
+<div class="panel-title">
+    Description
+</div>
+
+</div>
+
+<div class="panel-body">
+
+<div class="note" id="description">
+    No description supplied.
+</div>
+
+</div>
+
+</section>
+
+<section class="panel" id="metadataPanel" style="display:none">
+
+<div class="panel-head">
+
+<div class="panel-title">
+    Metadata
+</div>
+
+</div>
+
+<div class="panel-body">
+
+<pre class="meta" id="metadata"></pre>
+
+</div>
+
+</section>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+</section>
+
+</div>
+
+<script>
+const API_URL = "http://localhost:5001/api/v1";
+const token = localStorage.getItem("primepay_token");
+
+if (!token) {
+    window.location.href = "../login.html";
+}
+
+const params = new URLSearchParams(
+    window.location.search
+);
+
+const reference =
+    params.get("reference") ||
+    params.get("ref");
+
+const loadingBox =
+    document.getElementById("loadingBox");
+
+const detailContent =
+    document.getElementById("detailContent");
+
+const errorBox =
+    document.getElementById("errorBox");
+
+function loadUser() {
+    try {
+        const user = JSON.parse(
+            localStorage.getItem("primepay_user") || "null"
+        );
+
+        if (!user) return;
+
+        const name = user.name || "Merchant";
+
+        document.getElementById("accountName").textContent =
+            name;
+
+        const initials = name
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0,2)
+            .map(
+                part => part.charAt(0).toUpperCase()
+            )
+            .join("");
+
+        document.getElementById("avatar").textContent =
+            initials || "P";
+
+    } catch {
+        document.getElementById("accountName").textContent =
+            "Merchant";
+    }
+}
+
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+function formatAmount(amount,currency) {
+    const value = Number(amount);
+
+    if (!Number.isFinite(value)) {
+        return "—";
+    }
+
+    try {
+        return new Intl.NumberFormat("en-KE",{
+            style:"currency",
+            currency:currency || "KES",
+            minimumFractionDigits:2
+        }).format(value);
+    } catch {
+        return `${currency || "KES"} ${value.toFixed(2)}`;
+    }
+}
+
+function formatDate(value) {
+    if (!value) return "—";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return "—";
+    }
+
+    return date.toLocaleString("en-KE",{
+        dateStyle:"medium",
+        timeStyle:"short"
+    });
+}
+
+function text(value) {
+    return value === null ||
+           value === undefined ||
+           value === ""
+        ? "—"
+        : escapeHtml(value);
+}
+
+function renderStatus(status) {
+
+    const safe =
+        String(status || "unknown").toLowerCase();
+
+    const allowed = [
+        "pending",
+        "processing",
+        "completed",
+        "failed",
+        "cancelled",
+        "refunded"
+    ];
+
+    const className =
+        allowed.includes(safe)
+            ? safe
+            : "pending";
+
+    document.getElementById(
+        "statusContainer"
+    ).innerHTML = `
+        <span class="status ${className}">
+            ${escapeHtml(safe)}
+        </span>
+    `;
+}
+
+function renderTransaction(transaction) {
+
+    const currency =
+        transaction.currency || "KES";
+
+    document.getElementById("headingReference")
+        .textContent =
+        transaction.reference || "Transaction";
+
+    document.getElementById("amount")
+        .textContent =
+        formatAmount(
+            transaction.amount,
+            currency
+        );
+
+    document.getElementById("reference")
+        .textContent =
+        transaction.reference || "—";
+
+    document.getElementById("type")
+        .textContent =
+        text(transaction.type);
+
+    document.getElementById("currency")
+        .textContent =
+        text(currency);
+
+    document.getElementById("provider")
+        .textContent =
+        text(transaction.provider);
+
+    document.getElementById("paymentMethod")
+        .textContent =
+        text(transaction.paymentMethod);
+
+    document.getElementById("createdAt")
+        .textContent =
+        formatDate(transaction.createdAt);
+
+    document.getElementById("updatedAt")
+        .textContent =
+        formatDate(transaction.updatedAt);
+
+    renderStatus(transaction.status);
+
+    const provider =
+        transaction.provider || "unknown";
+
+    document.getElementById("providerName")
+        .textContent =
+        provider;
+
+    document.getElementById("providerIcon")
+        .textContent =
+        provider.slice(0,2).toUpperCase();
+
+    document.getElementById("providerTransactionId")
+        .textContent =
+        transaction.providerTransactionId || "—";
+
+    document.getElementById("providerReference")
+        .textContent =
+        transaction.providerReference || "—";
+
+    document.getElementById("customer")
+        .textContent =
+        transaction.customer?.name ||
+        transaction.customerName ||
+        "—";
+
+    document.getElementById("country")
+        .textContent =
+        transaction.country || "—";
+
+    document.getElementById("customerEmail")
+        .textContent =
+        transaction.customerEmail ||
+        transaction.customer?.email ||
+        "—";
+
+    document.getElementById("customerPhone")
+        .textContent =
+        transaction.customerPhone ||
+        transaction.customer?.phone ||
+        "—";
+
+    document.getElementById("feeAmount")
+        .textContent =
+        formatAmount(
+            transaction.amount,
+            currency
+        );
+
+    document.getElementById("primePayFee")
+        .textContent =
+        formatAmount(
+            transaction.primePayFee,
+            currency
+        );
+
+    document.getElementById("providerFee")
+        .textContent =
+        formatAmount(
+            transaction.providerFee,
+            currency
+        );
+
+    document.getElementById("totalFee")
+        .textContent =
+        formatAmount(
+            transaction.totalFee,
+            currency
+        );
+
+    document.getElementById("netAmount")
+        .textContent =
+        formatAmount(
+            transaction.netAmount,
+            currency
+        );
+
+    document.getElementById("settlementCurrency")
+        .textContent =
+        transaction.settlementCurrency ||
+        currency;
+
+    document.getElementById("description")
+        .textContent =
+        transaction.description ||
+        "No description supplied.";
+
+    if (
+        transaction.metadata &&
+        typeof transaction.metadata === "object" &&
+        Object.keys(transaction.metadata).length
+    ) {
+        document.getElementById("metadataPanel")
+            .style.display = "block";
+
+        document.getElementById("metadata")
+            .textContent =
+            JSON.stringify(
+                transaction.metadata,
+                null,
+                2
+            );
+    }
+}
+
+async function loadTransaction() {
+
+    if (!reference) {
+
+        loadingBox.style.display = "none";
+
+        errorBox.textContent =
+            "No transaction reference was supplied.";
+
+        errorBox.classList.add("show");
+
+        return;
+    }
+
+    const controller =
+        new AbortController();
+
+    const timeout =
+        setTimeout(
+            () => controller.abort(),
+            15000
+        );
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/transactions/${encodeURIComponent(reference)}`,
+                {
+                    method:"GET",
+                    headers:{
+                        "Authorization":
+                            `Bearer ${token}`
+                    },
+                    signal:controller.signal
+                }
+            );
+
+        let data = {};
+
+        try {
+            data = await response.json();
+        } catch {
+            throw new Error(
+                "PrimePay returned an invalid response."
+            );
+        }
+
+        if (response.status === 401) {
+
+            localStorage.removeItem(
+                "primepay_token"
+            );
+
+            localStorage.removeItem(
+                "primepay_user"
+            );
+
+            window.location.href =
+                "../login.html";
+
+            return;
+        }
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message ||
+                "Transaction could not be loaded."
+            );
+        }
+
+        const transaction =
+            data.transaction;
+
+        if (!transaction) {
+            throw new Error(
+                "PrimePay returned no transaction data."
+            );
+        }
+
+        renderTransaction(transaction);
+
+        loadingBox.style.display = "none";
+        detailContent.style.display = "block";
+
+    } catch(error) {
+
+        loadingBox.style.display = "none";
+
+        if (error.name === "AbortError") {
+            errorBox.textContent =
+                "The request timed out. Check the PrimePay backend and try again.";
+        } else if (error instanceof TypeError) {
+            errorBox.textContent =
+                "Unable to connect to the PrimePay API.";
+        } else {
+            errorBox.textContent =
+                error.message ||
+                "Unable to load transaction.";
+        }
+
+        errorBox.classList.add("show");
+
+    } finally {
+        clearTimeout(timeout);
+    }
+}
+
+document.getElementById("mobileMenu")
+    .addEventListener("click",() => {
+
+        document
+            .getElementById("sidebar")
+            .classList.toggle("open");
+    });
+
+document.getElementById("logoutBtn")
+    .addEventListener("click",() => {
+
+        localStorage.removeItem(
+            "primepay_token"
+        );
+
+        localStorage.removeItem(
+            "primepay_user"
+        );
+
+        window.location.href =
+            "../login.html";
+    });
+
+loadUser();
+loadTransaction();
+</script>
+
+</body>
+</html>

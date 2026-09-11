@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sandbox | PrimePay Developer</title>
+<meta name="description" content="Test PrimePay payments in the sandbox environment">
+<style>
+:root{
+  --bg:#020617;
+  --card:rgba(15,23,42,.86);
+  --card2:#07101f;
+  --border:rgba(148,163,184,.13);
+  --border2:rgba(96,165,250,.25);
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --muted2:#64748b;
+  --blue:#60a5fa;
+  --blue2:#2563eb;
+  --green:#34d399;
+  --yellow:#fbbf24;
+  --red:#fb7185;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 80% -10%,rgba(37,99,235,.14),transparent 35%),
+    var(--bg);
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+
+.app{display:flex;min-height:100vh}
+
+.sidebar{
+  width:255px;
+  position:fixed;
+  inset:0 auto 0 0;
+  z-index:30;
+  padding:22px 15px;
+  background:rgba(2,6,23,.94);
+  border-right:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:4px 9px 24px;
+}
+.brand-mark{
+  width:38px;height:38px;
+  display:grid;place-items:center;
+  border-radius:12px;
+  font-weight:900;
+  background:linear-gradient(145deg,#2563eb,#0f172a);
+  border:1px solid rgba(96,165,250,.35);
+}
+.brand strong{font-size:16px}
+.brand span{display:block;color:var(--muted2);font-size:11px;margin-top:2px}
+
+.nav-label{
+  color:#475569;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  padding:0 10px 8px;
+}
+.nav{display:grid;gap:5px}
+.nav a{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:11px 12px;
+  border:1px solid transparent;
+  border-radius:12px;
+  color:#94a3b8;
+  font-size:13px;
+}
+.nav a:hover{background:rgba(30,41,59,.5);color:#e2e8f0}
+.nav a.active{
+  color:#eff6ff;
+  background:rgba(37,99,235,.15);
+  border-color:rgba(96,165,250,.18);
+}
+.nav-icon{width:19px;text-align:center}
+
+.sidebar-bottom{
+  margin-top:auto;
+  border-top:1px solid var(--border);
+  padding-top:15px;
+}
+.user-mini{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  padding:9px 8px 12px;
+}
+.avatar{
+  width:34px;height:34px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  background:linear-gradient(145deg,#1d4ed8,#0f172a);
+  border:1px solid rgba(96,165,250,.3);
+  font-size:12px;font-weight:800;
+}
+.user-mini strong{
+  display:block;
+  max-width:155px;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  font-size:12px;
+}
+.user-mini span{display:block;color:var(--muted2);font-size:10px;margin-top:2px}
+.signout{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#64748b;
+  text-align:left;
+  padding:10px;
+  border-radius:10px;
+  font-size:12px;
+}
+.signout:hover{background:rgba(127,29,29,.12);color:#fda4af}
+
+.main{
+  width:calc(100% - 255px);
+  margin-left:255px;
+  min-width:0;
+}
+.topbar{
+  height:72px;
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 30px;
+  background:rgba(2,6,23,.72);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(18px);
+}
+.mobile-menu{
+  display:none;
+  width:40px;height:40px;
+  border-radius:11px;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:#cbd5e1;
+}
+.top-title small{
+  display:block;
+  color:var(--muted2);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  margin-bottom:3px;
+}
+.top-title strong{font-size:14px}
+.account{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  color:#94a3b8;
+  font-size:11px;
+}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+
+.content{
+  max-width:1250px;
+  margin:auto;
+  padding:30px;
+}
+.hero{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:20px;
+  margin-bottom:20px;
+}
+.eyebrow{
+  color:#93c5fd;
+  font-size:10px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.13em;
+  margin-bottom:8px;
+}
+h1{
+  margin:0;
+  font-size:34px;
+  letter-spacing:-.035em;
+}
+.hero p{
+  max-width:720px;
+  margin:9px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.7;
+}
+
+.notice{
+  display:none;
+  margin-bottom:16px;
+  padding:13px 15px;
+  border-radius:14px;
+  font-size:11px;
+  line-height:1.55;
+}
+.notice.show{display:block}
+.notice.error{
+  color:#fecdd3;
+  background:rgba(127,29,29,.14);
+  border:1px solid rgba(251,113,133,.18);
+}
+.notice.success{
+  color:#a7f3d0;
+  background:rgba(6,78,59,.14);
+  border:1px solid rgba(52,211,153,.18);
+}
+.notice.warning{
+  color:#fde68a;
+  background:rgba(120,53,15,.12);
+  border:1px solid rgba(251,191,36,.17);
+}
+
+.environment{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:16px;
+  padding:13px 15px;
+  border-radius:14px;
+  background:rgba(37,99,235,.07);
+  border:1px solid rgba(96,165,250,.15);
+}
+.env-dot{
+  width:9px;height:9px;
+  border-radius:50%;
+  background:var(--blue);
+  box-shadow:0 0 0 5px rgba(96,165,250,.08);
+}
+.environment strong{font-size:11px}
+.environment span{color:#64748b;font-size:10px}
+
+.grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr);
+  gap:16px;
+}
+.card{
+  background:linear-gradient(145deg,rgba(15,23,42,.9),rgba(8,18,34,.72));
+  border:1px solid var(--border);
+  border-radius:20px;
+  box-shadow:0 20px 60px rgba(0,0,0,.28);
+}
+.panel{padding:20px}
+.panel-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:15px;
+  margin-bottom:18px;
+}
+.panel-head h2{
+  margin:0;
+  font-size:16px;
+}
+.panel-head p{
+  color:var(--muted2);
+  margin:5px 0 0;
+  font-size:11px;
+  line-height:1.5;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.field{display:grid;gap:6px}
+.field.full{grid-column:1/-1}
+label{
+  color:#94a3b8;
+  font-size:10px;
+  font-weight:700;
+}
+input,select,textarea{
+  width:100%;
+  color:#f8fafc;
+  background:#07101f;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:11px 12px;
+  outline:none;
+  font-size:12px;
+}
+textarea{
+  min-height:110px;
+  resize:vertical;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:10px;
+  line-height:1.55;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:rgba(96,165,250,.45);
+  box-shadow:0 0 0 3px rgba(59,130,246,.08);
+}
+
+.key-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+}
+.key-refresh{
+  border:1px solid var(--border);
+  background:#07101f;
+  color:#94a3b8;
+  border-radius:10px;
+  padding:0 12px;
+}
+.key-refresh:hover{color:#fff;border-color:var(--border2)}
+
+.credentials{
+  margin-top:10px;
+  padding:11px 12px;
+  border-radius:11px;
+  background:rgba(15,23,42,.48);
+  border:1px solid var(--border);
+}
+.credentials strong{
+  display:block;
+  font-size:10px;
+}
+.credentials span{
+  display:block;
+  margin-top:4px;
+  color:#64748b;
+  font-size:9px;
+  line-height:1.5;
+}
+
+.form-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  margin-top:16px;
+}
+.btn{
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 14px;
+  color:#cbd5e1;
+  background:rgba(15,23,42,.75);
+  font-size:11px;
+  font-weight:700;
+}
+.btn:hover{border-color:var(--border2);color:#fff}
+.btn.primary{
+  border-color:rgba(96,165,250,.28);
+  background:linear-gradient(135deg,#2563eb,#1d4ed8);
+  color:#fff;
+}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+
+.preview{
+  margin-top:17px;
+}
+.preview-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:8px;
+}
+.preview-title strong{font-size:11px}
+.preview-title span{color:#64748b;font-size:9px}
+pre{
+  margin:0;
+  padding:14px;
+  min-height:250px;
+  max-height:420px;
+  overflow:auto;
+  border:1px solid var(--border);
+  border-radius:13px;
+  background:#020617;
+  color:#a5b4fc;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:10px;
+  line-height:1.65;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+.response-meta{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:10px;
+}
+.meta{
+  padding:6px 8px;
+  border-radius:999px;
+  background:rgba(100,116,139,.08);
+  border:1px solid var(--border);
+  color:#94a3b8;
+  font-size:9px;
+}
+.meta.success{color:#6ee7b7}
+.meta.error{color:#fda4af}
+
+.help{
+  display:grid;
+  gap:10px;
+}
+.help-item{
+  padding:13px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:rgba(2,6,23,.3);
+}
+.help-item strong{
+  display:block;
+  font-size:11px;
+  margin-bottom:5px;
+}
+.help-item span{
+  display:block;
+  color:#64748b;
+  font-size:10px;
+  line-height:1.6;
+}
+.code{
+  display:block;
+  margin-top:8px;
+  padding:8px 9px;
+  border-radius:8px;
+  background:#020617;
+  border:1px solid var(--border);
+  color:#93c5fd;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:9px;
+  overflow:auto;
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:100;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(0,0,0,.7);
+  backdrop-filter:blur(7px);
+}
+.modal.open{display:flex}
+.modal-card{
+  width:min(500px,100%);
+  padding:22px;
+  border-radius:20px;
+  border:1px solid var(--border2);
+  background:#07101f;
+  box-shadow:0 30px 100px rgba(0,0,0,.55);
+}
+.modal-head{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  margin-bottom:18px;
+}
+.modal-head h2{margin:0;font-size:17px}
+.modal-head p{
+  color:#64748b;
+  font-size:10px;
+  line-height:1.55;
+  margin:5px 0 0;
+}
+.close{
+  width:32px;height:32px;
+  border-radius:9px;
+  border:1px solid var(--border);
+  background:transparent;
+  color:#94a3b8;
+}
+.close:hover{color:#fff}
+.modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  margin-top:15px;
+}
+
+@media(max-width:1000px){
+  .grid{grid-template-columns:1fr}
+}
+@media(max-width:800px){
+  .sidebar{
+    transform:translateX(-100%);
+    transition:.25s ease;
+  }
+  .sidebar.open{transform:translateX(0)}
+  .main{width:100%;margin-left:0}
+  .mobile-menu{display:block}
+  .topbar{padding:0 16px}
+  .account{display:none}
+  .content{padding:22px 15px 30px}
+  .hero{display:block}
+  .hero-actions{margin-top:15px}
+}
+@media(max-width:560px){
+  .form-grid{grid-template-columns:1fr}
+  .field.full{grid-column:auto}
+  h1{font-size:29px}
+  .panel{padding:16px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-mark">P</div>
+    <div>
+      <strong>PrimePay</strong>
+      <span>Developer Platform</span>
+    </div>
+  </div>
+
+  <div class="nav-label">Developer</div>
+  <nav class="nav">
+    <a href="dashboard.html"><span class="nav-icon">⌂</span>Dashboard</a>
+    <a href="api-keys.html"><span class="nav-icon">⌘</span>API Keys</a>
+    <a href="webhooks.html"><span class="nav-icon">↗</span>Webhooks</a>
+    <a href="sandbox.html" class="active"><span class="nav-icon">◇</span>Sandbox</a>
+    <a href="docs.html"><span class="nav-icon">▤</span>Documentation</a>
+    <a href="logs.html"><span class="nav-icon">≡</span>Activity</a>
+  </nav>
+
+  <div class="nav-label" style="margin-top:22px">Portal</div>
+  <nav class="nav">
+    <a href="../merchant/dashboard.html"><span class="nav-icon">▣</span>Merchant Portal</a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="user-mini">
+      <div class="avatar" id="avatar">PP</div>
+      <div>
+        <strong id="userName">Developer</strong>
+        <span id="userEmail">Loading...</span>
+      </div>
+    </div>
+    <button class="signout" id="signOut">↪ Sign out</button>
+  </div>
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:11px">
+    <button class="mobile-menu" id="mobileMenu">☰</button>
+    <div class="top-title">
+      <small>PrimePay</small>
+      <strong>Sandbox</strong>
+    </div>
+  </div>
+
+  <div class="account">
+    <span class="dot"></span>
+    <span>Sandbox environment</span>
+  </div>
+</header>
+
+<section class="content">
+
+  <div class="notice" id="notice"></div>
+
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Developer testing</div>
+      <h1>Sandbox</h1>
+      <p>
+        Send test payment requests through the PrimePay developer API without
+        using live credentials. Requests made here use the sandbox API-key
+        authentication flow.
+      </p>
+    </div>
+  </div>
+
+  <div class="environment">
+    <div class="env-dot"></div>
+    <div>
+      <strong>Sandbox mode</strong>
+      <span>Live payment credentials are not accepted by this endpoint.</span>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <section class="card panel">
+      <div class="panel-head">
+        <div>
+          <h2>Test payment</h2>
+          <p>POST /api/v1/developer/payments</p>
+        </div>
+      </div>
+
+      <form id="paymentForm">
+
+        <div class="form-grid">
+
+          <div class="field full">
+            <label for="apiKey">Sandbox API key</label>
+            <div class="key-row">
+              <select id="apiKey">
+                <option value="">Loading sandbox keys...</option>
+              </select>
+              <button type="button" class="key-refresh" id="refreshKeys">↻</button>
+            </div>
+
+            <div class="credentials">
+              <strong id="credentialStatus">No credential selected</strong>
+              <span id="credentialHelp">
+                Select a sandbox key and provide the secret that was issued when the key was created or rotated.
+              </span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="amount">Amount</label>
+            <input id="amount" type="number" min="1" step="0.01" placeholder="100">
+          </div>
+
+          <div class="field">
+            <label for="currency">Currency</label>
+            <select id="currency">
+              <option value="KES">KES</option>
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="provider">Provider</label>
+            <select id="provider">
+              <option value="mpesa">M-Pesa</option>
+              <option value="stripe">Stripe</option>
+              <option value="paypal">PayPal</option>
+              <option value="dlocal">dLocal</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="paymentMethod">Payment method</label>
+            <select id="paymentMethod">
+              <option value="mobile_money">Mobile money</option>
+              <option value="card">Card</option>
+              <option value="paypal">PayPal</option>
+              <option value="bank_transfer">Bank transfer</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="country">Country</label>
+            <select id="country">
+              <option value="KE">Kenya</option>
+              <option value="UG">Uganda</option>
+              <option value="TZ">Tanzania</option>
+              <option value="NG">Nigeria</option>
+              <option value="GH">Ghana</option>
+              <option value="ZA">South Africa</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="customerPhone">Customer phone</label>
+            <input id="customerPhone" type="tel" placeholder="+254700000000">
+          </div>
+
+          <div class="field">
+            <label for="customerName">Customer name</label>
+            <input id="customerName" type="text" placeholder="Test Customer">
+          </div>
+
+          <div class="field">
+            <label for="customerEmail">Customer email</label>
+            <input id="customerEmail" type="email" placeholder="customer@example.com">
+          </div>
+
+          <div class="field full">
+            <label for="description">Description</label>
+            <input id="description" type="text" maxlength="500" placeholder="Sandbox payment test">
+          </div>
+
+          <div class="field full">
+            <label for="metadata">Metadata JSON</label>
+            <textarea id="metadata">{}</textarea>
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn" id="clearBtn">Clear</button>
+          <button type="submit" class="btn primary" id="sendBtn">
+            Send sandbox payment
+          </button>
+        </div>
+
+      </form>
+
+      <div class="preview">
+        <div class="preview-title">
+          <strong>Request preview</strong>
+          <span>Secret is never shown here</span>
+        </div>
+        <pre id="requestPreview">{}</pre>
+      </div>
+    </section>
+
+    <section class="card panel">
+      <div class="panel-head">
+        <div>
+          <h2>API response</h2>
+          <p>Actual response returned by the PrimePay backend.</p>
+        </div>
+      </div>
+
+      <div class="response-meta">
+        <span class="meta" id="responseStatus">No request</span>
+        <span class="meta" id="responseTime">—</span>
+      </div>
+
+      <pre id="responseOutput">No sandbox request has been sent yet.</pre>
+
+      <div class="help" style="margin-top:16px">
+
+        <div class="help-item">
+          <strong>Authentication</strong>
+          <span>
+            Sandbox payments require both the sandbox API key and its secret.
+            The secret is not returned by the API-key listing endpoint.
+          </span>
+        </div>
+
+        <div class="help-item">
+          <strong>Idempotency</strong>
+          <span>
+            Every payment request receives a fresh idempotency key. Reusing the
+            same key with a different payload is rejected by the backend.
+          </span>
+          <span class="code">Idempotency-Key: &lt;unique-request-id&gt;</span>
+        </div>
+
+        <div class="help-item">
+          <strong>API endpoint</strong>
+          <span>Sandbox requests are sent directly to the local PrimePay V1 backend.</span>
+          <span class="code">POST http://localhost:5001/api/v1/developer/payments</span>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+</section>
+</main>
+</div>
+
+<div class="modal" id="secretModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>
+        <h2>Sandbox API secret</h2>
+        <p>
+          Enter the secret that was issued when your selected sandbox key
+          was created or rotated. It is kept only in memory on this page.
+        </p>
+      </div>
+      <button class="close" id="closeModal">×</button>
+    </div>
+
+    <div class="field">
+      <label for="apiSecret">API secret</label>
+      <input
+        id="apiSecret"
+        type="password"
+        autocomplete="off"
+        placeholder="Paste sandbox API secret"
+      >
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn" id="cancelSecret">Cancel</button>
+      <button class="btn primary" id="saveSecret">Use secret</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_URL = "http://localhost:5001/api/v1";
+const token = localStorage.getItem("primepay_token");
+
+if (!token) {
+  window.location.href = "../login.html";
+}
+
+const $ = id => document.getElementById(id);
+
+let sandboxKeys = [];
+let apiSecret = "";
+let currentRequestId = "";
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function initials(name) {
+  if (!name) return "PP";
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0,2)
+    .map(x => x[0])
+    .join("")
+    .toUpperCase();
+}
+
+function showNotice(message,type="error") {
+  const notice = $("notice");
+  notice.textContent = message;
+  notice.className = `notice show ${type}`;
+}
+
+function clearNotice() {
+  $("notice").className = "notice";
+}
+
+function newIdempotencyKey() {
+  if (window.crypto?.randomUUID) {
+    return window.crypto.randomUUID();
+  }
+
+  return `sandbox-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function pretty(value) {
+  if (!value) return "Unknown";
+
+  return String(value)
+    .replace(/_/g," ")
+    .replace(/\b\w/g,c => c.toUpperCase());
+}
+
+async function authFetch(path,options={}) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(),15000);
+
+  try {
+    const response = await fetch(`${API_URL}${path}`,{
+      ...options,
+      signal:controller.signal,
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":`Bearer ${token}`,
+        ...(options.headers || {})
+      }
+    });
+
+    let data = null;
+
+    try {
+      data = await response.json();
+    } catch {}
+
+    if (response.status === 401) {
+      localStorage.removeItem("primepay_token");
+      localStorage.removeItem("primepay_user");
+      window.location.href = "../login.html";
+      throw new Error("Your session has expired.");
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        data?.message ||
+        data?.error ||
+        `Request failed with status ${response.status}.`
+      );
+    }
+
+    return data;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function loadSandboxKeys() {
+  const result = await authFetch("/api-keys");
+
+  const keys = Array.isArray(result?.apiKeys)
+    ? result.apiKeys
+    : Array.isArray(result?.keys)
+      ? result.keys
+      : [];
+
+  sandboxKeys = keys.filter(key =>
+    String(key.environment || "").toLowerCase() === "sandbox" &&
+    !(key.revoked === true) &&
+    String(key.status || "active").toLowerCase() !== "revoked"
+  );
+
+  const select = $("apiKey");
+
+  if (!sandboxKeys.length) {
+    select.innerHTML = `<option value="">No active sandbox keys</option>`;
+    $("credentialStatus").textContent = "No sandbox key available";
+    $("credentialHelp").textContent =
+      "Create an active sandbox API key from the API Keys page first.";
+    return;
+  }
+
+  select.innerHTML = `
+    <option value="">Select a sandbox key</option>
+    ${sandboxKeys.map(key => `
+      <option value="${escapeHtml(key.id || key._id || "")}">
+        ${escapeHtml(key.name || "Unnamed key")} · ${escapeHtml(key.keyId || "key")}
+      </option>
+    `).join("")}
+  `;
+
+  $("credentialStatus").textContent = `${sandboxKeys.length} sandbox key${sandboxKeys.length === 1 ? "" : "s"} available`;
+  $("credentialHelp").textContent =
+    "The API secret must be supplied from the original creation or rotation response.";
+}
+
+function selectedKey() {
+  const id = $("apiKey").value;
+
+  return sandboxKeys.find(key =>
+    String(key.id || key._id || "") === String(id)
+  );
+}
+
+function buildRequest() {
+  let metadata = {};
+
+  try {
+    metadata = JSON.parse($("metadata").value.trim() || "{}");
+  } catch {
+    metadata = null;
+  }
+
+  return {
+    amount: Number($("amount").value),
+    currency: $("currency").value,
+    provider: $("provider").value,
+    paymentMethod: $("paymentMethod").value,
+    country: $("country").value,
+    customerName: $("customerName").value.trim(),
+    customerEmail: $("customerEmail").value.trim(),
+    customerPhone: $("customerPhone").value.trim(),
+    description: $("description").value.trim(),
+    metadata
+  };
+}
+
+function updatePreview() {
+  const request = buildRequest();
+
+  const preview = {
+    ...request,
+    "Idempotency-Key": currentRequestId || "<generated-on-submit>",
+    authentication: {
+      "X-API-Key": selectedKey()?.keyId || "<sandbox-key>",
+      "X-API-Secret": "<hidden>"
+    }
+  };
+
+  $("requestPreview").textContent = JSON.stringify(preview,null,2);
+}
+
+function setResponse(data,status,timeMs,success) {
+  $("responseStatus").textContent =
+    status ? `HTTP ${status}` : (success ? "Success" : "Error");
+
+  $("responseStatus").className =
+    `meta ${success ? "success" : status >= 400 ? "error" : ""}`;
+
+  $("responseTime").textContent =
+    typeof timeMs === "number" ? `${timeMs} ms` : "—";
+
+  $("responseOutput").textContent =
+    typeof data === "string"
+      ? data
+      : JSON.stringify(data,null,2);
+}
+
+function validateRequest(request) {
+  if (!selectedKey()) {
+    return "Select an active sandbox API key.";
+  }
+
+  if (!apiSecret) {
+    return "Enter the secret for the selected sandbox API key.";
+  }
+
+  if (!Number.isFinite(request.amount) || request.amount < 1) {
+    return "Amount must be at least 1.";
+  }
+
+  if (!request.currency) {
+    return "Select a currency.";
+  }
+
+  if (!request.provider) {
+    return "Select a payment provider.";
+  }
+
+  if (!request.paymentMethod) {
+    return "Select a payment method.";
+  }
+
+  if (!request.country) {
+    return "Select a country.";
+  }
+
+  if (request.metadata === null) {
+    return "Metadata must contain valid JSON.";
+  }
+
+  if (
+    request.customerEmail &&
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(request.customerEmail)
+  ) {
+    return "Enter a valid customer email.";
+  }
+
+  return null;
+}
+
+async function sendSandboxRequest(event) {
+  event.preventDefault();
+  clearNotice();
+
+  const request = buildRequest();
+  const validationError = validateRequest(request);
+
+  if (validationError) {
+    showNotice(validationError);
+    return;
+  }
+
+  const key = selectedKey();
+
+  currentRequestId = newIdempotencyKey();
+  updatePreview();
+
+  $("sendBtn").disabled = true;
+  $("sendBtn").textContent = "Sending...";
+
+  const started = performance.now();
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(),15000);
+
+    let response;
+
+    try {
+      response = await fetch(`${API_URL}/developer/payments`,{
+        method:"POST",
+        signal:controller.signal,
+        headers:{
+          "Content-Type":"application/json",
+          "X-API-Key":key.keyId,
+          "X-API-Secret":apiSecret,
+          "Idempotency-Key":currentRequestId
+        },
+        body:JSON.stringify(request)
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    const elapsed = Math.round(performance.now() - started);
+
+    let data = null;
+
+    try {
+      data = await response.json();
+    } catch {
+      data = {message:"The server returned a non-JSON response."};
+    }
+
+    setResponse(
+      data,
+      response.status,
+      elapsed,
+      response.ok
+    );
+
+    if (response.ok) {
+      showNotice(
+        "Sandbox payment request completed successfully. Review the actual API response on the right.",
+        "success"
+      );
+
+      currentRequestId = "";
+      updatePreview();
+    } else if (response.status === 401) {
+      showNotice(
+        "Sandbox authentication failed. Check the selected API key and secret."
+      );
+    } else {
+      showNotice(
+        data?.message ||
+        data?.error ||
+        `Sandbox request failed with HTTP ${response.status}.`
+      );
+    }
+
+  } catch (error) {
+    const elapsed = Math.round(performance.now() - started);
+
+    setResponse(
+      {
+        success:false,
+        message:error.name === "AbortError"
+          ? "Sandbox request timed out."
+          : error.message || "Unable to reach the PrimePay backend."
+      },
+      0,
+      elapsed,
+      false
+    );
+
+    showNotice(
+      error.name === "AbortError"
+        ? "The sandbox request timed out."
+        : "Unable to reach the PrimePay backend."
+    );
+  } finally {
+    $("sendBtn").disabled = false;
+    $("sendBtn").textContent = "Send sandbox payment";
+  }
+}
+
+function clearForm() {
+  $("amount").value = "";
+  $("customerPhone").value = "";
+  $("customerName").value = "";
+  $("customerEmail").value = "";
+  $("description").value = "";
+  $("metadata").value = "{}";
+
+  currentRequestId = "";
+  setResponse("No sandbox request has been sent yet.",null,null,false);
+  updatePreview();
+  clearNotice();
+}
+
+function openSecretModal() {
+  if (!selectedKey()) {
+    showNotice("Select a sandbox API key first.");
+    return;
+  }
+
+  $("apiSecret").value = apiSecret;
+  $("secretModal").classList.add("open");
+
+  setTimeout(() => $("apiSecret").focus(),50);
+}
+
+function closeSecretModal() {
+  $("secretModal").classList.remove("open");
+}
+
+function saveSecret() {
+  const secret = $("apiSecret").value.trim();
+
+  if (!secret) {
+    showNotice("Enter the sandbox API secret.");
+    return;
+  }
+
+  apiSecret = secret;
+
+  $("credentialStatus").textContent =
+    `${selectedKey()?.name || "Sandbox key"} · secret loaded`;
+
+  $("credentialHelp").textContent =
+    "The secret is stored only in this page's memory and will be sent over the API request when you test a payment.";
+
+  closeSecretModal();
+  showNotice("Sandbox secret loaded into memory for this session.","success");
+}
+
+$("paymentForm").addEventListener("submit",sendSandboxRequest);
+
+[
+  "amount",
+  "currency",
+  "provider",
+  "paymentMethod",
+  "country",
+  "customerPhone",
+  "customerName",
+  "customerEmail",
+  "description",
+  "metadata"
+].forEach(id => {
+  $(id).addEventListener("input",updatePreview);
+  $(id).addEventListener("change",updatePreview);
+});
+
+$("apiKey").addEventListener("change",() => {
+  apiSecret = "";
+
+  const key = selectedKey();
+
+  $("credentialStatus").textContent =
+    key ? `${key.name || "Sandbox key"} selected` : "No credential selected";
+
+  $("credentialHelp").textContent =
+    key
+      ? "Enter the secret that was issued when this key was created or rotated."
+      : "Select a sandbox key.";
+
+  updatePreview();
+
+  if (key) {
+    openSecretModal();
+  }
+});
+
+$("refreshKeys").addEventListener("click",async () => {
+  try {
+    await loadSandboxKeys();
+    showNotice("Sandbox keys refreshed.","success");
+  } catch(error) {
+    showNotice(error.message || "Unable to load sandbox keys.");
+  }
+});
+
+$("clearBtn").addEventListener("click",clearForm);
+
+$("closeModal").addEventListener("click",closeSecretModal);
+$("cancelSecret").addEventListener("click",closeSecretModal);
+$("saveSecret").addEventListener("click",saveSecret);
+
+$("secretModal").addEventListener("click",event => {
+  if (event.target === $("secretModal")) {
+    closeSecretModal();
+  }
+});
+
+$("signOut").addEventListener("click",() => {
+  apiSecret = "";
+  localStorage.removeItem("primepay_token");
+  localStorage.removeItem("primepay_user");
+  window.location.href = "../login.html";
+});
+
+$("mobileMenu").addEventListener("click",() => {
+  $("sidebar").classList.toggle("open");
+});
+
+document.addEventListener("click",event => {
+  if (
+    window.innerWidth <= 800 &&
+    $("sidebar").classList.contains("open") &&
+    !$("sidebar").contains(event.target) &&
+    event.target !== $("mobileMenu")
+  ) {
+    $("sidebar").classList.remove("open");
+  }
+});
+
+let user = null;
+
+try {
+  user = JSON.parse(localStorage.getItem("primepay_user") || "null");
+} catch {}
+
+$("userName").textContent = user?.name || "Developer";
+$("userEmail").textContent = user?.email || "Authenticated account";
+$("avatar").textContent = initials(user?.name);
+
+loadSandboxKeys()
+  .then(() => updatePreview())
+  .catch(error => {
+    showNotice(error.message || "Unable to load sandbox API keys.");
+    updatePreview();
+  });
+</script>
+
+</body>
+</html>

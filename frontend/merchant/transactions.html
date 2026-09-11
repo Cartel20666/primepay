@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PrimePay merchant transactions">
+<title>PrimePay | Transactions</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+ --bg:#020617;--sidebar:#050b18;--panel:#08101f;--panel2:#0b1629;
+ --border:rgba(148,163,184,.14);--text:#f8fafc;--muted:#94a3b8;
+ --accent:#38bdf8;--blue:#2563eb;--green:#4ade80;
+ --yellow:#facc15;--red:#f87171;
+}
+body{
+ min-height:100vh;background:var(--bg);color:var(--text);
+ font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit}
+.app{min-height:100vh;display:flex}
+
+.sidebar{
+ width:250px;position:fixed;inset:0 auto 0 0;z-index:50;
+ padding:22px 15px;background:rgba(5,11,24,.97);
+ border-right:1px solid var(--border);overflow-y:auto
+}
+.logo{
+ display:flex;align-items:center;gap:11px;padding:4px 10px 28px;
+ font-size:1.2rem;font-weight:800
+}
+.logo-mark{
+ width:38px;height:38px;display:grid;place-items:center;border-radius:11px;
+ background:linear-gradient(135deg,var(--blue),var(--accent));
+ box-shadow:0 8px 25px rgba(37,99,235,.23);font-weight:900
+}
+.nav-label{
+ padding:0 11px 8px;color:#475569;font-size:.67rem;font-weight:750;
+ text-transform:uppercase;letter-spacing:.1em
+}
+.nav{display:grid;gap:4px;margin-bottom:24px}
+.nav a,.logout-btn{
+ width:100%;display:flex;align-items:center;gap:12px;padding:11px 12px;
+ border:1px solid transparent;border-radius:10px;background:transparent;
+ color:var(--muted);cursor:pointer;text-align:left;font-size:.84rem
+}
+.nav a:hover,.logout-btn:hover{color:white;background:rgba(30,41,59,.5)}
+.nav a.active{
+ color:white;background:rgba(37,99,235,.12);
+ border-color:rgba(56,189,248,.1)
+}
+.nav-icon{width:20px;text-align:center}
+.sidebar-bottom{padding-top:18px;border-top:1px solid var(--border)}
+
+.main{width:calc(100% - 250px);margin-left:250px;min-height:100vh}
+.topbar{
+ height:74px;position:sticky;top:0;z-index:30;padding:0 30px;
+ display:flex;align-items:center;justify-content:space-between;
+ background:rgba(2,6,23,.85);backdrop-filter:blur(14px);
+ border-bottom:1px solid var(--border)
+}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.mobile-menu{
+ display:none;width:40px;height:40px;border:1px solid var(--border);
+ border-radius:10px;background:var(--panel);color:white;cursor:pointer
+}
+.page-title{font-size:.92rem;font-weight:750}
+.page-subtitle{margin-top:2px;color:var(--muted);font-size:.73rem}
+.account{display:flex;align-items:center;gap:10px}
+.account-info{text-align:right}
+.account-name{font-size:.8rem;font-weight:700}
+.account-role{margin-top:2px;color:var(--muted);font-size:.68rem}
+.avatar{
+ width:38px;height:38px;display:grid;place-items:center;border-radius:11px;
+ background:linear-gradient(135deg,#1d4ed8,#0ea5e9);font-size:.78rem;font-weight:800
+}
+
+.content{max-width:1500px;padding:30px}
+.page-heading{margin-bottom:25px}
+.page-heading h1{
+ margin-bottom:7px;font-size:clamp(1.6rem,3vw,2.1rem);letter-spacing:-1px
+}
+.page-heading p{color:var(--muted);font-size:.84rem}
+
+.toolbar{
+ display:flex;align-items:flex-end;justify-content:space-between;gap:15px;
+ margin-bottom:18px
+}
+.filters{display:flex;gap:10px;flex-wrap:wrap}
+.filter{
+ min-width:145px;height:43px;padding:0 12px;border:1px solid var(--border);
+ border-radius:10px;background:var(--panel);color:#cbd5e1;outline:none
+}
+.filter:focus{border-color:rgba(56,189,248,.55)}
+.refresh{
+ height:43px;padding:0 15px;border:1px solid var(--border);
+ border-radius:10px;background:rgba(15,23,42,.7);color:#cbd5e1;
+ cursor:pointer;font-size:.78rem;font-weight:650
+}
+.refresh:hover{color:white;border-color:rgba(56,189,248,.3)}
+
+.panel{
+ overflow:hidden;border:1px solid var(--border);border-radius:18px;
+ background:linear-gradient(145deg,rgba(15,23,42,.88),rgba(8,16,31,.97))
+}
+.panel-head{
+ padding:18px 21px;display:flex;align-items:center;justify-content:space-between;
+ border-bottom:1px solid var(--border)
+}
+.panel-title{font-size:.9rem;font-weight:750}
+.count{color:var(--muted);font-size:.7rem}
+
+.table-wrap{width:100%;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:850px}
+th{
+ padding:13px 18px;text-align:left;color:#64748b;font-size:.65rem;
+ text-transform:uppercase;letter-spacing:.07em;font-weight:750;
+ background:rgba(2,6,23,.25);border-bottom:1px solid var(--border)
+}
+td{
+ padding:15px 18px;border-bottom:1px solid rgba(148,163,184,.07);
+ color:#cbd5e1;font-size:.76rem;vertical-align:middle
+}
+tbody tr:hover{background:rgba(30,41,59,.22)}
+tbody tr:last-child td{border-bottom:0}
+
+.reference{
+ color:#e2e8f0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+ font-size:.7rem
+}
+.amount{font-weight:750;color:white}
+.date{color:var(--muted);white-space:nowrap}
+
+.badge{
+ display:inline-flex;align-items:center;gap:6px;padding:5px 9px;
+ border-radius:999px;font-size:.63rem;font-weight:700;text-transform:capitalize
+}
+.badge::before{
+ content:"";width:6px;height:6px;border-radius:50%;background:currentColor
+}
+.badge.completed{color:var(--green);background:rgba(74,222,128,.08)}
+.badge.pending,.badge.processing{color:var(--yellow);background:rgba(250,204,21,.08)}
+.badge.failed,.badge.cancelled{color:var(--red);background:rgba(248,113,113,.08)}
+.badge.refunded{color:var(--accent);background:rgba(56,189,248,.08)}
+
+.provider{
+ display:inline-flex;padding:5px 8px;border:1px solid var(--border);
+ border-radius:7px;color:#cbd5e1;font-size:.64rem;text-transform:capitalize
+}
+
+.empty{
+ padding:65px 25px;text-align:center;color:var(--muted)
+}
+.empty-icon{
+ width:48px;height:48px;display:grid;place-items:center;margin:0 auto 14px;
+ border-radius:14px;background:rgba(56,189,248,.07);color:var(--accent);
+ font-size:1.1rem
+}
+.empty h3{margin-bottom:6px;color:#e2e8f0;font-size:.86rem}
+.empty p{font-size:.73rem;line-height:1.5}
+
+.loading{padding:55px;text-align:center;color:var(--muted);font-size:.78rem}
+
+.error{
+ margin-bottom:18px;padding:13px 14px;border:1px solid rgba(248,113,113,.2);
+ border-radius:10px;background:rgba(239,68,68,.07);color:#fca5a5;
+ font-size:.78rem;line-height:1.5;display:none
+}
+.error.show{display:block}
+
+.pagination{
+ padding:15px 18px;display:flex;align-items:center;justify-content:space-between;
+ gap:15px;border-top:1px solid var(--border)
+}
+.pagination-info{color:var(--muted);font-size:.69rem}
+.pagination-buttons{display:flex;gap:7px}
+.page-btn{
+ min-width:38px;height:36px;padding:0 10px;border:1px solid var(--border);
+ border-radius:8px;background:rgba(15,23,42,.55);color:#cbd5e1;
+ cursor:pointer;font-size:.7rem
+}
+.page-btn:hover:not(:disabled){color:white;border-color:rgba(56,189,248,.3)}
+.page-btn:disabled{opacity:.35;cursor:not-allowed}
+
+@media(max-width:800px){
+ .sidebar{transform:translateX(-100%);transition:transform .25s ease}
+ .sidebar.open{transform:translateX(0);box-shadow:20px 0 50px rgba(0,0,0,.4)}
+ .main{width:100%;margin-left:0}
+ .mobile-menu{display:block}
+ .topbar{padding:0 18px}
+ .content{padding:22px 17px 40px}
+}
+@media(max-width:600px){
+ .toolbar{align-items:stretch;flex-direction:column}
+ .filters{display:grid;grid-template-columns:1fr 1fr}
+ .filter{min-width:0;width:100%}
+ .refresh{width:100%}
+ .account-info{display:none}
+ .pagination{align-items:stretch;flex-direction:column}
+ .pagination-buttons{justify-content:space-between}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+
+<a href="dashboard.html" class="logo">
+    <span class="logo-mark">P</span>
+    <span>PrimePay</span>
+</a>
+
+<div class="nav-label">Workspace</div>
+
+<nav class="nav">
+
+<a href="dashboard.html">
+    <span class="nav-icon">⌂</span>
+    Dashboard
+</a>
+
+<a href="payments.html">
+    <span class="nav-icon">↗</span>
+    Payments
+</a>
+
+<a href="transactions.html" class="active">
+    <span class="nav-icon">≡</span>
+    Transactions
+</a>
+
+<a href="customers.html">
+    <span class="nav-icon">◎</span>
+    Customers
+</a>
+
+<a href="wallet.html">
+    <span class="nav-icon">▣</span>
+    Wallet
+</a>
+
+</nav>
+
+<div class="nav-label">Business</div>
+
+<nav class="nav">
+
+<a href="settings.html">
+    <span class="nav-icon">⚙</span>
+    Settings
+</a>
+
+</nav>
+
+<div class="sidebar-bottom">
+
+<button class="logout-btn" id="logoutBtn">
+    <span class="nav-icon">↪</span>
+    Sign out
+</button>
+
+</div>
+
+</aside>
+
+<section class="main">
+
+<header class="topbar">
+
+<div class="topbar-left">
+
+<button class="mobile-menu" id="mobileMenu">☰</button>
+
+<div>
+    <div class="page-title">Transactions</div>
+    <div class="page-subtitle">Your business transaction history</div>
+</div>
+
+</div>
+
+<div class="account">
+
+<div class="account-info">
+    <div class="account-name" id="accountName">Loading...</div>
+    <div class="account-role">Merchant</div>
+</div>
+
+<div class="avatar" id="avatar">P</div>
+
+</div>
+
+</header>
+
+<main class="content">
+
+<section class="page-heading">
+
+<h1>Transactions</h1>
+
+<p>
+    Review payment activity recorded by PrimePay.
+</p>
+
+</section>
+
+<div class="toolbar">
+
+<div class="filters">
+
+<select class="filter" id="statusFilter">
+    <option value="">All statuses</option>
+    <option value="pending">Pending</option>
+    <option value="processing">Processing</option>
+    <option value="completed">Completed</option>
+    <option value="failed">Failed</option>
+    <option value="cancelled">Cancelled</option>
+    <option value="refunded">Refunded</option>
+</select>
+
+<select class="filter" id="typeFilter">
+    <option value="">All types</option>
+    <option value="payment">Payment</option>
+    <option value="refund">Refund</option>
+    <option value="payout">Payout</option>
+    <option value="deposit">Deposit</option>
+    <option value="settlement">Settlement</option>
+</select>
+
+</div>
+
+<button class="refresh" id="refreshBtn">
+    ↻ Refresh
+</button>
+
+</div>
+
+<div class="error" id="errorBox"></div>
+
+<section class="panel">
+
+<div class="panel-head">
+
+<div class="panel-title">
+    Transaction history
+</div>
+
+<div class="count" id="countLabel">
+    Loading...
+</div>
+
+</div>
+
+<div id="tableContainer">
+
+<div class="loading">
+    Loading transactions...
+</div>
+
+</div>
+
+<div class="pagination" id="pagination" style="display:none">
+
+<div class="pagination-info" id="paginationInfo">
+    —
+</div>
+
+<div class="pagination-buttons">
+
+<button class="page-btn" id="prevBtn">
+    Previous
+</button>
+
+<button class="page-btn" id="nextBtn">
+    Next
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+</section>
+
+</div>
+
+<script>
+const API_URL = "http://localhost:5001/api/v1";
+const token = localStorage.getItem("primepay_token");
+
+if (!token) {
+    window.location.href = "../login.html";
+}
+
+const tableContainer =
+    document.getElementById("tableContainer");
+
+const errorBox =
+    document.getElementById("errorBox");
+
+const countLabel =
+    document.getElementById("countLabel");
+
+const pagination =
+    document.getElementById("pagination");
+
+const paginationInfo =
+    document.getElementById("paginationInfo");
+
+const prevBtn =
+    document.getElementById("prevBtn");
+
+const nextBtn =
+    document.getElementById("nextBtn");
+
+const statusFilter =
+    document.getElementById("statusFilter");
+
+const typeFilter =
+    document.getElementById("typeFilter");
+
+let currentPage = 1;
+const limit = 10;
+let totalPages = 1;
+let totalTransactions = 0;
+
+function loadUser() {
+    try {
+        const user = JSON.parse(
+            localStorage.getItem("primepay_user") || "null"
+        );
+
+        if (!user) return;
+
+        const name = user.name || "Merchant";
+
+        document.getElementById("accountName").textContent =
+            name;
+
+        const initials = name
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0, 2)
+            .map(
+                part => part.charAt(0).toUpperCase()
+            )
+            .join("");
+
+        document.getElementById("avatar").textContent =
+            initials || "P";
+
+    } catch {
+        document.getElementById("accountName").textContent =
+            "Merchant";
+    }
+}
+
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function formatAmount(amount, currency) {
+    const value = Number(amount);
+
+    if (!Number.isFinite(value)) {
+        return "—";
+    }
+
+    try {
+        return new Intl.NumberFormat("en-KE", {
+            style: "currency",
+            currency: currency || "KES",
+            minimumFractionDigits: 2
+        }).format(value);
+    } catch {
+        return `${currency || "KES"} ${value.toFixed(2)}`;
+    }
+}
+
+function formatDate(value) {
+    if (!value) return "—";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return "—";
+    }
+
+    return date.toLocaleString("en-KE", {
+        dateStyle: "medium",
+        timeStyle: "short"
+    });
+}
+
+function statusBadge(status) {
+    const safeStatus =
+        String(status || "unknown").toLowerCase();
+
+    const allowed = [
+        "pending",
+        "processing",
+        "completed",
+        "failed",
+        "cancelled",
+        "refunded"
+    ];
+
+    const className =
+        allowed.includes(safeStatus)
+            ? safeStatus
+            : "pending";
+
+    return `
+        <span class="badge ${className}">
+            ${escapeHtml(safeStatus)}
+        </span>
+    `;
+}
+
+function renderTable(transactions) {
+
+    if (!Array.isArray(transactions) ||
+        transactions.length === 0) {
+
+        tableContainer.innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">≡</div>
+                <h3>No transactions found</h3>
+                <p>
+                    There are no transactions matching the
+                    current filters.
+                </p>
+            </div>
+        `;
+
+        return;
+    }
+
+    const rows = transactions.map(transaction => {
+
+        const reference =
+            transaction.reference || "—";
+
+        const amount =
+            formatAmount(
+                transaction.amount,
+                transaction.currency
+            );
+
+        const type =
+            transaction.type || "—";
+
+        const provider =
+            transaction.provider || "—";
+
+        return `
+            <tr>
+
+                <td>
+                    <span class="reference">
+                        ${escapeHtml(reference)}
+                    </span>
+                </td>
+
+                <td>
+                    <span class="amount">
+                        ${escapeHtml(amount)}
+                    </span>
+                </td>
+
+                <td>
+                    ${escapeHtml(type)}
+                </td>
+
+                <td>
+                    <span class="provider">
+                        ${escapeHtml(provider)}
+                    </span>
+                </td>
+
+                <td>
+                    ${statusBadge(transaction.status)}
+                </td>
+
+                <td>
+                    <span class="date">
+                        ${escapeHtml(
+                            formatDate(
+                                transaction.createdAt
+                            )
+                        )}
+                    </span>
+                </td>
+
+            </tr>
+        `;
+    }).join("");
+
+    tableContainer.innerHTML = `
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                        <th>Provider</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    ${rows}
+                </tbody>
+
+            </table>
+
+        </div>
+    `;
+}
+
+function updatePagination() {
+
+    pagination.style.display =
+        totalTransactions > 0
+            ? "flex"
+            : "none";
+
+    if (!totalTransactions) {
+        return;
+    }
+
+    paginationInfo.textContent =
+        `Page ${currentPage} of ${totalPages} · ${totalTransactions} transaction${totalTransactions === 1 ? "" : "s"}`;
+
+    prevBtn.disabled =
+        currentPage <= 1;
+
+    nextBtn.disabled =
+        currentPage >= totalPages;
+}
+
+async function loadTransactions() {
+
+    errorBox.classList.remove("show");
+    tableContainer.innerHTML = `
+        <div class="loading">
+            Loading transactions...
+        </div>
+    `;
+
+    countLabel.textContent = "Loading...";
+
+    const params = new URLSearchParams();
+
+    params.set("page", currentPage);
+    params.set("limit", limit);
+
+    const status = statusFilter.value;
+    const type = typeFilter.value;
+
+    if (status) {
+        params.set("status", status);
+    }
+
+    if (type) {
+        params.set("type", type);
+    }
+
+    const controller = new AbortController();
+
+    const timeout = setTimeout(
+        () => controller.abort(),
+        15000
+    );
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/transactions?${params.toString()}`,
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                },
+                signal: controller.signal
+            }
+        );
+
+        let data = {};
+
+        try {
+            data = await response.json();
+        } catch {
+            throw new Error(
+                "PrimePay returned an invalid response."
+            );
+        }
+
+        if (response.status === 401) {
+
+            localStorage.removeItem("primepay_token");
+            localStorage.removeItem("primepay_user");
+
+            window.location.href = "../login.html";
+            return;
+        }
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message ||
+                "Unable to load transactions."
+            );
+        }
+
+        const transactions =
+            Array.isArray(data.transactions)
+                ? data.transactions
+                : [];
+
+        const pageData =
+            data.pagination || {};
+
+        totalTransactions =
+            Number(pageData.total) || transactions.length;
+
+        totalPages =
+            Number(pageData.pages) ||
+            Math.max(
+                1,
+                Math.ceil(
+                    totalTransactions / limit
+                )
+            );
+
+        currentPage =
+            Number(pageData.page) || currentPage;
+
+        renderTable(transactions);
+
+        countLabel.textContent =
+            `${totalTransactions} transaction${totalTransactions === 1 ? "" : "s"}`;
+
+        updatePagination();
+
+    } catch (error) {
+
+        if (error.name === "AbortError") {
+            errorBox.textContent =
+                "The request timed out. Check the PrimePay backend and try again.";
+        } else if (error instanceof TypeError) {
+            errorBox.textContent =
+                "Unable to connect to the PrimePay API. Make sure the backend is running.";
+        } else {
+            errorBox.textContent =
+                error.message ||
+                "Unable to load transactions.";
+        }
+
+        errorBox.classList.add("show");
+
+        tableContainer.innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">!</div>
+                <h3>Transactions unavailable</h3>
+                <p>
+                    The transaction list could not be loaded.
+                    No placeholder records are being displayed.
+                </p>
+            </div>
+        `;
+
+        countLabel.textContent = "Unavailable";
+        pagination.style.display = "none";
+
+    } finally {
+
+        clearTimeout(timeout);
+    }
+}
+
+statusFilter.addEventListener("change", () => {
+    currentPage = 1;
+    loadTransactions();
+});
+
+typeFilter.addEventListener("change", () => {
+    currentPage = 1;
+    loadTransactions();
+});
+
+document.getElementById("refreshBtn")
+    .addEventListener("click", loadTransactions);
+
+prevBtn.addEventListener("click", () => {
+
+    if (currentPage <= 1) return;
+
+    currentPage--;
+    loadTransactions();
+});
+
+nextBtn.addEventListener("click", () => {
+
+    if (currentPage >= totalPages) return;
+
+    currentPage++;
+    loadTransactions();
+});
+
+document.getElementById("mobileMenu")
+    .addEventListener("click", () => {
+
+        document
+            .getElementById("sidebar")
+            .classList.toggle("open");
+    });
+
+document.getElementById("logoutBtn")
+    .addEventListener("click", () => {
+
+        localStorage.removeItem("primepay_token");
+        localStorage.removeItem("primepay_user");
+
+        window.location.href = "../login.html";
+    });
+
+loadUser();
+loadTransactions();
+</script>
+
+</body>
+</html>

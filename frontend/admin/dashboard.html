@@ -1,0 +1,5241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Dashboard | PrimePay</title>
+
+<style>
+:root{
+    --bg:#030712;
+    --bg2:#050b18;
+    --panel:#081224;
+    --panel2:#0d1830;
+    --panel3:#111f3a;
+
+    --border:rgba(148,163,184,.13);
+    --border2:rgba(148,163,184,.22);
+
+    --text:#f8fafc;
+    --soft:#cbd5e1;
+    --muted:#8fa0b7;
+
+    --blue:#3b82f6;
+    --blue2:#60a5fa;
+    --cyan:#22d3ee;
+
+    --green:#22c55e;
+    --yellow:#f59e0b;
+    --red:#ef4444;
+    --purple:#a78bfa;
+
+    --shadow:0 24px 70px rgba(0,0,0,.28);
+    --small-shadow:0 12px 35px rgba(0,0,0,.18);
+
+    --radius:18px;
+}
+
+body.light{
+    --bg:#eef2f7;
+    --bg2:#e2e8f0;
+    --panel:#ffffff;
+    --panel2:#f8fafc;
+    --panel3:#f1f5f9;
+
+    --border:rgba(15,23,42,.10);
+    --border2:rgba(15,23,42,.18);
+
+    --text:#0f172a;
+    --soft:#334155;
+    --muted:#64748b;
+
+    --shadow:0 22px 55px rgba(15,23,42,.10);
+    --small-shadow:0 10px 30px rgba(15,23,42,.08);
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+
+    background:
+        radial-gradient(
+            circle at 12% 4%,
+            rgba(37,99,235,.08),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 92% 20%,
+            rgba(34,211,238,.045),
+            transparent 25%
+        ),
+        var(--bg);
+
+    color:var(--text);
+
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    line-height:1.5;
+
+    overflow-x:hidden;
+}
+
+body.light{
+    background:
+        radial-gradient(
+            circle at 12% 4%,
+            rgba(59,130,246,.09),
+            transparent 28%
+        ),
+        var(--bg);
+}
+
+button,
+input,
+select{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+a{
+    color:inherit;
+}
+
+/* =========================================================
+   APP SHELL
+========================================================= */
+
+.app{
+    min-height:100vh;
+}
+
+.sidebar{
+    position:fixed;
+
+    inset:0 auto 0 0;
+
+    width:270px;
+
+    z-index:100;
+
+    display:flex;
+
+    flex-direction:column;
+
+    padding:19px 14px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(3,8,20,.985),
+            rgba(3,7,17,.985)
+        );
+
+    border-right:1px solid var(--border);
+
+    transition:
+        width .25s ease,
+        transform .25s ease;
+}
+
+body.light .sidebar{
+    background:#ffffff;
+}
+
+.brand{
+    display:flex;
+
+    align-items:center;
+
+    gap:11px;
+
+    padding:8px 10px 20px;
+
+    margin-bottom:13px;
+
+    border-bottom:1px solid var(--border);
+}
+
+.brand-mark{
+    width:43px;
+    height:43px;
+
+    display:grid;
+    place-items:center;
+
+    flex:none;
+
+    border-radius:13px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #38bdf8
+        );
+
+    color:#fff;
+
+    font-size:18px;
+
+    font-weight:950;
+
+    box-shadow:
+        0 12px 30px rgba(37,99,235,.25);
+}
+
+.brand-copy strong{
+    display:block;
+
+    font-size:16px;
+
+    letter-spacing:-.025em;
+}
+
+.brand-copy span{
+    display:block;
+
+    margin-top:1px;
+
+    color:var(--muted);
+
+    font-size:9px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.14em;
+
+    font-weight:800;
+}
+
+.nav-scroll{
+    flex:1;
+
+    overflow-y:auto;
+
+    padding-right:3px;
+}
+
+.nav-section{
+    padding:15px 11px 7px;
+
+    color:#64748b;
+
+    font-size:9px;
+
+    font-weight:900;
+
+    letter-spacing:.15em;
+
+    text-transform:uppercase;
+}
+
+.nav{
+    display:flex;
+
+    flex-direction:column;
+
+    gap:4px;
+}
+
+.nav a{
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:10px 11px;
+
+    color:var(--muted);
+
+    text-decoration:none;
+
+    border:1px solid transparent;
+
+    border-radius:10px;
+
+    font-size:12px;
+
+    font-weight:650;
+
+    transition:
+        background .18s ease,
+        color .18s ease,
+        border-color .18s ease,
+        transform .18s ease;
+}
+
+.nav a:hover{
+    color:var(--text);
+
+    background:
+        rgba(96,165,250,.065);
+
+    border-color:
+        rgba(96,165,250,.08);
+
+    transform:translateX(2px);
+}
+
+.nav a.active{
+    color:#ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(37,99,235,.22),
+            rgba(56,189,248,.06)
+        );
+
+    border-color:
+        rgba(96,165,250,.18);
+
+    box-shadow:
+        inset 3px 0 0 #3b82f6;
+}
+
+body.light .nav a.active{
+    color:#0f172a;
+}
+
+.nav-icon{
+    width:20px;
+
+    flex:none;
+
+    text-align:center;
+
+    font-size:13px;
+}
+
+.nav-label{
+    flex:1;
+}
+
+.nav-arrow{
+    color:#475569;
+
+    font-size:10px;
+}
+
+.sidebar-footer{
+    padding-top:13px;
+
+    border-top:1px solid var(--border);
+}
+
+.session{
+    padding:11px;
+
+    margin-bottom:8px;
+
+    border-radius:11px;
+
+    background:var(--panel2);
+
+    border:1px solid var(--border);
+}
+
+.session-label{
+    color:var(--muted);
+
+    font-size:8px;
+
+    font-weight:900;
+
+    letter-spacing:.13em;
+
+    text-transform:uppercase;
+
+    margin-bottom:5px;
+}
+
+.session-value{
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    font-size:11px;
+
+    font-weight:750;
+}
+
+.online-dot{
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:var(--green);
+
+    box-shadow:
+        0 0 0 4px rgba(34,197,94,.08);
+}
+
+.signout{
+    width:100%;
+
+    padding:10px;
+
+    border-radius:9px;
+
+    background:transparent;
+
+    color:var(--muted);
+
+    border:1px solid var(--border);
+
+    font-size:11px;
+
+    font-weight:750;
+}
+
+.signout:hover{
+    color:#fca5a5;
+
+    border-color:
+        rgba(239,68,68,.25);
+
+    background:
+        rgba(239,68,68,.05);
+}
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.main{
+    width:calc(100% - 270px);
+
+    margin-left:270px;
+
+    padding:21px;
+
+    transition:
+        width .25s ease,
+        margin-left .25s ease;
+}
+
+.topbar{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:15px;
+
+    margin-bottom:19px;
+}
+
+.top-left{
+    display:flex;
+
+    align-items:center;
+
+    gap:11px;
+}
+
+.mobile-menu{
+    display:none;
+
+    border:1px solid var(--border);
+
+    background:var(--panel);
+
+    color:var(--text);
+
+    border-radius:9px;
+
+    padding:9px 11px;
+
+    font-size:11px;
+
+    font-weight:800;
+}
+
+.page-context{
+    color:var(--muted);
+
+    font-size:11px;
+}
+
+.page-context strong{
+    color:var(--text);
+
+    font-size:12px;
+}
+
+.top-actions{
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    flex-wrap:wrap;
+}
+
+.tool{
+    border:1px solid var(--border);
+
+    background:var(--panel);
+
+    color:var(--text);
+
+    border-radius:9px;
+
+    padding:8px 10px;
+
+    font-size:10px;
+
+    font-weight:800;
+}
+
+.tool:hover{
+    border-color:
+        rgba(96,165,250,.3);
+
+    background:var(--panel2);
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero{
+    position:relative;
+
+    overflow:hidden;
+
+    padding:28px;
+
+    border-radius:21px;
+
+    border:1px solid var(--border);
+
+    background:
+        radial-gradient(
+            circle at 88% 8%,
+            rgba(34,211,238,.13),
+            transparent 27%
+        ),
+        radial-gradient(
+            circle at 60% 100%,
+            rgba(37,99,235,.14),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(37,99,235,.12),
+            rgba(15,23,42,.08)
+        );
+
+    box-shadow:var(--shadow);
+
+    margin-bottom:17px;
+}
+
+.hero-content{
+    position:relative;
+
+    z-index:2;
+
+    max-width:830px;
+}
+
+.hero-kicker{
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    padding:6px 9px;
+
+    margin-bottom:12px;
+
+    border-radius:999px;
+
+    background:
+        rgba(96,165,250,.08);
+
+    border:1px solid
+        rgba(96,165,250,.14);
+
+    color:var(--blue2);
+
+    font-size:9px;
+
+    font-weight:900;
+
+    letter-spacing:.12em;
+
+    text-transform:uppercase;
+}
+
+.hero h1{
+    font-size:
+        clamp(29px,4vw,44px);
+
+    line-height:1.06;
+
+    letter-spacing:-.05em;
+
+    margin-bottom:9px;
+}
+
+.hero p{
+    color:var(--muted);
+
+    font-size:12px;
+
+    line-height:1.75;
+
+    max-width:760px;
+}
+
+.hero-status{
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    margin-top:17px;
+
+    color:var(--soft);
+
+    font-size:10px;
+
+    font-weight:700;
+}
+
+.hero-status-dot{
+    width:8px;
+    height:8px;
+
+    border-radius:50%;
+
+    background:var(--yellow);
+}
+
+.hero-status-dot.online{
+    background:var(--green);
+
+    box-shadow:
+        0 0 0 4px rgba(34,197,94,.08);
+}
+
+/* =========================================================
+   KPI GRID
+========================================================= */
+
+.kpis{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,minmax(0,1fr));
+
+    gap:12px;
+
+    margin-bottom:17px;
+}
+
+.kpi{
+    position:relative;
+
+    overflow:hidden;
+
+    padding:17px;
+
+    border-radius:15px;
+
+    background:var(--panel);
+
+    border:1px solid var(--border);
+
+    box-shadow:var(--small-shadow);
+
+    transition:
+        transform .18s ease,
+        border-color .18s ease;
+}
+
+.kpi:hover{
+    transform:translateY(-2px);
+
+    border-color:
+        rgba(96,165,250,.21);
+}
+
+.kpi.hidden{
+    display:none;
+}
+
+.kpi-top{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin-bottom:10px;
+}
+
+.kpi-label{
+    color:var(--muted);
+
+    font-size:10px;
+
+    font-weight:750;
+}
+
+.kpi-icon{
+    width:29px;
+    height:29px;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:9px;
+
+    background:
+        rgba(96,165,250,.08);
+
+    color:var(--blue2);
+
+    font-size:10px;
+
+    font-weight:900;
+}
+
+.kpi-value{
+    font-size:26px;
+
+    line-height:1;
+
+    font-weight:900;
+
+    letter-spacing:-.04em;
+}
+
+.kpi-value.loading{
+    color:var(--muted);
+}
+
+.kpi-note{
+    color:var(--muted);
+
+    font-size:9px;
+
+    margin-top:6px;
+}
+
+/* =========================================================
+   GRID SYSTEM
+========================================================= */
+
+.grid-main{
+    display:grid;
+
+    grid-template-columns:
+        minmax(0,1.55fr)
+        minmax(320px,.85fr);
+
+    gap:16px;
+
+    align-items:start;
+}
+
+.column{
+    min-width:0;
+}
+
+/* =========================================================
+   PANEL
+========================================================= */
+
+.panel{
+    background:var(--panel);
+
+    border:1px solid var(--border);
+
+    border-radius:17px;
+
+    padding:19px;
+
+    box-shadow:var(--small-shadow);
+
+    margin-bottom:16px;
+}
+
+.panel-head{
+    display:flex;
+
+    align-items:flex-start;
+
+    justify-content:space-between;
+
+    gap:12px;
+
+    margin-bottom:15px;
+}
+
+.panel-title h2{
+    font-size:16px;
+
+    letter-spacing:-.025em;
+}
+
+.panel-title p{
+    color:var(--muted);
+
+    font-size:10px;
+
+    margin-top:4px;
+
+    line-height:1.55;
+}
+
+.panel-actions{
+    display:flex;
+
+    gap:6px;
+
+    flex-wrap:wrap;
+}
+
+.btn{
+    border:1px solid var(--border);
+
+    background:var(--panel2);
+
+    color:var(--text);
+
+    border-radius:8px;
+
+    padding:8px 10px;
+
+    font-size:9px;
+
+    font-weight:850;
+}
+
+.btn:hover{
+    border-color:
+        rgba(96,165,250,.3);
+}
+
+.btn.primary{
+    color:#fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #0ea5e9
+        );
+
+    border-color:
+        rgba(59,130,246,.55);
+}
+
+.btn.danger{
+    color:#fca5a5;
+
+    border-color:
+        rgba(239,68,68,.18);
+
+    background:
+        rgba(239,68,68,.04);
+}
+
+/* =========================================================
+   QUICK ACCESS
+========================================================= */
+
+.quick-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,minmax(0,1fr));
+
+    gap:9px;
+}
+
+.quick{
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:10px;
+
+    min-height:91px;
+
+    padding:13px;
+
+    text-decoration:none;
+
+    border-radius:12px;
+
+    background:var(--panel2);
+
+    border:1px solid var(--border);
+
+    transition:
+        transform .18s ease,
+        border-color .18s ease,
+        background .18s ease;
+}
+
+.quick:hover{
+    transform:translateY(-2px);
+
+    border-color:
+        rgba(96,165,250,.25);
+
+    background:
+        var(--panel3);
+}
+
+.quick-icon{
+    width:34px;
+    height:34px;
+
+    display:grid;
+    place-items:center;
+
+    flex:none;
+
+    border-radius:10px;
+
+    background:
+        rgba(96,165,250,.08);
+
+    color:var(--blue2);
+
+    font-size:11px;
+
+    font-weight:900;
+}
+
+.quick-copy{
+    min-width:0;
+}
+
+.quick-copy strong{
+    display:block;
+
+    font-size:11px;
+
+    margin-bottom:4px;
+}
+
+.quick-copy span{
+    display:block;
+
+    color:var(--muted);
+
+    font-size:9px;
+
+    line-height:1.5;
+}
+
+/* =========================================================
+   PROVIDER PANEL
+========================================================= */
+
+.provider-list{
+    display:grid;
+
+    gap:8px;
+}
+
+.provider{
+    display:grid;
+
+    grid-template-columns:
+        minmax(0,1fr)
+        auto
+        auto;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:12px;
+
+    border-radius:11px;
+
+    border:1px solid var(--border);
+
+    background:var(--panel2);
+}
+
+.provider-name{
+    display:flex;
+
+    align-items:center;
+
+    gap:9px;
+
+    min-width:0;
+}
+
+.provider-logo{
+    width:31px;
+    height:31px;
+
+    display:grid;
+    place-items:center;
+
+    flex:none;
+
+    border-radius:9px;
+
+    background:
+        rgba(96,165,250,.08);
+
+    color:var(--blue2);
+
+    font-size:9px;
+
+    font-weight:900;
+}
+
+.provider-copy{
+    min-width:0;
+}
+
+.provider-copy strong{
+    display:block;
+
+    font-size:11px;
+}
+
+.provider-copy span{
+    display:block;
+
+    color:var(--muted);
+
+    font-size:8px;
+
+    margin-top:2px;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+}
+
+.status{
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:5px;
+
+    padding:5px 7px;
+
+    border-radius:999px;
+
+    font-size:8px;
+
+    font-weight:900;
+
+    white-space:nowrap;
+}
+
+.status-dot{
+    width:5px;
+    height:5px;
+
+    border-radius:50%;
+}
+
+.status.active{
+    color:#4ade80;
+
+    background:
+        rgba(34,197,94,.07);
+}
+
+.status.active .status-dot{
+    background:var(--green);
+}
+
+.status.inactive{
+    color:#fbbf24;
+
+    background:
+        rgba(245,158,11,.07);
+}
+
+.status.inactive .status-dot{
+    background:var(--yellow);
+}
+
+.status.unknown{
+    color:var(--muted);
+
+    background:
+        rgba(148,163,184,.07);
+}
+
+.status.unknown .status-dot{
+    background:#64748b;
+}
+
+.provider-action{
+    border:1px solid var(--border);
+
+    background:transparent;
+
+    color:var(--muted);
+
+    border-radius:7px;
+
+    padding:6px 8px;
+
+    font-size:8px;
+
+    font-weight:800;
+}
+
+.provider-action:hover{
+    color:var(--text);
+
+    border-color:
+        rgba(96,165,250,.25);
+}
+
+/* =========================================================
+   READINESS
+========================================================= */
+
+.readiness{
+    display:grid;
+
+    gap:9px;
+}
+
+.readiness-item{
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:10px;
+
+    padding:11px;
+
+    border-radius:10px;
+
+    border:1px solid var(--border);
+
+    background:var(--panel2);
+}
+
+.readiness-icon{
+    width:25px;
+    height:25px;
+
+    display:grid;
+    place-items:center;
+
+    flex:none;
+
+    border-radius:7px;
+
+    font-size:9px;
+
+    font-weight:900;
+}
+
+.readiness-icon.good{
+    background:
+        rgba(34,197,94,.08);
+
+    color:#4ade80;
+}
+
+.readiness-icon.warn{
+    background:
+        rgba(245,158,11,.08);
+
+    color:#fbbf24;
+}
+
+.readiness-icon.info{
+    background:
+        rgba(96,165,250,.08);
+
+    color:#60a5fa;
+}
+
+.readiness-copy{
+    flex:1;
+}
+
+.readiness-copy strong{
+    display:block;
+
+    font-size:10px;
+
+    margin-bottom:2px;
+}
+
+.readiness-copy span{
+    color:var(--muted);
+
+    font-size:8px;
+
+    line-height:1.45;
+}
+
+/* =========================================================
+   SYSTEM STATUS
+========================================================= */
+
+.system-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+
+    gap:9px;
+}
+
+.system-card{
+    padding:12px;
+
+    border-radius:10px;
+
+    background:var(--panel2);
+
+    border:1px solid var(--border);
+}
+
+.system-top{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:7px;
+}
+
+.system-label{
+    color:var(--muted);
+
+    font-size:9px;
+
+    font-weight:750;
+}
+
+.system-value{
+    font-size:10px;
+
+    font-weight:850;
+}
+
+.system-value.good{
+    color:#4ade80;
+}
+
+.system-value.warn{
+    color:#fbbf24;
+}
+
+.system-value.bad{
+    color:#f87171;
+}
+
+.system-note{
+    color:var(--muted);
+
+    font-size:8px;
+
+    line-height:1.45;
+}
+
+/* =========================================================
+   OPERATIONAL MATRIX
+========================================================= */
+
+.matrix{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+
+    gap:9px;
+}
+
+.matrix-item{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    padding:11px 12px;
+
+    border-radius:10px;
+
+    border:1px solid var(--border);
+
+    background:var(--panel2);
+}
+
+.matrix-left{
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    min-width:0;
+}
+
+.matrix-icon{
+    width:27px;
+    height:27px;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:8px;
+
+    background:
+        rgba(96,165,250,.07);
+
+    color:var(--blue2);
+
+    font-size:9px;
+
+    font-weight:900;
+}
+
+.matrix-copy{
+    min-width:0;
+}
+
+.matrix-copy strong{
+    display:block;
+
+    font-size:9px;
+}
+
+.matrix-copy span{
+    display:block;
+
+    color:var(--muted);
+
+    font-size:7px;
+
+    margin-top:1px;
+}
+
+.matrix-state{
+    color:#4ade80;
+
+    font-size:8px;
+
+    font-weight:900;
+}
+
+/* =========================================================
+   ACTIVITY NOTICE
+========================================================= */
+
+.notice{
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:11px;
+
+    padding:13px;
+
+    border-radius:11px;
+
+    background:
+        rgba(59,130,246,.05);
+
+    border:1px solid
+        rgba(59,130,246,.12);
+}
+
+.notice-icon{
+    width:31px;
+    height:31px;
+
+    display:grid;
+    place-items:center;
+
+    flex:none;
+
+    border-radius:9px;
+
+    background:
+        rgba(59,130,246,.09);
+
+    color:var(--blue2);
+
+    font-weight:900;
+
+    font-size:10px;
+}
+
+.notice-copy strong{
+    display:block;
+
+    font-size:10px;
+
+    margin-bottom:3px;
+}
+
+.notice-copy p{
+    color:var(--muted);
+
+    font-size:8px;
+
+    line-height:1.55;
+}
+
+/* =========================================================
+   COMMAND PALETTE
+========================================================= */
+
+.palette{
+    position:fixed;
+
+    inset:0;
+
+    z-index:500;
+
+    display:none;
+
+    align-items:flex-start;
+
+    justify-content:center;
+
+    padding-top:12vh;
+
+    background:
+        rgba(0,0,0,.65);
+
+    backdrop-filter:
+        blur(7px);
+}
+
+.palette.open{
+    display:flex;
+}
+
+.palette-box{
+    width:min(680px,calc(100% - 30px));
+
+    overflow:hidden;
+
+    border-radius:17px;
+
+    border:1px solid var(--border2);
+
+    background:var(--panel);
+
+    box-shadow:
+        0 35px 100px rgba(0,0,0,.45);
+}
+
+.palette-search{
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:14px;
+
+    border-bottom:1px solid var(--border);
+}
+
+.palette-search span{
+    color:var(--muted);
+
+    font-size:13px;
+}
+
+.palette-search input{
+    flex:1;
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    color:var(--text);
+
+    font-size:12px;
+}
+
+.palette-list{
+    max-height:440px;
+
+    overflow-y:auto;
+
+    padding:8px;
+}
+
+.palette-item{
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:10px;
+
+    border-radius:9px;
+
+    text-decoration:none;
+
+    border:1px solid transparent;
+}
+
+.palette-item:hover{
+    background:var(--panel2);
+
+    border-color:var(--border);
+}
+
+.palette-icon{
+    width:31px;
+    height:31px;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:8px;
+
+    background:
+        rgba(96,165,250,.08);
+
+    color:var(--blue2);
+
+    font-size:9px;
+
+    font-weight:900;
+}
+
+.palette-copy strong{
+    display:block;
+
+    font-size:10px;
+}
+
+.palette-copy span{
+    display:block;
+
+    color:var(--muted);
+
+    font-size:8px;
+
+    margin-top:2px;
+}
+
+.palette-shortcut{
+    margin-left:auto;
+
+    color:#64748b;
+
+    font-size:8px;
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast{
+    position:fixed;
+
+    right:18px;
+
+    bottom:18px;
+
+    z-index:600;
+
+    min-width:250px;
+
+    max-width:380px;
+
+    padding:12px 14px;
+
+    border-radius:11px;
+
+    background:
+        rgba(15,23,42,.97);
+
+    border:1px solid
+        rgba(148,163,184,.18);
+
+    color:#f8fafc;
+
+    font-size:10px;
+
+    box-shadow:
+        0 20px 55px rgba(0,0,0,.35);
+
+    transform:
+        translateY(18px);
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:.25s;
+}
+
+.toast.show{
+    opacity:1;
+
+    transform:
+        translateY(0);
+}
+
+.toast.success{
+    border-color:
+        rgba(34,197,94,.28);
+}
+
+.toast.error{
+    border-color:
+        rgba(239,68,68,.28);
+}
+
+/* =========================================================
+   OVERLAY
+========================================================= */
+
+.overlay{
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:90;
+
+    background:
+        rgba(0,0,0,.6);
+}
+
+.overlay.show{
+    display:block;
+}
+
+/* =========================================================
+   COMPACT MODE
+========================================================= */
+
+body.compact .panel{
+    padding:15px;
+}
+
+body.compact .quick{
+    min-height:75px;
+
+    padding:10px;
+}
+
+body.compact .kpi{
+    padding:13px;
+}
+
+body.compact .provider{
+    padding:9px;
+}
+
+body.compact .readiness-item{
+    padding:8px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1200px){
+
+    .kpis{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+    }
+
+    .grid-main{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:1000px){
+
+    .sidebar{
+        transform:
+            translateX(-100%);
+    }
+
+    .sidebar.open{
+        transform:
+            translateX(0);
+    }
+
+    .main{
+        width:100%;
+
+        margin-left:0;
+
+        padding:16px;
+    }
+
+    .mobile-menu{
+        display:block;
+    }
+}
+
+@media(max-width:700px){
+
+    .topbar{
+        align-items:flex-start;
+    }
+
+    .top-actions{
+        justify-content:flex-end;
+    }
+
+    .quick-grid{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+    }
+
+    .system-grid,
+    .matrix{
+        grid-template-columns:1fr;
+    }
+
+    .hero{
+        padding:22px;
+    }
+
+    .hero h1{
+        font-size:31px;
+    }
+}
+
+@media(max-width:520px){
+
+    .kpis{
+        grid-template-columns:1fr;
+    }
+
+    .quick-grid{
+        grid-template-columns:1fr;
+    }
+
+    .topbar{
+        flex-direction:column;
+    }
+
+    .top-actions{
+        width:100%;
+    }
+
+    .tool{
+        flex:1;
+    }
+
+    .panel{
+        padding:15px;
+    }
+
+    .provider{
+        grid-template-columns:
+            minmax(0,1fr)
+            auto;
+    }
+
+    .provider-action{
+        display:none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+
+        <div class="brand-mark">
+            P
+        </div>
+
+        <div class="brand-copy">
+            <strong>PrimePay</strong>
+            <span>Administration</span>
+        </div>
+
+    </div>
+
+
+    <div class="nav-scroll">
+
+        <nav class="nav">
+
+            <a
+                class="active"
+                href="dashboard.html"
+            >
+                <span class="nav-icon">▦</span>
+                <span class="nav-label">Dashboard</span>
+                <span class="nav-arrow">›</span>
+            </a>
+
+            <a href="applications.html">
+                <span class="nav-icon">◉</span>
+                <span class="nav-label">Applications</span>
+            </a>
+
+            <a href="merchants.html">
+                <span class="nav-icon">▣</span>
+                <span class="nav-label">Merchants</span>
+            </a>
+
+            <a href="transactions.html">
+                <span class="nav-icon">⇄</span>
+                <span class="nav-label">Transactions</span>
+            </a>
+
+            <a href="providers.html">
+                <span class="nav-icon">◈</span>
+                <span class="nav-label">Providers</span>
+            </a>
+
+            <a href="api-access.html">
+                <span class="nav-icon">⌁</span>
+                <span class="nav-label">API Access</span>
+            </a>
+
+            <div class="nav-section">
+                Operations
+            </div>
+
+            <a href="fees.html">
+                <span class="nav-icon">◇</span>
+                <span class="nav-label">Fees</span>
+            </a>
+
+            <a href="settlements.html">
+                <span class="nav-icon">◫</span>
+                <span class="nav-label">Settlements</span>
+            </a>
+
+            <a href="risk.html">
+                <span class="nav-icon">△</span>
+                <span class="nav-label">Risk</span>
+            </a>
+
+            <a href="audit-logs.html">
+                <span class="nav-icon">☷</span>
+                <span class="nav-label">Audit Logs</span>
+            </a>
+
+            <div class="nav-section">
+                Platform
+            </div>
+
+            <a href="../developer/dashboard.html">
+                <span class="nav-icon">⌘</span>
+                <span class="nav-label">Developer Portal</span>
+            </a>
+
+            <a href="../developer/api-keys.html">
+                <span class="nav-icon">K</span>
+                <span class="nav-label">API Keys</span>
+            </a>
+
+            <a href="../developer/webhooks.html">
+                <span class="nav-icon">W</span>
+                <span class="nav-label">Webhooks</span>
+            </a>
+
+            <a href="../developer/sandbox.html">
+                <span class="nav-icon">S</span>
+                <span class="nav-label">Sandbox</span>
+            </a>
+
+        </nav>
+
+    </div>
+
+
+    <div class="sidebar-footer">
+
+        <div class="session">
+
+            <div class="session-label">
+                Session
+            </div>
+
+            <div class="session-value">
+                <span class="online-dot"></span>
+                Administrator active
+            </div>
+
+        </div>
+
+        <button
+            class="signout"
+            id="signOut"
+        >
+            Sign out
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="main">
+
+    <!-- TOP BAR -->
+
+    <header class="topbar">
+
+        <div class="top-left">
+
+            <button
+                class="mobile-menu"
+                id="menuBtn"
+            >
+                ☰ Menu
+            </button>
+
+            <div
+                class="page-context"
+                id="adminIdentity"
+            >
+                <strong>PrimePay Administrator</strong>
+            </div>
+
+        </div>
+
+
+        <div class="top-actions">
+
+            <button
+                class="tool"
+                id="commandBtn"
+            >
+                ⌕ Command
+            </button>
+
+            <button
+                class="tool"
+                id="refreshBtn"
+            >
+                ↻ Refresh
+            </button>
+
+            <button
+                class="tool"
+                id="themeBtn"
+            >
+                ☀ Light
+            </button>
+
+            <button
+                class="tool"
+                id="cardsBtn"
+            >
+                ◉ Cards
+            </button>
+
+            <button
+                class="tool"
+                id="densityBtn"
+            >
+                ↔ Compact
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="hero-kicker">
+                PRIMEPAY CONTROL CENTER
+            </div>
+
+            <h1>
+                Administrative Dashboard
+            </h1>
+
+            <p>
+                Central operational control for PrimePay's payment
+                infrastructure, merchant environment, providers, developer
+                access and administrative workflows. This dashboard surfaces
+                real backend state where V1 exposes it and clearly marks
+                capabilities that still require backend endpoints.
+            </p>
+
+            <div class="hero-status">
+
+                <span
+                    class="hero-status-dot"
+                    id="healthDot"
+                ></span>
+
+                <span id="healthText">
+                    Checking PrimePay API...
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- KPI CARDS -->
+
+    <section
+        class="kpis"
+        id="kpis"
+    >
+
+        <article class="kpi">
+
+            <div class="kpi-top">
+
+                <span class="kpi-label">
+                    Providers
+                </span>
+
+                <span class="kpi-icon">
+                    P
+                </span>
+
+            </div>
+
+            <div
+                class="kpi-value loading"
+                id="providerCount"
+            >
+                …
+            </div>
+
+            <div class="kpi-note">
+                Registered provider configurations
+            </div>
+
+        </article>
+
+
+        <article class="kpi">
+
+            <div class="kpi-top">
+
+                <span class="kpi-label">
+                    Active providers
+                </span>
+
+                <span class="kpi-icon">
+                    ✓
+                </span>
+
+            </div>
+
+            <div
+                class="kpi-value loading"
+                id="activeProviderCount"
+            >
+                …
+            </div>
+
+            <div class="kpi-note">
+                Providers currently enabled
+            </div>
+
+        </article>
+
+
+        <article class="kpi">
+
+            <div class="kpi-top">
+
+                <span class="kpi-label">
+                    Validated providers
+                </span>
+
+                <span class="kpi-icon">
+                    V
+                </span>
+
+            </div>
+
+            <div
+                class="kpi-value loading"
+                id="validatedProviderCount"
+            >
+                …
+            </div>
+
+            <div class="kpi-note">
+                Provider credentials validated
+            </div>
+
+        </article>
+
+
+        <article class="kpi">
+
+            <div class="kpi-top">
+
+                <span class="kpi-label">
+                    Attention
+                </span>
+
+                <span class="kpi-icon">
+                    !
+                </span>
+
+            </div>
+
+            <div
+                class="kpi-value loading"
+                id="attentionProviderCount"
+            >
+                …
+            </div>
+
+            <div class="kpi-note">
+                Inactive or unvalidated providers
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- MAIN GRID -->
+
+    <section class="grid-main">
+
+        <!-- LEFT COLUMN -->
+
+        <div class="column">
+
+            <!-- QUICK ACCESS -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div class="panel-title">
+
+                        <h2>
+                            Quick Access
+                        </h2>
+
+                        <p>
+                            Direct routes to the platform's main administrative
+                            and operational functions.
+                        </p>
+
+                    </div>
+
+                    <div class="panel-actions">
+
+                        <button
+                            class="btn"
+                            id="openCommand"
+                        >
+                            ⌕ Open command
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="quick-grid">
+
+                    <a
+                        class="quick"
+                        href="applications.html"
+                    >
+
+                        <div class="quick-icon">
+                            A
+                        </div>
+
+                        <div class="quick-copy">
+                            <strong>Applications</strong>
+                            <span>
+                                Merchant onboarding and verification workflow.
+                            </span>
+                        </div>
+
+                    </a>
+
+
+                    <a
+                        class="quick"
+                        href="merchants.html"
+                    >
+
+                        <div class="quick-icon">
+                            M
+                        </div>
+
+                        <div class="quick-copy">
+                            <strong>Merchants</strong>
+                            <span>
+                                Merchant identity and account operations.
+                            </span>
+                        </div>
+
+                    </a>
+
+
+                    <a
+                        class="quick"
+                        href="transactions.html"
+                    >
+
+                        <div class="quick-icon">
+                            T
+                        </div>
+
+                        <div class="quick-copy">
+                            <strong>Transactions</strong>
+                            <span>
+                                Payment transaction command center.
+                            </span>
+                        </div>
+
+                    </a>
+
+
+                    <a
+                        class="quick"
+                        href="providers.html"
+                    >
+
+                        <div class="quick-icon">
+                            P
+                        </div>
+
+                        <div class="quick-copy">
+                            <strong>Providers</strong>
+                            <span>
+                                Activate, deactivate and validate providers.
+                            </span>
+                        </div>
+
+                    </a>
+
+
+                    <a
+                        class="quick"
+                        href="api-access.html"
+                    >
+
+                        <div class="quick-icon">
+                            API
+                        </div>
+
+                        <div class="quick-copy">
+                            <strong>API Access</strong>
+                            <span>
+                                Review administrator API access controls.
+                            </span>
+                        </div>
+
+                    </a>
+
+
+                    <a
+                        class="quick"
+                        href="fees.html"
+                    >
+
+                        <div class="quick-icon">
+                            F
+                        </div>
+
+                        <div class="quick-copy">
+                            <strong>Fees</strong>
+                            <span>
+                                PrimePay and provider fee operations.
+                            </span>
+                        </div>
+
+                    </a>
+
+
+                    <a
+                        class="quick"
+                        href="settlements.html"
+                    >
+
+                        <div class="quick-icon">
+                            S
+                        </div>
+
+                        <div class="quick-copy">
+                            <strong>Settlements</strong>
+                            <span>
+                                Settlement operations workspace.
+                            </span>
+                        </div>
+
+                    </a>
+
+
+                    <a
+                        class="quick"
+                        href="risk.html"
+                    >
+
+                        <div class="quick-icon">
+                            R
+                        </div>
+
+                        <div class="quick-copy">
+                            <strong>Risk</strong>
+                            <span>
+                                Risk and operational review workspace.
+                            </span>
+                        </div>
+
+                    </a>
+
+
+                    <a
+                        class="quick"
+                        href="audit-logs.html"
+                    >
+
+                        <div class="quick-icon">
+                            L
+                        </div>
+
+                        <div class="quick-copy">
+                            <strong>Audit Logs</strong>
+                            <span>
+                                Administrative audit and activity controls.
+                            </span>
+                        </div>
+
+                    </a>
+
+                </div>
+
+            </section>
+
+
+            <!-- PROVIDERS -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div class="panel-title">
+
+                        <h2>
+                            Payment Provider Status
+                        </h2>
+
+                        <p>
+                            Live configuration state returned by the admin
+                            provider API.
+                        </p>
+
+                    </div>
+
+                    <div class="panel-actions">
+
+                        <a
+                            class="btn"
+                            href="providers.html"
+                            style="text-decoration:none;"
+                        >
+                            Manage providers
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="provider-list"
+                    id="providerList"
+                >
+
+                    <div class="provider">
+
+                        <div class="provider-name">
+
+                            <div class="provider-logo">
+                                …
+                            </div>
+
+                            <div class="provider-copy">
+
+                                <strong>
+                                    Loading providers
+                                </strong>
+
+                                <span>
+                                    Contacting PrimePay backend...
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <span class="status unknown">
+                            <span class="status-dot"></span>
+                            Loading
+                        </span>
+
+                        <button
+                            class="provider-action"
+                            disabled
+                        >
+                            —
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- OPERATIONAL MATRIX -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div class="panel-title">
+
+                        <h2>
+                            Operational Matrix
+                        </h2>
+
+                        <p>
+                            Direct visibility into the areas available from
+                            the current V1 platform.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="matrix">
+
+                    <div class="matrix-item">
+
+                        <div class="matrix-left">
+
+                            <div class="matrix-icon">
+                                TX
+                            </div>
+
+                            <div class="matrix-copy">
+
+                                <strong>
+                                    Transactions
+                                </strong>
+
+                                <span>
+                                    Payment activity
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <span class="matrix-state">
+                            READY
+                        </span>
+
+                    </div>
+
+
+                    <div class="matrix-item">
+
+                        <div class="matrix-left">
+
+                            <div class="matrix-icon">
+                                PR
+                            </div>
+
+                            <div class="matrix-copy">
+
+                                <strong>
+                                    Providers
+                                </strong>
+
+                                <span>
+                                    Provider controls
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <span class="matrix-state">
+                            READY
+                        </span>
+
+                    </div>
+
+
+                    <div class="matrix-item">
+
+                        <div class="matrix-left">
+
+                            <div class="matrix-icon">
+                                KY
+                            </div>
+
+                            <div class="matrix-copy">
+
+                                <strong>
+                                    Merchant verification
+                                </strong>
+
+                                <span>
+                                    Registry API pending
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <span class="matrix-state">
+                            PARTIAL
+                        </span>
+
+                    </div>
+
+
+                    <div class="matrix-item">
+
+                        <div class="matrix-left">
+
+                            <div class="matrix-icon">
+                                API
+                            </div>
+
+                            <div class="matrix-copy">
+
+                                <strong>
+                                    Developer access
+                                </strong>
+
+                                <span>
+                                    API key infrastructure
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <span class="matrix-state">
+                            READY
+                        </span>
+
+                    </div>
+
+
+                    <div class="matrix-item">
+
+                        <div class="matrix-left">
+
+                            <div class="matrix-icon">
+                                WH
+                            </div>
+
+                            <div class="matrix-copy">
+
+                                <strong>
+                                    Webhooks
+                                </strong>
+
+                                <span>
+                                    Delivery infrastructure
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <span class="matrix-state">
+                            READY
+                        </span>
+
+                    </div>
+
+
+                    <div class="matrix-item">
+
+                        <div class="matrix-left">
+
+                            <div class="matrix-icon">
+                                ST
+                            </div>
+
+                            <div class="matrix-copy">
+
+                                <strong>
+                                    Settlements
+                                </strong>
+
+                                <span>
+                                    Admin UI pending backend surface
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <span class="matrix-state">
+                            PARTIAL
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- RIGHT COLUMN -->
+
+        <div class="column">
+
+            <!-- SYSTEM STATUS -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div class="panel-title">
+
+                        <h2>
+                            System Status
+                        </h2>
+
+                        <p>
+                            Basic availability checks.
+                        </p>
+
+                    </div>
+
+                    <button
+                        class="btn"
+                        id="healthRefresh"
+                    >
+                        Check
+                    </button>
+
+                </div>
+
+
+                <div class="system-grid">
+
+                    <div class="system-card">
+
+                        <div class="system-top">
+
+                            <span class="system-label">
+                                API
+                            </span>
+
+                            <span
+                                class="system-value"
+                                id="apiStatus"
+                            >
+                                Checking
+                            </span>
+
+                        </div>
+
+                        <div class="system-note">
+                            PrimePay backend health endpoint.
+                        </div>
+
+                    </div>
+
+
+                    <div class="system-card">
+
+                        <div class="system-top">
+
+                            <span class="system-label">
+                                Providers
+                            </span>
+
+                            <span
+                                class="system-value"
+                                id="providerStatus"
+                            >
+                                Checking
+                            </span>
+
+                        </div>
+
+                        <div class="system-note">
+                            Administrator provider registry.
+                        </div>
+
+                    </div>
+
+
+                    <div class="system-card">
+
+                        <div class="system-top">
+
+                            <span class="system-label">
+                                Session
+                            </span>
+
+                            <span
+                                class="system-value good"
+                            >
+                                Active
+                            </span>
+
+                        </div>
+
+                        <div class="system-note">
+                            JWT session is present in this browser.
+                        </div>
+
+                    </div>
+
+
+                    <div class="system-card">
+
+                        <div class="system-top">
+
+                            <span class="system-label">
+                                Environment
+                            </span>
+
+                            <span
+                                class="system-value"
+                                id="environmentStatus"
+                            >
+                                Browser
+                            </span>
+
+                        </div>
+
+                        <div class="system-note">
+                            Backend environment is determined server-side.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- READINESS -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div class="panel-title">
+
+                        <h2>
+                            Platform Readiness
+                        </h2>
+
+                        <p>
+                            What the current PrimePay V1 surface can actually
+                            support.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="readiness">
+
+                    <div class="readiness-item">
+
+                        <div
+                            class="readiness-icon"
+                            id="readinessApiIcon"
+                        >
+                            …
+                        </div>
+
+                        <div class="readiness-copy">
+
+                            <strong>
+                                API availability
+                            </strong>
+
+                            <span id="readinessApiText">
+                                Checking backend health.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="readiness-item">
+
+                        <div class="readiness-icon info">
+                            ✓
+                        </div>
+
+                        <div class="readiness-copy">
+
+                            <strong>
+                                Payment state machine
+                            </strong>
+
+                            <span>
+                                Tested backend lifecycle controls are
+                                available.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="readiness-item">
+
+                        <div class="readiness-icon info">
+                            ✓
+                        </div>
+
+                        <div class="readiness-copy">
+
+                            <strong>
+                                Idempotency
+                            </strong>
+
+                            <span>
+                                Payment requests use idempotency protection.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="readiness-item">
+
+                        <div class="readiness-icon info">
+                            ✓
+                        </div>
+
+                        <div class="readiness-copy">
+
+                            <strong>
+                                Webhook delivery
+                            </strong>
+
+                            <span>
+                                Queue, retry and delivery infrastructure is
+                                available in V1.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="readiness-item">
+
+                        <div class="readiness-icon warn">
+                            !
+                        </div>
+
+                        <div class="readiness-copy">
+
+                            <strong>
+                                Merchant-wide administration
+                            </strong>
+
+                            <span>
+                                Requires administrator merchant registry
+                                endpoints.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="readiness-item">
+
+                        <div class="readiness-icon warn">
+                            !
+                        </div>
+
+                        <div class="readiness-copy">
+
+                            <strong>
+                                Settlement administration
+                            </strong>
+
+                            <span>
+                                Requires the corresponding backend settlement
+                                management API.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- DEVELOPER ACCESS -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div class="panel-title">
+
+                        <h2>
+                            Developer Access
+                        </h2>
+
+                        <p>
+                            Direct administrative access to integration tools.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="quick-grid">
+
+                    <a
+                        class="quick"
+                        href="../developer/api-keys.html"
+                    >
+
+                        <div class="quick-icon">
+                            K
+                        </div>
+
+                        <div class="quick-copy">
+                            <strong>API Keys</strong>
+                            <span>
+                                Create, rotate and revoke credentials.
+                            </span>
+                        </div>
+
+                    </a>
+
+
+                    <a
+                        class="quick"
+                        href="../developer/webhooks.html"
+                    >
+
+                        <div class="quick-icon">
+                            W
+                        </div>
+
+                        <div class="quick-copy">
+                            <strong>Webhooks</strong>
+                            <span>
+                                Configure endpoints and delivery retries.
+                            </span>
+                        </div>
+
+                    </a>
+
+
+                    <a
+                        class="quick"
+                        href="../developer/sandbox.html"
+                    >
+
+                        <div class="quick-icon">
+                            S
+                        </div>
+
+                        <div class="quick-copy">
+                            <strong>Sandbox</strong>
+                            <span>
+                                Test payment requests with sandbox keys.
+                            </span>
+                        </div>
+
+                    </a>
+
+
+                    <a
+                        class="quick"
+                        href="../developer/docs.html"
+                    >
+
+                        <div class="quick-icon">
+                            D
+                        </div>
+
+                        <div class="quick-copy">
+                            <strong>Documentation</strong>
+                            <span>
+                                Integration reference and API behavior.
+                            </span>
+                        </div>
+
+                    </a>
+
+
+                    <a
+                        class="quick"
+                        href="../developer/logs.html"
+                    >
+
+                        <div class="quick-icon">
+                            L
+                        </div>
+
+                        <div class="quick-copy">
+                            <strong>Activity</strong>
+                            <span>
+                                Transaction-backed developer activity view.
+                            </span>
+                        </div>
+
+                    </a>
+
+
+                    <a
+                        class="quick"
+                        href="../merchant/dashboard.html"
+                    >
+
+                        <div class="quick-icon">
+                            ↗
+                        </div>
+
+                        <div class="quick-copy">
+                            <strong>Merchant Portal</strong>
+                            <span>
+                                Open the merchant-facing application.
+                            </span>
+                        </div>
+
+                    </a>
+
+                </div>
+
+            </section>
+
+
+            <!-- SECURITY -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div class="panel-title">
+
+                        <h2>
+                            Security Posture
+                        </h2>
+
+                        <p>
+                            Core protections implemented in the current
+                            backend.
+                        </p>
+
+                    </div>
+
+                    <a
+                        class="btn"
+                        href="audit-logs.html"
+                        style="text-decoration:none;"
+                    >
+                        Audit logs
+                    </a>
+
+                </div>
+
+
+                <div class="notice">
+
+                    <div class="notice-icon">
+                        S
+                    </div>
+
+                    <div class="notice-copy">
+
+                        <strong>
+                            Server-authoritative payment infrastructure
+                        </strong>
+
+                        <p>
+                            Authentication, API-key protection, idempotency,
+                            webhook integrity, payment state transitions and
+                            provider verification are enforced by the backend.
+                            The frontend is intentionally treated as a client,
+                            not as the authority on money.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </section>
+
+
+    <!-- ADMIN SHORTCUT MATRIX -->
+
+    <section class="panel">
+
+        <div class="panel-head">
+
+            <div class="panel-title">
+
+                <h2>
+                    Administrative Workspace
+                </h2>
+
+                <p>
+                    One-screen access to every administrative surface currently
+                    represented in the PrimePay frontend.
+                </p>
+
+            </div>
+
+            <div class="panel-actions">
+
+                <button
+                    class="btn primary"
+                    id="workspaceCommand"
+                >
+                    ⌕ Command Center
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="matrix">
+
+            <div class="matrix-item">
+
+                <div class="matrix-left">
+
+                    <div class="matrix-icon">
+                        AP
+                    </div>
+
+                    <div class="matrix-copy">
+
+                        <strong>
+                            Applications
+                        </strong>
+
+                        <span>
+                            Merchant onboarding
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <a
+                    class="btn"
+                    href="applications.html"
+                    style="text-decoration:none;"
+                >
+                    Open
+                </a>
+
+            </div>
+
+
+            <div class="matrix-item">
+
+                <div class="matrix-left">
+
+                    <div class="matrix-icon">
+                        ME
+                    </div>
+
+                    <div class="matrix-copy">
+
+                        <strong>
+                            Merchants
+                        </strong>
+
+                        <span>
+                            Merchant operations
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <a
+                    class="btn"
+                    href="merchants.html"
+                    style="text-decoration:none;"
+                >
+                    Open
+                </a>
+
+            </div>
+
+
+            <div class="matrix-item">
+
+                <div class="matrix-left">
+
+                    <div class="matrix-icon">
+                        TX
+                    </div>
+
+                    <div class="matrix-copy">
+
+                        <strong>
+                            Transactions
+                        </strong>
+
+                        <span>
+                            Transaction command center
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <a
+                    class="btn"
+                    href="transactions.html"
+                    style="text-decoration:none;"
+                >
+                    Open
+                </a>
+
+            </div>
+
+
+            <div class="matrix-item">
+
+                <div class="matrix-left">
+
+                    <div class="matrix-icon">
+                        PR
+                    </div>
+
+                    <div class="matrix-copy">
+
+                        <strong>
+                            Providers
+                        </strong>
+
+                        <span>
+                            Provider operations
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <a
+                    class="btn"
+                    href="providers.html"
+                    style="text-decoration:none;"
+                >
+                    Open
+                </a>
+
+            </div>
+
+
+            <div class="matrix-item">
+
+                <div class="matrix-left">
+
+                    <div class="matrix-icon">
+                        API
+                    </div>
+
+                    <div class="matrix-copy">
+
+                        <strong>
+                            API Access
+                        </strong>
+
+                        <span>
+                            Administrative API controls
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <a
+                    class="btn"
+                    href="api-access.html"
+                    style="text-decoration:none;"
+                >
+                    Open
+                </a>
+
+            </div>
+
+
+            <div class="matrix-item">
+
+                <div class="matrix-left">
+
+                    <div class="matrix-icon">
+                        FE
+                    </div>
+
+                    <div class="matrix-copy">
+
+                        <strong>
+                            Fees
+                        </strong>
+
+                        <span>
+                            Fee configuration workspace
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <a
+                    class="btn"
+                    href="fees.html"
+                    style="text-decoration:none;"
+                >
+                    Open
+                </a>
+
+            </div>
+
+
+            <div class="matrix-item">
+
+                <div class="matrix-left">
+
+                    <div class="matrix-icon">
+                        ST
+                    </div>
+
+                    <div class="matrix-copy">
+
+                        <strong>
+                            Settlements
+                        </strong>
+
+                        <span>
+                            Settlement operations
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <a
+                    class="btn"
+                    href="settlements.html"
+                    style="text-decoration:none;"
+                >
+                    Open
+                </a>
+
+            </div>
+
+
+            <div class="matrix-item">
+
+                <div class="matrix-left">
+
+                    <div class="matrix-icon">
+                        RK
+                    </div>
+
+                    <div class="matrix-copy">
+
+                        <strong>
+                            Risk
+                        </strong>
+
+                        <span>
+                            Risk operations
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <a
+                    class="btn"
+                    href="risk.html"
+                    style="text-decoration:none;"
+                >
+                    Open
+                </a>
+
+            </div>
+
+
+            <div class="matrix-item">
+
+                <div class="matrix-left">
+
+                    <div class="matrix-icon">
+                        AU
+                    </div>
+
+                    <div class="matrix-copy">
+
+                        <strong>
+                            Audit Logs
+                        </strong>
+
+                        <span>
+                            Administrative history
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <a
+                    class="btn"
+                    href="audit-logs.html"
+                    style="text-decoration:none;"
+                >
+                    Open
+                </a>
+
+            </div>
+
+
+            <div class="matrix-item">
+
+                <div class="matrix-left">
+
+                    <div class="matrix-icon">
+                        DV
+                    </div>
+
+                    <div class="matrix-copy">
+
+                        <strong>
+                            Developer Portal
+                        </strong>
+
+                        <span>
+                            Integrations and sandbox
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <a
+                    class="btn"
+                    href="../developer/dashboard.html"
+                    style="text-decoration:none;"
+                >
+                    Open
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER NOTICE -->
+
+    <section class="panel">
+
+        <div class="notice">
+
+            <div class="notice-icon">
+                i
+            </div>
+
+            <div class="notice-copy">
+
+                <strong>
+                    PrimePay V1 dashboard principle
+                </strong>
+
+                <p>
+                    This dashboard intentionally distinguishes between
+                    implemented backend capabilities and frontend surfaces that
+                    are awaiting their corresponding APIs. No revenue,
+                    merchant counts, transaction totals, settlement figures or
+                    system metrics are fabricated here. When the backend gains
+                    those endpoints, this dashboard can consume the real data
+                    without rebuilding the interface.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+</div>
+
+
+<!-- =====================================================
+     COMMAND PALETTE
+===================================================== -->
+
+<div
+    class="palette"
+    id="palette"
+>
+
+    <div class="palette-box">
+
+        <div class="palette-search">
+
+            <span>
+                ⌕
+            </span>
+
+            <input
+                id="paletteInput"
+                type="search"
+                placeholder="Search PrimePay admin..."
+                autocomplete="off"
+            >
+
+            <span>
+                ESC
+            </span>
+
+        </div>
+
+
+        <div
+            class="palette-list"
+            id="paletteList"
+        >
+
+            <a
+                class="palette-item"
+                href="dashboard.html"
+                data-search="dashboard home command center"
+            >
+
+                <div class="palette-icon">
+                    D
+                </div>
+
+                <div class="palette-copy">
+
+                    <strong>
+                        Admin Dashboard
+                    </strong>
+
+                    <span>
+                        PrimePay control center
+                    </span>
+
+                </div>
+
+                <span class="palette-shortcut">
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                class="palette-item"
+                href="applications.html"
+                data-search="applications onboarding verification"
+            >
+
+                <div class="palette-icon">
+                    A
+                </div>
+
+                <div class="palette-copy">
+
+                    <strong>
+                        Applications
+                    </strong>
+
+                    <span>
+                        Merchant application workflow
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <a
+                class="palette-item"
+                href="merchants.html"
+                data-search="merchants businesses business registry"
+            >
+
+                <div class="palette-icon">
+                    M
+                </div>
+
+                <div class="palette-copy">
+
+                    <strong>
+                        Merchants
+                    </strong>
+
+                    <span>
+                        Merchant management
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <a
+                class="palette-item"
+                href="transactions.html"
+                data-search="transactions payments refunds payouts"
+            >
+
+                <div class="palette-icon">
+                    T
+                </div>
+
+                <div class="palette-copy">
+
+                    <strong>
+                        Transactions
+                    </strong>
+
+                    <span>
+                        Transaction command center
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <a
+                class="palette-item"
+                href="providers.html"
+                data-search="providers mpesa stripe paypal dlocal"
+            >
+
+                <div class="palette-icon">
+                    P
+                </div>
+
+                <div class="palette-copy">
+
+                    <strong>
+                        Providers
+                    </strong>
+
+                    <span>
+                        Provider activation and validation
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <a
+                class="palette-item"
+                href="api-access.html"
+                data-search="api access administrator api"
+            >
+
+                <div class="palette-icon">
+                    API
+                </div>
+
+                <div class="palette-copy">
+
+                    <strong>
+                        API Access
+                    </strong>
+
+                    <span>
+                        Administrative API controls
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <a
+                class="palette-item"
+                href="fees.html"
+                data-search="fees pricing primepay provider"
+            >
+
+                <div class="palette-icon">
+                    F
+                </div>
+
+                <div class="palette-copy">
+
+                    <strong>
+                        Fees
+                    </strong>
+
+                    <span>
+                        Fee operations
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <a
+                class="palette-item"
+                href="settlements.html"
+                data-search="settlements settlement money"
+            >
+
+                <div class="palette-icon">
+                    S
+                </div>
+
+                <div class="palette-copy">
+
+                    <strong>
+                        Settlements
+                    </strong>
+
+                    <span>
+                        Settlement operations
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <a
+                class="palette-item"
+                href="risk.html"
+                data-search="risk fraud security review"
+            >
+
+                <div class="palette-icon">
+                    R
+                </div>
+
+                <div class="palette-copy">
+
+                    <strong>
+                        Risk
+                    </strong>
+
+                    <span>
+                        Risk operations
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <a
+                class="palette-item"
+                href="audit-logs.html"
+                data-search="audit logs history events"
+            >
+
+                <div class="palette-icon">
+                    L
+                </div>
+
+                <div class="palette-copy">
+
+                    <strong>
+                        Audit Logs
+                    </strong>
+
+                    <span>
+                        Administrative activity
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <a
+                class="palette-item"
+                href="../developer/api-keys.html"
+                data-search="developer api keys credentials"
+            >
+
+                <div class="palette-icon">
+                    K
+                </div>
+
+                <div class="palette-copy">
+
+                    <strong>
+                        Developer API Keys
+                    </strong>
+
+                    <span>
+                        Credential lifecycle
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <a
+                class="palette-item"
+                href="../developer/webhooks.html"
+                data-search="developer webhooks delivery retry"
+            >
+
+                <div class="palette-icon">
+                    W
+                </div>
+
+                <div class="palette-copy">
+
+                    <strong>
+                        Developer Webhooks
+                    </strong>
+
+                    <span>
+                        Endpoint and delivery management
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <a
+                class="palette-item"
+                href="../developer/sandbox.html"
+                data-search="sandbox testing payment api"
+            >
+
+                <div class="palette-icon">
+                    S
+                </div>
+
+                <div class="palette-copy">
+
+                    <strong>
+                        Sandbox
+                    </strong>
+
+                    <span>
+                        Test developer payments
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <a
+                class="palette-item"
+                href="../developer/docs.html"
+                data-search="documentation docs api reference"
+            >
+
+                <div class="palette-icon">
+                    D
+                </div>
+
+                <div class="palette-copy">
+
+                    <strong>
+                        Documentation
+                    </strong>
+
+                    <span>
+                        PrimePay API documentation
+                    </span>
+
+                </div>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     TOAST
+===================================================== -->
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+<script>
+/* =========================================================
+   CONFIG
+========================================================= */
+
+const API_URL =
+    "http://localhost:5001/api/v1";
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+const token =
+    localStorage.getItem(
+        "primepay_token"
+    );
+
+const userRaw =
+    localStorage.getItem(
+        "primepay_user"
+    );
+
+if(!token){
+
+    window.location.href =
+        "../login.html";
+}
+
+let user = null;
+
+try{
+
+    user =
+        userRaw
+        ? JSON.parse(userRaw)
+        : null;
+
+}catch(error){
+
+    user = null;
+}
+
+if(
+    user &&
+    user.role &&
+    user.role !== "admin"
+){
+
+    window.location.href =
+        "../merchant/dashboard.html";
+}
+
+
+/* =========================================================
+   IDENTITY
+========================================================= */
+
+const identity =
+    document.getElementById(
+        "adminIdentity"
+    );
+
+if(user){
+
+    const name =
+        user.name ||
+        "PrimePay Administrator";
+
+    const email =
+        user.email ||
+        "";
+
+    identity.innerHTML =
+        `<strong>${escapeHTML(name)}</strong>` +
+        (email
+            ? ` · ${escapeHTML(email)}`
+            : "");
+}
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function escapeHTML(value){
+
+    return String(
+        value ?? ""
+    )
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+
+function providerName(provider){
+
+    if(!provider){
+
+        return "Unknown";
+    }
+
+    if(
+        typeof provider === "string"
+    ){
+
+        return provider;
+    }
+
+    return (
+        provider.name ||
+        provider.provider ||
+        provider.slug ||
+        provider.id ||
+        "Unknown"
+    );
+}
+
+
+function providerActive(provider){
+
+    if(!provider){
+
+        return false;
+    }
+
+    if(
+        typeof provider.active === "boolean"
+    ){
+
+        return provider.active;
+    }
+
+    if(
+        typeof provider.isActive === "boolean"
+    ){
+
+        return provider.isActive;
+    }
+
+    if(
+        typeof provider.enabled === "boolean"
+    ){
+
+        return provider.enabled;
+    }
+
+    if(
+        typeof provider.status === "string"
+    ){
+
+        return provider.status.toLowerCase()
+            === "active";
+    }
+
+    return false;
+}
+
+
+function providerValidated(provider){
+
+    if(!provider){
+
+        return false;
+    }
+
+    if(
+        typeof provider.validated === "boolean"
+    ){
+
+        return provider.validated;
+    }
+
+    if(
+        typeof provider.isValidated === "boolean"
+    ){
+
+        return provider.isValidated;
+    }
+
+    if(
+        typeof provider.validationStatus === "string"
+    ){
+
+        return provider.validationStatus
+            .toLowerCase()
+            === "validated";
+    }
+
+    return false;
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer = null;
+
+function toast(
+    message,
+    type="success"
+){
+
+    const element =
+        document.getElementById(
+            "toast"
+        );
+
+    element.textContent =
+        message;
+
+    element.className =
+        `toast ${type} show`;
+
+    clearTimeout(
+        toastTimer
+    );
+
+    toastTimer =
+        setTimeout(
+            () => {
+
+                element.classList.remove(
+                    "show"
+                );
+
+            },
+            3200
+        );
+}
+
+
+/* =========================================================
+   FETCH WITH TIMEOUT
+========================================================= */
+
+async function request(
+    url,
+    options={}
+){
+
+    const controller =
+        new AbortController();
+
+    const timeout =
+        setTimeout(
+            () => controller.abort(),
+            15000
+        );
+
+    try{
+
+        const response =
+            await fetch(
+                url,
+                {
+                    ...options,
+                    signal:
+                        controller.signal,
+
+                    headers:{
+                        ...(options.headers || {}),
+
+                        Authorization:
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+        let data = null;
+
+        try{
+
+            data =
+                await response.json();
+
+        }catch{
+
+            data = null;
+        }
+
+        if(
+            response.status === 401
+        ){
+
+            localStorage.removeItem(
+                "primepay_token"
+            );
+
+            localStorage.removeItem(
+                "primepay_user"
+            );
+
+            window.location.href =
+                "../login.html";
+
+            return null;
+        }
+
+        if(
+            !response.ok
+        ){
+
+            throw new Error(
+                data?.message ||
+                `Request failed (${response.status})`
+            );
+        }
+
+        return data;
+
+    }finally{
+
+        clearTimeout(
+            timeout
+        );
+    }
+}
+
+
+/* =========================================================
+   THEME
+========================================================= */
+
+const themeBtn =
+    document.getElementById(
+        "themeBtn"
+    );
+
+const savedTheme =
+    localStorage.getItem(
+        "primepay_admin_theme"
+    );
+
+if(
+    savedTheme === "light"
+){
+
+    document.body.classList.add(
+        "light"
+    );
+}
+
+
+function updateTheme(){
+
+    themeBtn.textContent =
+        document.body.classList.contains(
+            "light"
+        )
+        ? "☾ Dark"
+        : "☀ Light";
+}
+
+
+themeBtn.addEventListener(
+    "click",
+    () => {
+
+        document.body.classList.toggle(
+            "light"
+        );
+
+        localStorage.setItem(
+            "primepay_admin_theme",
+            document.body.classList.contains(
+                "light"
+            )
+            ? "light"
+            : "dark"
+        );
+
+        updateTheme();
+    }
+);
+
+updateTheme();
+
+
+/* =========================================================
+   CARD VISIBILITY
+========================================================= */
+
+const cardsBtn =
+    document.getElementById(
+        "cardsBtn"
+    );
+
+const kpis =
+    document.getElementById(
+        "kpis"
+    );
+
+const savedCards =
+    localStorage.getItem(
+        "primepay_admin_cards"
+    );
+
+if(
+    savedCards === "hidden"
+){
+
+    kpis
+        .querySelectorAll(".kpi")
+        .forEach(
+            card =>
+                card.classList.add(
+                    "hidden"
+                )
+        );
+}
+
+
+function updateCards(){
+
+    const hidden =
+        kpis
+            .querySelectorAll(
+                ".kpi.hidden"
+            )
+            .length ===
+        kpis.children.length;
+
+    cardsBtn.textContent =
+        hidden
+        ? "◉ Show cards"
+        : "◉ Cards";
+}
+
+
+cardsBtn.addEventListener(
+    "click",
+    () => {
+
+        const cards =
+            kpis.querySelectorAll(
+                ".kpi"
+            );
+
+        const currentlyHidden =
+            cards[0]
+                ?.classList
+                .contains("hidden");
+
+        cards.forEach(
+            card => {
+
+                card.classList.toggle(
+                    "hidden",
+                    !currentlyHidden
+                );
+            }
+        );
+
+        localStorage.setItem(
+            "primepay_admin_cards",
+            currentlyHidden
+            ? "shown"
+            : "hidden"
+        );
+
+        updateCards();
+    }
+);
+
+updateCards();
+
+
+/* =========================================================
+   DENSITY
+========================================================= */
+
+const densityBtn =
+    document.getElementById(
+        "densityBtn"
+    );
+
+const savedDensity =
+    localStorage.getItem(
+        "primepay_admin_density"
+    );
+
+if(
+    savedDensity === "compact"
+){
+
+    document.body.classList.add(
+        "compact"
+    );
+}
+
+
+function updateDensity(){
+
+    densityBtn.textContent =
+        document.body.classList.contains(
+            "compact"
+        )
+        ? "↔ Comfortable"
+        : "↔ Compact";
+}
+
+
+densityBtn.addEventListener(
+    "click",
+    () => {
+
+        document.body.classList.toggle(
+            "compact"
+        );
+
+        localStorage.setItem(
+            "primepay_admin_density",
+            document.body.classList.contains(
+                "compact"
+            )
+            ? "compact"
+            : "comfortable"
+        );
+
+        updateDensity();
+    }
+);
+
+updateDensity();
+
+
+/* =========================================================
+   MOBILE SIDEBAR
+========================================================= */
+
+const sidebar =
+    document.getElementById(
+        "sidebar"
+    );
+
+const overlay =
+    document.createElement(
+        "div"
+    );
+
+overlay.className =
+    "overlay";
+
+document.body.appendChild(
+    overlay
+);
+
+document
+    .getElementById("menuBtn")
+    .addEventListener(
+        "click",
+        () => {
+
+            sidebar.classList.add(
+                "open"
+            );
+
+            overlay.classList.add(
+                "show"
+            );
+        }
+    );
+
+overlay.addEventListener(
+    "click",
+    closeSidebar
+);
+
+document
+    .querySelectorAll(".nav a")
+    .forEach(
+        link => {
+
+            link.addEventListener(
+                "click",
+                closeSidebar
+            );
+        }
+    );
+
+
+function closeSidebar(){
+
+    sidebar.classList.remove(
+        "open"
+    );
+
+    overlay.classList.remove(
+        "show"
+    );
+}
+
+
+/* =========================================================
+   SIGN OUT
+========================================================= */
+
+document
+    .getElementById("signOut")
+    .addEventListener(
+        "click",
+        () => {
+
+            localStorage.removeItem(
+                "primepay_token"
+            );
+
+            localStorage.removeItem(
+                "primepay_user"
+            );
+
+            window.location.href =
+                "../login.html";
+        }
+    );
+
+
+/* =========================================================
+   HEALTH CHECK
+========================================================= */
+
+async function checkHealth(){
+
+    const dot =
+        document.getElementById(
+            "healthDot"
+        );
+
+    const text =
+        document.getElementById(
+            "healthText"
+        );
+
+    const apiStatus =
+        document.getElementById(
+            "apiStatus"
+        );
+
+    const readinessIcon =
+        document.getElementById(
+            "readinessApiIcon"
+        );
+
+    const readinessText =
+        document.getElementById(
+            "readinessApiText"
+        );
+
+    dot.classList.remove(
+        "online"
+    );
+
+    dot.style.background =
+        "var(--yellow)";
+
+    text.textContent =
+        "Checking PrimePay API...";
+
+    apiStatus.textContent =
+        "Checking";
+
+    apiStatus.className =
+        "system-value";
+
+    readinessIcon.textContent =
+        "…";
+
+    readinessIcon.className =
+        "readiness-icon warn";
+
+    readinessText.textContent =
+        "Checking backend health.";
+
+    try{
+
+        const controller =
+            new AbortController();
+
+        const timeout =
+            setTimeout(
+                () => controller.abort(),
+                8000
+            );
+
+        const response =
+            await fetch(
+                `${API_URL}/health`,
+                {
+                    signal:
+                        controller.signal
+                }
+            );
+
+        clearTimeout(
+            timeout
+        );
+
+        const data =
+            await response.json()
+            .catch(
+                () => null
+            );
+
+        if(
+            !response.ok
+        ){
+
+            throw new Error(
+                `Health check failed (${response.status})`
+            );
+        }
+
+        dot.classList.add(
+            "online"
+        );
+
+        dot.style.background =
+            "var(--green)";
+
+        text.textContent =
+            data?.message ||
+            data?.status ||
+            "PrimePay API is available";
+
+        apiStatus.textContent =
+            "Online";
+
+        apiStatus.className =
+            "system-value good";
+
+        readinessIcon.textContent =
+            "✓";
+
+        readinessIcon.className =
+            "readiness-icon good";
+
+        readinessText.textContent =
+            "PrimePay API health endpoint responded successfully.";
+
+    }catch(error){
+
+        dot.style.background =
+            "var(--red)";
+
+        text.textContent =
+            "PrimePay API is unavailable";
+
+        apiStatus.textContent =
+            "Unavailable";
+
+        apiStatus.className =
+            "system-value bad";
+
+        readinessIcon.textContent =
+            "!";
+
+        readinessIcon.className =
+            "readiness-icon warn";
+
+        readinessText.textContent =
+            "The frontend could not reach the PrimePay API.";
+
+    }
+}
+
+
+/* =========================================================
+   PROVIDERS
+========================================================= */
+
+async function loadProviders(){
+
+    const list =
+        document.getElementById(
+            "providerList"
+        );
+
+    const providerCount =
+        document.getElementById(
+            "providerCount"
+        );
+
+    const activeCount =
+        document.getElementById(
+            "activeProviderCount"
+        );
+
+    const validatedCount =
+        document.getElementById(
+            "validatedProviderCount"
+        );
+
+    const attentionCount =
+        document.getElementById(
+            "attentionProviderCount"
+        );
+
+    const providerStatus =
+        document.getElementById(
+            "providerStatus"
+        );
+
+    try{
+
+        const data =
+            await request(
+                `${API_URL}/admin/providers`
+            );
+
+        if(!data){
+
+            return;
+        }
+
+        const providers =
+            Array.isArray(
+                data.providers
+            )
+            ? data.providers
+            : Array.isArray(data)
+                ? data
+                : [];
+
+        const active =
+            providers.filter(
+                providerActive
+            );
+
+        const validated =
+            providers.filter(
+                providerValidated
+            );
+
+        const attention =
+            providers.filter(
+                provider =>
+                    !providerActive(provider) ||
+                    !providerValidated(provider)
+            );
+
+        providerCount.textContent =
+            providers.length;
+
+        activeCount.textContent =
+            active.length;
+
+        validatedCount.textContent =
+            validated.length;
+
+        attentionCount.textContent =
+            attention.length;
+
+        [
+            providerCount,
+            activeCount,
+            validatedCount,
+            attentionCount
+        ].forEach(
+            element =>
+                element.classList.remove(
+                    "loading"
+                )
+        );
+
+        providerStatus.textContent =
+            "Online";
+
+        providerStatus.className =
+            "system-value good";
+
+        if(
+            providers.length === 0
+        ){
+
+            list.innerHTML = `
+                <div class="provider">
+                    <div class="provider-name">
+                        <div class="provider-logo">—</div>
+                        <div class="provider-copy">
+                            <strong>No providers returned</strong>
+                            <span>
+                                The backend returned an empty provider registry.
+                            </span>
+                        </div>
+                    </div>
+
+                    <span class="status unknown">
+                        <span class="status-dot"></span>
+                        Empty
+                    </span>
+
+                    <a
+                        class="provider-action"
+                        href="providers.html"
+                        style="text-decoration:none;"
+                    >
+                        Open
+                    </a>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        list.innerHTML =
+            providers
+                .map(
+                    provider => {
+
+                        const name =
+                            providerName(
+                                provider
+                            );
+
+                        const activeState =
+                            providerActive(
+                                provider
+                            );
+
+                        const validatedState =
+                            providerValidated(
+                                provider
+                            );
+
+                        const stateClass =
+                            activeState
+                            ? "active"
+                            : "inactive";
+
+                        const stateText =
+                            activeState
+                            ? "Active"
+                            : "Inactive";
+
+                        const subtitle =
+                            validatedState
+                            ? "Validated configuration"
+                            : "Validation required";
+
+                        return `
+                            <div class="provider">
+
+                                <div class="provider-name">
+
+                                    <div class="provider-logo">
+                                        ${escapeHTML(
+                                            name
+                                                .slice(0,2)
+                                                .toUpperCase()
+                                        )}
+                                    </div>
+
+                                    <div class="provider-copy">
+
+                                        <strong>
+                                            ${escapeHTML(name)}
+                                        </strong>
+
+                                        <span>
+                                            ${escapeHTML(subtitle)}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                                <span class="status ${stateClass}">
+                                    <span class="status-dot"></span>
+                                    ${stateText}
+                                </span>
+
+                                <a
+                                    class="provider-action"
+                                    href="providers.html"
+                                    style="text-decoration:none;"
+                                >
+                                    Manage
+                                </a>
+
+                            </div>
+                        `;
+                    }
+                )
+                .join("");
+
+    }catch(error){
+
+        providerStatus.textContent =
+            "Unavailable";
+
+        providerStatus.className =
+            "system-value bad";
+
+        list.innerHTML = `
+            <div class="provider">
+
+                <div class="provider-name">
+
+                    <div class="provider-logo">
+                        !
+                    </div>
+
+                    <div class="provider-copy">
+
+                        <strong>
+                            Provider data unavailable
+                        </strong>
+
+                        <span>
+                            ${escapeHTML(
+                                error.message ||
+                                "Could not load provider registry."
+                            )}
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <span class="status inactive">
+                    <span class="status-dot"></span>
+                    Error
+                </span>
+
+                <a
+                    class="provider-action"
+                    href="providers.html"
+                    style="text-decoration:none;"
+                >
+                    Open
+                </a>
+
+            </div>
+        `;
+
+        [
+            providerCount,
+            activeCount,
+            validatedCount,
+            attentionCount
+        ].forEach(
+            element => {
+
+                element.textContent =
+                    "—";
+
+                element.classList.remove(
+                    "loading"
+                );
+            }
+        );
+    }
+}
+
+
+/* =========================================================
+   COMMAND PALETTE
+========================================================= */
+
+const palette =
+    document.getElementById(
+        "palette"
+    );
+
+const paletteInput =
+    document.getElementById(
+        "paletteInput"
+    );
+
+const paletteItems =
+    [
+        ...document.querySelectorAll(
+            ".palette-item"
+        )
+    ];
+
+
+function openPalette(){
+
+    palette.classList.add(
+        "open"
+    );
+
+    paletteInput.value =
+        "";
+
+    filterPalette();
+
+    setTimeout(
+        () =>
+            paletteInput.focus(),
+        50
+    );
+}
+
+
+function closePalette(){
+
+    palette.classList.remove(
+        "open"
+    );
+}
+
+
+function filterPalette(){
+
+    const query =
+        paletteInput.value
+            .trim()
+            .toLowerCase();
+
+    paletteItems.forEach(
+        item => {
+
+            const haystack =
+                (
+                    item.dataset.search ||
+                    ""
+                )
+                .toLowerCase();
+
+            item.style.display =
+                !query ||
+                haystack.includes(query)
+                ? "flex"
+                : "none";
+        }
+    );
+}
+
+
+document
+    .getElementById("commandBtn")
+    .addEventListener(
+        "click",
+        openPalette
+    );
+
+document
+    .getElementById("openCommand")
+    .addEventListener(
+        "click",
+        openPalette
+    );
+
+document
+    .getElementById("workspaceCommand")
+    .addEventListener(
+        "click",
+        openPalette
+    );
+
+paletteInput.addEventListener(
+    "input",
+    filterPalette
+);
+
+palette.addEventListener(
+    "click",
+    event => {
+
+        if(
+            event.target === palette
+        ){
+
+            closePalette();
+        }
+    }
+);
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if(
+            event.key === "Escape"
+        ){
+
+            closePalette();
+        }
+
+        if(
+            event.ctrlKey &&
+            event.key.toLowerCase() === "k"
+        ){
+
+            event.preventDefault();
+
+            openPalette();
+        }
+    }
+);
+
+
+/* =========================================================
+   REFRESH
+========================================================= */
+
+async function refreshDashboard(){
+
+    toast(
+        "Refreshing PrimePay administrative state..."
+    );
+
+    await Promise.allSettled(
+        [
+            checkHealth(),
+            loadProviders()
+        ]
+    );
+
+    toast(
+        "Dashboard refreshed.",
+        "success"
+    );
+}
+
+
+document
+    .getElementById("refreshBtn")
+    .addEventListener(
+        "click",
+        refreshDashboard
+    );
+
+document
+    .getElementById("healthRefresh")
+    .addEventListener(
+        "click",
+        checkHealth
+    );
+
+
+/* =========================================================
+   STARTUP
+========================================================= */
+
+(async function(){
+
+    await Promise.allSettled(
+        [
+            checkHealth(),
+            loadProviders()
+        ]
+    );
+
+})();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,3017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="PrimePay administrator transaction command center">
+<title>PrimePay Admin | Transactions</title>
+
+<style>
+:root{
+ --bg:#050b18;
+ --panel:#0b1325;
+ --panel2:#101a2f;
+ --panel3:#142039;
+ --border:rgba(148,163,184,.14);
+ --border2:rgba(56,189,248,.28);
+ --text:#f8fafc;
+ --soft:#cbd5e1;
+ --muted:#94a3b8;
+ --faint:#64748b;
+ --accent:#38bdf8;
+ --accent2:#818cf8;
+ --success:#34d399;
+ --warning:#fbbf24;
+ --danger:#fb7185;
+ --purple:#a78bfa;
+ --shadow:0 20px 60px rgba(0,0,0,.28);
+}
+
+[data-theme="light"]{
+ --bg:#f1f5f9;
+ --panel:#fff;
+ --panel2:#f8fafc;
+ --panel3:#eef2f7;
+ --border:rgba(15,23,42,.1);
+ --border2:rgba(2,132,199,.28);
+ --text:#0f172a;
+ --soft:#334155;
+ --muted:#64748b;
+ --faint:#94a3b8;
+ --accent:#0284c7;
+ --accent2:#4f46e5;
+ --success:#059669;
+ --warning:#d97706;
+ --danger:#e11d48;
+ --purple:#7c3aed;
+ --shadow:0 20px 50px rgba(15,23,42,.1);
+}
+
+*{
+ box-sizing:border-box;
+}
+
+html{
+ scroll-behavior:smooth;
+}
+
+body{
+ margin:0;
+ min-height:100vh;
+ font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ color:var(--text);
+ background:
+ radial-gradient(circle at 85% 0%,rgba(56,189,248,.09),transparent 27%),
+ radial-gradient(circle at 15% 80%,rgba(129,140,248,.06),transparent 30%),
+ var(--bg);
+}
+
+button,
+input,
+select{
+ font:inherit;
+}
+
+button{
+ cursor:pointer;
+}
+
+a{
+ color:inherit;
+}
+
+.layout{
+ min-height:100vh;
+ display:flex;
+}
+
+.sidebar{
+ width:270px;
+ position:fixed;
+ inset:0 auto 0 0;
+ z-index:50;
+ padding:22px 16px;
+ overflow-y:auto;
+ background:color-mix(in srgb,var(--panel) 94%,transparent);
+ border-right:1px solid var(--border);
+ backdrop-filter:blur(20px);
+}
+
+.brand{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ padding:4px 10px 24px;
+}
+
+.logo{
+ width:42px;
+ height:42px;
+ display:grid;
+ place-items:center;
+ border-radius:13px;
+ color:#fff;
+ font-size:18px;
+ font-weight:900;
+ background:linear-gradient(135deg,var(--accent2),var(--accent));
+ box-shadow:0 12px 30px rgba(56,189,248,.18);
+}
+
+.brand strong{
+ display:block;
+ font-size:16px;
+}
+
+.brand span{
+ display:block;
+ margin-top:3px;
+ color:var(--muted);
+ font-size:10px;
+}
+
+.section-label{
+ padding:15px 12px 8px;
+ color:var(--faint);
+ font-size:9px;
+ font-weight:850;
+ text-transform:uppercase;
+ letter-spacing:.16em;
+}
+
+.nav{
+ display:grid;
+ gap:5px;
+}
+
+.nav a{
+ display:flex;
+ align-items:center;
+ gap:11px;
+ padding:11px 12px;
+ border:1px solid transparent;
+ border-radius:11px;
+ color:var(--muted);
+ text-decoration:none;
+ font-size:12px;
+ font-weight:700;
+ transition:.2s;
+}
+
+.nav a:hover{
+ color:var(--text);
+ background:var(--panel2);
+ border-color:var(--border);
+}
+
+.nav a.active{
+ color:var(--text);
+ background:linear-gradient(
+  90deg,
+  rgba(56,189,248,.13),
+  rgba(129,140,248,.08)
+ );
+ border-color:var(--border);
+}
+
+.nav-icon{
+ width:20px;
+ text-align:center;
+ font-size:14px;
+}
+
+.admin-footer{
+ position:absolute;
+ left:16px;
+ right:16px;
+ bottom:18px;
+ padding:13px;
+ border:1px solid var(--border);
+ border-radius:14px;
+ background:var(--panel2);
+}
+
+.admin-footer small{
+ display:block;
+ margin-bottom:5px;
+ color:var(--muted);
+ font-size:9px;
+}
+
+.admin-footer strong{
+ display:block;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+ font-size:11px;
+}
+
+.main{
+ width:calc(100% - 270px);
+ margin-left:270px;
+ min-width:0;
+}
+
+.topbar{
+ height:74px;
+ position:sticky;
+ top:0;
+ z-index:30;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 30px;
+ background:color-mix(in srgb,var(--bg) 88%,transparent);
+ border-bottom:1px solid var(--border);
+ backdrop-filter:blur(18px);
+}
+
+.top-left{
+ display:flex;
+ align-items:center;
+ gap:12px;
+}
+
+.mobile-menu,
+.icon-btn{
+ width:40px;
+ height:40px;
+ border:1px solid var(--border);
+ border-radius:11px;
+ background:var(--panel);
+ color:var(--text);
+}
+
+.mobile-menu{
+ display:none;
+}
+
+.page-label{
+ color:var(--muted);
+ font-size:12px;
+}
+
+.top-actions{
+ display:flex;
+ align-items:center;
+ gap:8px;
+}
+
+.admin-chip{
+ display:flex;
+ align-items:center;
+ gap:9px;
+ margin-left:4px;
+ padding:5px 10px 5px 5px;
+ border:1px solid var(--border);
+ border-radius:13px;
+ background:var(--panel);
+}
+
+.avatar{
+ width:31px;
+ height:31px;
+ display:grid;
+ place-items:center;
+ border-radius:9px;
+ color:#fff;
+ font-size:11px;
+ font-weight:850;
+ background:linear-gradient(135deg,var(--accent2),var(--accent));
+}
+
+.admin-chip strong{
+ display:block;
+ font-size:11px;
+}
+
+.admin-chip span{
+ display:block;
+ margin-top:2px;
+ color:var(--muted);
+ font-size:9px;
+}
+
+.content{
+ width:100%;
+ max-width:1700px;
+ margin:auto;
+ padding:32px;
+}
+
+.hero{
+ display:flex;
+ align-items:flex-end;
+ justify-content:space-between;
+ gap:25px;
+ margin-bottom:23px;
+}
+
+.eyebrow{
+ margin-bottom:9px;
+ color:var(--accent);
+ font-size:9px;
+ font-weight:850;
+ text-transform:uppercase;
+ letter-spacing:.16em;
+}
+
+h1{
+ margin:0;
+ font-size:clamp(30px,4vw,45px);
+ line-height:1;
+ letter-spacing:-.045em;
+}
+
+.hero p{
+ max-width:760px;
+ margin:10px 0 0;
+ color:var(--muted);
+ font-size:13px;
+ line-height:1.7;
+}
+
+.hero-actions{
+ display:flex;
+ flex-wrap:wrap;
+ gap:8px;
+}
+
+.btn{
+ min-height:39px;
+ padding:0 13px;
+ border:1px solid var(--border);
+ border-radius:11px;
+ background:var(--panel);
+ color:var(--text);
+ font-size:11px;
+ font-weight:750;
+ transition:.2s;
+}
+
+.btn:hover{
+ border-color:var(--border2);
+ transform:translateY(-1px);
+}
+
+.btn.primary{
+ border-color:transparent;
+ color:#fff;
+ background:linear-gradient(135deg,var(--accent2),var(--accent));
+}
+
+.btn:disabled{
+ cursor:not-allowed;
+ opacity:.5;
+ transform:none;
+}
+
+.notice{
+ display:flex;
+ align-items:flex-start;
+ gap:13px;
+ margin-bottom:20px;
+ padding:16px 18px;
+ border:1px solid var(--border2);
+ border-radius:16px;
+ background:rgba(56,189,248,.045);
+}
+
+.notice-icon{
+ width:36px;
+ height:36px;
+ flex-shrink:0;
+ display:grid;
+ place-items:center;
+ border-radius:10px;
+ color:var(--accent);
+ background:rgba(56,189,248,.08);
+ font-weight:900;
+}
+
+.notice strong{
+ display:block;
+ margin-bottom:4px;
+ font-size:12px;
+}
+
+.notice p{
+ margin:0;
+ color:var(--muted);
+ font-size:11px;
+ line-height:1.6;
+}
+
+.cards{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:13px;
+ margin-bottom:20px;
+}
+
+.cards.hidden{
+ display:none;
+}
+
+.stat{
+ min-height:137px;
+ padding:18px;
+ border:1px solid var(--border);
+ border-radius:17px;
+ background:linear-gradient(145deg,var(--panel),var(--panel2));
+ box-shadow:var(--shadow);
+ transition:.2s;
+}
+
+.stat:hover{
+ transform:translateY(-2px);
+ border-color:var(--border2);
+}
+
+.stat-top{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+}
+
+.stat-label{
+ color:var(--muted);
+ font-size:10px;
+ font-weight:750;
+}
+
+.stat-icon{
+ width:32px;
+ height:32px;
+ display:grid;
+ place-items:center;
+ border-radius:10px;
+ color:var(--accent);
+ background:rgba(56,189,248,.08);
+}
+
+.stat-value{
+ margin-top:18px;
+ font-size:26px;
+ font-weight:900;
+ letter-spacing:-.035em;
+}
+
+.stat-value.success{
+ color:var(--success);
+}
+
+.stat-value.warning{
+ color:var(--warning);
+}
+
+.stat-value.danger{
+ color:var(--danger);
+}
+
+.stat-note{
+ margin-top:4px;
+ color:var(--faint);
+ font-size:9px;
+}
+
+.filters{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:13px;
+ margin-bottom:18px;
+ padding:12px;
+ border:1px solid var(--border);
+ border-radius:15px;
+ background:var(--panel);
+ box-shadow:var(--shadow);
+}
+
+.filter-group{
+ display:flex;
+ align-items:center;
+ flex-wrap:wrap;
+ gap:7px;
+}
+
+.control{
+ height:38px;
+ padding:0 11px;
+ border:1px solid var(--border);
+ border-radius:10px;
+ outline:none;
+ background:var(--panel2);
+ color:var(--text);
+ font-size:10px;
+}
+
+.control:focus{
+ border-color:var(--border2);
+}
+
+.search{
+ min-width:250px;
+}
+
+.workspace{
+ overflow:hidden;
+ border:1px solid var(--border);
+ border-radius:19px;
+ background:var(--panel);
+ box-shadow:var(--shadow);
+}
+
+.workspace-head{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:15px;
+ padding:19px 20px;
+ border-bottom:1px solid var(--border);
+}
+
+.workspace-title strong{
+ display:block;
+ font-size:14px;
+}
+
+.workspace-title span{
+ display:block;
+ margin-top:4px;
+ color:var(--muted);
+ font-size:10px;
+}
+
+.workspace-tools{
+ display:flex;
+ align-items:center;
+ gap:7px;
+ flex-wrap:wrap;
+}
+
+.table-wrap{
+ overflow:auto;
+}
+
+table{
+ width:100%;
+ min-width:1120px;
+ border-collapse:collapse;
+}
+
+th,
+td{
+ padding:14px 17px;
+ border-bottom:1px solid var(--border);
+ text-align:left;
+}
+
+th{
+ color:var(--muted);
+ background:var(--panel2);
+ font-size:9px;
+ font-weight:850;
+ text-transform:uppercase;
+ letter-spacing:.1em;
+}
+
+td{
+ color:var(--soft);
+ font-size:11px;
+}
+
+.compact th,
+.compact td{
+ padding-top:9px;
+ padding-bottom:9px;
+}
+
+.loading-cell,
+.empty-cell{
+ padding:55px 20px;
+ text-align:center;
+}
+
+.loader{
+ width:28px;
+ height:28px;
+ margin:0 auto 12px;
+ border:3px solid var(--border);
+ border-top-color:var(--accent);
+ border-radius:50%;
+ animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+ to{transform:rotate(360deg)}
+}
+
+.empty-icon{
+ width:58px;
+ height:58px;
+ display:grid;
+ place-items:center;
+ margin:0 auto 13px;
+ border:1px solid var(--border);
+ border-radius:17px;
+ background:var(--panel2);
+ color:var(--accent);
+ font-size:22px;
+}
+
+.empty-cell strong{
+ display:block;
+ color:var(--text);
+ font-size:14px;
+}
+
+.empty-cell p{
+ max-width:530px;
+ margin:8px auto 0;
+ color:var(--muted);
+ font-size:11px;
+ line-height:1.6;
+}
+
+.ref{
+ font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+ color:var(--accent);
+ font-size:10px;
+}
+
+.amount{
+ font-weight:800;
+ color:var(--text);
+}
+
+.status{
+ display:inline-flex;
+ align-items:center;
+ gap:6px;
+ padding:5px 8px;
+ border-radius:999px;
+ font-size:9px;
+ font-weight:800;
+ text-transform:capitalize;
+}
+
+.status::before{
+ content:"";
+ width:6px;
+ height:6px;
+ border-radius:50%;
+ background:currentColor;
+}
+
+.status.completed{
+ color:var(--success);
+ background:rgba(52,211,153,.08);
+}
+
+.status.pending,
+.status.processing{
+ color:var(--warning);
+ background:rgba(251,191,36,.08);
+}
+
+.status.failed,
+.status.cancelled{
+ color:var(--danger);
+ background:rgba(251,113,133,.08);
+}
+
+.status.refunded{
+ color:var(--purple);
+ background:rgba(167,139,250,.08);
+}
+
+.type{
+ color:var(--soft);
+ text-transform:capitalize;
+}
+
+.provider{
+ color:var(--muted);
+ text-transform:capitalize;
+}
+
+.row-action{
+ width:31px;
+ height:31px;
+ border:1px solid var(--border);
+ border-radius:9px;
+ background:var(--panel2);
+ color:var(--text);
+}
+
+.row-action:hover{
+ border-color:var(--border2);
+}
+
+.pagination{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+ padding:14px 17px;
+ border-top:1px solid var(--border);
+}
+
+.pagination-info{
+ color:var(--muted);
+ font-size:10px;
+}
+
+.pagination-actions{
+ display:flex;
+ gap:7px;
+}
+
+.pagination .btn{
+ min-height:34px;
+}
+
+.details{
+ display:none;
+ margin:0;
+ padding:20px;
+ border-bottom:1px solid var(--border);
+ background:var(--panel2);
+}
+
+.details.show{
+ display:block;
+}
+
+.details-head{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+ margin-bottom:15px;
+}
+
+.details-head strong{
+ font-size:13px;
+}
+
+.detail-grid{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:10px;
+}
+
+.detail{
+ padding:13px;
+ border:1px solid var(--border);
+ border-radius:12px;
+ background:var(--panel);
+}
+
+.detail label{
+ display:block;
+ margin-bottom:5px;
+ color:var(--muted);
+ font-size:9px;
+ text-transform:uppercase;
+ letter-spacing:.08em;
+}
+
+.detail span{
+ display:block;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+ color:var(--text);
+ font-size:11px;
+}
+
+.secondary-grid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:14px;
+ margin-top:20px;
+}
+
+.panel{
+ padding:19px;
+ border:1px solid var(--border);
+ border-radius:17px;
+ background:var(--panel);
+}
+
+.panel-head{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+ margin-bottom:15px;
+}
+
+.panel-head strong{
+ font-size:13px;
+}
+
+.panel-head span{
+ color:var(--muted);
+ font-size:9px;
+}
+
+.breakdown{
+ display:grid;
+ gap:9px;
+}
+
+.breakdown-row{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+ padding-bottom:9px;
+ border-bottom:1px solid var(--border);
+}
+
+.breakdown-row:last-child{
+ padding-bottom:0;
+ border-bottom:0;
+}
+
+.breakdown-row span:first-child{
+ color:var(--muted);
+ font-size:10px;
+}
+
+.breakdown-row span:last-child{
+ color:var(--text);
+ font-size:10px;
+ font-weight:750;
+}
+
+.activity-list{
+ display:grid;
+ gap:9px;
+}
+
+.activity{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ padding:10px;
+ border:1px solid var(--border);
+ border-radius:11px;
+ background:var(--panel2);
+}
+
+.activity-dot{
+ width:8px;
+ height:8px;
+ flex-shrink:0;
+ border-radius:50%;
+ background:var(--accent);
+}
+
+.activity div{
+ min-width:0;
+}
+
+.activity strong{
+ display:block;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+ font-size:10px;
+}
+
+.activity span{
+ display:block;
+ margin-top:3px;
+ color:var(--muted);
+ font-size:9px;
+}
+
+.toast{
+ position:fixed;
+ right:22px;
+ bottom:22px;
+ z-index:150;
+ max-width:360px;
+ padding:13px 16px;
+ border:1px solid var(--border);
+ border-radius:12px;
+ background:var(--panel);
+ color:var(--text);
+ box-shadow:var(--shadow);
+ font-size:11px;
+ transform:translateY(120px);
+ opacity:0;
+ transition:.25s;
+}
+
+.toast.show{
+ transform:translateY(0);
+ opacity:1;
+}
+
+@media(max-width:1150px){
+ .cards{
+  grid-template-columns:repeat(2,1fr);
+ }
+
+ .detail-grid{
+  grid-template-columns:repeat(2,1fr);
+ }
+
+ .secondary-grid{
+  grid-template-columns:1fr;
+ }
+}
+
+@media(max-width:800px){
+ .sidebar{
+  transform:translateX(-100%);
+  transition:.25s;
+ }
+
+ .sidebar.open{
+  transform:translateX(0);
+ }
+
+ .main{
+  width:100%;
+  margin-left:0;
+ }
+
+ .mobile-menu{
+  display:block;
+ }
+
+ .page-label,
+ .admin-chip{
+  display:none;
+ }
+
+ .topbar{
+  padding:0 16px;
+ }
+
+ .content{
+  padding:22px 16px;
+ }
+
+ .hero{
+  flex-direction:column;
+  align-items:flex-start;
+ }
+
+ .filters{
+  flex-direction:column;
+  align-items:flex-start;
+ }
+
+ .filter-group{
+  width:100%;
+ }
+
+ .search{
+  width:100%;
+  min-width:0;
+ }
+
+ .control{
+  flex:1;
+ }
+
+ .workspace-head{
+  align-items:flex-start;
+  flex-direction:column;
+ }
+
+ .workspace-tools{
+  width:100%;
+ }
+
+ .hero-actions{
+  width:100%;
+ }
+
+ .hero-actions .btn{
+  flex:1;
+ }
+}
+
+@media(max-width:520px){
+ .cards{
+  grid-template-columns:1fr;
+ }
+
+ .detail-grid{
+  grid-template-columns:1fr;
+ }
+
+ h1{
+  font-size:30px;
+ }
+
+ .pagination{
+  align-items:flex-start;
+  flex-direction:column;
+ }
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<aside class="sidebar" id="sidebar">
+
+<div class="brand">
+ <div class="logo">P</div>
+ <div>
+  <strong>PrimePay</strong>
+  <span>Administration Console</span>
+ </div>
+</div>
+
+<div class="section-label">Operations</div>
+
+<nav class="nav">
+
+<a href="dashboard.html">
+ <span class="nav-icon">⌂</span>
+ Dashboard
+</a>
+
+<a href="merchants.html">
+ <span class="nav-icon">◉</span>
+ Merchants
+</a>
+
+<a href="applications.html">
+ <span class="nav-icon">▣</span>
+ Applications
+</a>
+
+<a href="transactions.html" class="active">
+ <span class="nav-icon">↕</span>
+ Transactions
+</a>
+
+<a href="providers.html">
+ <span class="nav-icon">◆</span>
+ Providers
+</a>
+
+</nav>
+
+<div class="section-label">Platform</div>
+
+<nav class="nav">
+
+<a href="api-access.html">
+ <span class="nav-icon">⌁</span>
+ API Access
+</a>
+
+<a href="fees.html">
+ <span class="nav-icon">%</span>
+ Fees
+</a>
+
+<a href="settlements.html">
+ <span class="nav-icon">▤</span>
+ Settlements
+</a>
+
+<a href="risk.html">
+ <span class="nav-icon">△</span>
+ Risk
+</a>
+
+<a href="audit-logs.html">
+ <span class="nav-icon">☷</span>
+ Audit Logs
+</a>
+
+</nav>
+
+<div class="admin-footer">
+ <small>Authenticated administrator</small>
+ <strong id="sidebarUser">Administrator</strong>
+</div>
+
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+
+<div class="top-left">
+
+<button class="mobile-menu" id="menuBtn">
+ ☰
+</button>
+
+<span class="page-label">
+ Administration / Transactions
+</span>
+
+</div>
+
+<div class="top-actions">
+
+<button class="icon-btn" id="themeBtn" title="Toggle theme">
+ ☼
+</button>
+
+<button class="icon-btn" id="cardBtn" title="Toggle statistic cards">
+ ▦
+</button>
+
+<button class="icon-btn" id="densityBtn" title="Toggle table density">
+ ≡
+</button>
+
+<button class="icon-btn" id="refreshBtn" title="Refresh transactions">
+ ↻
+</button>
+
+<div class="admin-chip">
+
+<div class="avatar" id="avatar">
+ A
+</div>
+
+<div>
+ <strong id="adminName">Administrator</strong>
+ <span>Platform Admin</span>
+</div>
+
+</div>
+
+<button class="icon-btn" id="logoutBtn" title="Sign out">
+ ↪
+</button>
+
+</div>
+
+</header>
+
+<section class="content">
+
+<div class="hero">
+
+<div>
+
+<div class="eyebrow">
+ Financial operations
+</div>
+
+<h1>
+ Transaction Command Center
+</h1>
+
+<p>
+ Monitor PrimePay transaction activity using records returned directly
+ from the backend. Search, filter, inspect individual transactions and
+ review the financial breakdown without inventing operational numbers.
+</p>
+
+</div>
+
+<div class="hero-actions">
+
+<button class="btn" id="clearFilters">
+ Clear Filters
+</button>
+
+<button class="btn primary" id="refreshHero">
+ Refresh Data
+</button>
+
+</div>
+
+</div>
+
+<div class="notice">
+
+<div class="notice-icon">
+ ✓
+</div>
+
+<div>
+
+<strong>
+ Live transaction data
+</strong>
+
+<p>
+ This workspace reads from the authenticated transaction endpoint.
+ Summary cards describe the currently loaded page, not the entire
+ PrimePay platform unless the backend pagination explicitly provides
+ the corresponding totals.
+</p>
+
+</div>
+
+</div>
+
+<section class="cards" id="statCards">
+
+<div class="stat">
+
+<div class="stat-top">
+ <span class="stat-label">Loaded transactions</span>
+ <span class="stat-icon">↕</span>
+</div>
+
+<div class="stat-value" id="statTotal">
+ —
+</div>
+
+<div class="stat-note">
+ Records on current result page
+</div>
+
+</div>
+
+<div class="stat">
+
+<div class="stat-top">
+ <span class="stat-label">Completed</span>
+ <span class="stat-icon">✓</span>
+</div>
+
+<div class="stat-value success" id="statCompleted">
+ —
+</div>
+
+<div class="stat-note">
+ Completed records on current page
+</div>
+
+</div>
+
+<div class="stat">
+
+<div class="stat-top">
+ <span class="stat-label">Pending / processing</span>
+ <span class="stat-icon">◷</span>
+</div>
+
+<div class="stat-value warning" id="statPending">
+ —
+</div>
+
+<div class="stat-note">
+ Current page
+</div>
+
+</div>
+
+<div class="stat">
+
+<div class="stat-top">
+ <span class="stat-label">Failed / cancelled</span>
+ <span class="stat-icon">×</span>
+</div>
+
+<div class="stat-value danger" id="statFailed">
+ —
+</div>
+
+<div class="stat-note">
+ Current page
+</div>
+
+</div>
+
+</section>
+
+<div class="filters">
+
+<div class="filter-group">
+
+<input
+ id="search"
+ class="control search"
+ type="search"
+ placeholder="Search reference, provider, customer..."
+>
+
+<select id="statusFilter" class="control">
+
+<option value="">
+All statuses
+</option>
+
+<option value="pending">
+Pending
+</option>
+
+<option value="processing">
+Processing
+</option>
+
+<option value="completed">
+Completed
+</option>
+
+<option value="failed">
+Failed
+</option>
+
+<option value="cancelled">
+Cancelled
+</option>
+
+<option value="refunded">
+Refunded
+</option>
+
+</select>
+
+<select id="typeFilter" class="control">
+
+<option value="">
+All types
+</option>
+
+<option value="payment">
+Payment
+</option>
+
+<option value="refund">
+Refund
+</option>
+
+<option value="payout">
+Payout
+</option>
+
+<option value="deposit">
+Deposit
+</option>
+
+<option value="settlement">
+Settlement
+</option>
+
+</select>
+
+</div>
+
+<div class="filter-group">
+
+<button class="btn" id="cardsControl">
+ Cards On
+</button>
+
+<button class="btn" id="densityControl">
+ Comfortable
+</button>
+
+</div>
+
+</div>
+
+<section class="workspace">
+
+<div class="workspace-head">
+
+<div class="workspace-title">
+
+<strong>
+ Transaction Ledger
+</strong>
+
+<span id="resultSummary">
+ Loading transaction records...
+</span>
+
+</div>
+
+<div class="workspace-tools">
+
+<button class="btn" id="previousTop" disabled>
+ ← Previous
+</button>
+
+<button class="btn" id="nextTop" disabled>
+ Next →
+</button>
+
+</div>
+
+</div>
+
+<div class="details" id="details">
+
+<div class="details-head">
+
+<strong id="detailTitle">
+ Transaction details
+</strong>
+
+<button class="btn" id="closeDetails">
+ Close
+</button>
+
+</div>
+
+<div class="detail-grid">
+
+<div class="detail">
+ <label>Reference</label>
+ <span id="detailReference">—</span>
+</div>
+
+<div class="detail">
+ <label>Status</label>
+ <span id="detailStatus">—</span>
+</div>
+
+<div class="detail">
+ <label>Type</label>
+ <span id="detailType">—</span>
+</div>
+
+<div class="detail">
+ <label>Provider</label>
+ <span id="detailProvider">—</span>
+</div>
+
+<div class="detail">
+ <label>Amount</label>
+ <span id="detailAmount">—</span>
+</div>
+
+<div class="detail">
+ <label>Currency</label>
+ <span id="detailCurrency">—</span>
+</div>
+
+<div class="detail">
+ <label>Payment method</label>
+ <span id="detailMethod">—</span>
+</div>
+
+<div class="detail">
+ <label>Country</label>
+ <span id="detailCountry">—</span>
+</div>
+
+<div class="detail">
+ <label>Provider transaction ID</label>
+ <span id="detailProviderId">—</span>
+</div>
+
+<div class="detail">
+ <label>Provider reference</label>
+ <span id="detailProviderReference">—</span>
+</div>
+
+<div class="detail">
+ <label>Created</label>
+ <span id="detailCreated">—</span>
+</div>
+
+<div class="detail">
+ <label>Updated</label>
+ <span id="detailUpdated">—</span>
+</div>
+
+</div>
+
+</div>
+
+<div class="table-wrap">
+
+<table id="transactionTable">
+
+<thead>
+
+<tr>
+
+<th>
+ Reference
+</th>
+
+<th>
+ Type
+</th>
+
+<th>
+ Provider
+</th>
+
+<th>
+ Amount
+</th>
+
+<th>
+ Currency
+</th>
+
+<th>
+ Status
+</th>
+
+<th>
+ Created
+</th>
+
+<th>
+ Action
+</th>
+
+</tr>
+
+</thead>
+
+<tbody id="transactionBody">
+
+<tr>
+
+<td colspan="8" class="loading-cell">
+
+<div class="loader"></div>
+
+<strong>
+ Loading transactions...
+</strong>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="pagination">
+
+<div class="pagination-info" id="paginationInfo">
+ Loading...
+</div>
+
+<div class="pagination-actions">
+
+<button class="btn" id="previousBottom" disabled>
+ ← Previous
+</button>
+
+<button class="btn" id="nextBottom" disabled>
+ Next →
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<div class="secondary-grid">
+
+<section class="panel">
+
+<div class="panel-head">
+
+<strong>
+ Current Page Breakdown
+</strong>
+
+<span>
+ Live calculation
+</span>
+
+</div>
+
+<div class="breakdown">
+
+<div class="breakdown-row">
+ <span>Payment records</span>
+ <span id="breakdownPayments">—</span>
+</div>
+
+<div class="breakdown-row">
+ <span>Refund records</span>
+ <span id="breakdownRefunds">—</span>
+</div>
+
+<div class="breakdown-row">
+ <span>Payout records</span>
+ <span id="breakdownPayouts">—</span>
+</div>
+
+<div class="breakdown-row">
+ <span>Other transaction types</span>
+ <span id="breakdownOther">—</span>
+</div>
+
+<div class="breakdown-row">
+ <span>Completed amount</span>
+ <span id="breakdownCompletedAmount">—</span>
+</div>
+
+</div>
+
+</section>
+
+<section class="panel">
+
+<div class="panel-head">
+
+<strong>
+ Operational Notes
+</strong>
+
+<span>
+ V1 controls
+</span>
+
+</div>
+
+<div class="activity-list">
+
+<div class="activity">
+
+<div class="activity-dot"></div>
+
+<div>
+ <strong>Transaction state comes from the backend</strong>
+ <span>No client-side status fabrication.</span>
+</div>
+
+</div>
+
+<div class="activity">
+
+<div class="activity-dot"></div>
+
+<div>
+ <strong>Pagination follows API response</strong>
+ <span>Page totals are shown only when provided.</span>
+</div>
+
+</div>
+
+<div class="activity">
+
+<div class="activity-dot"></div>
+
+<div>
+ <strong>Financial values are displayed as returned</strong>
+ <span>No local balance calculation is performed.</span>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+<div class="toast" id="toast">
+</div>
+
+<script>
+(function(){
+
+ const API_URL="http://localhost:5001/api/v1";
+
+ const token=
+  localStorage.getItem("primepay_token");
+
+ if(!token){
+  location.href="../login.html";
+  return;
+ }
+
+ let user={};
+
+ try{
+  user=JSON.parse(
+   localStorage.getItem("primepay_user")||"{}"
+  );
+ }catch{
+  user={};
+ }
+
+ if(user.role && user.role!=="admin"){
+  location.href="../merchant/dashboard.html";
+  return;
+ }
+
+ const name=
+  user.name||
+  user.email||
+  "Administrator";
+
+ document.getElementById("adminName")
+  .textContent=name;
+
+ document.getElementById("sidebarUser")
+  .textContent=name;
+
+ const initials=name
+  .split(/\s+/)
+  .filter(Boolean)
+  .slice(0,2)
+  .map(x=>x[0].toUpperCase())
+  .join("");
+
+ document.getElementById("avatar")
+  .textContent=initials||"A";
+
+ const root=document.documentElement;
+
+ root.dataset.theme=
+  localStorage.getItem("primepay_admin_theme")||
+  "dark";
+
+ let page=1;
+
+ const limit=20;
+
+ let pagination={
+  page:1,
+  limit,
+  total:0,
+  pages:0
+ };
+
+ let transactions=[];
+
+ let cardsVisible=
+  localStorage.getItem("primepay_admin_cards")!=="hidden";
+
+ let compact=
+  localStorage.getItem("primepay_admin_density")==="compact";
+
+ const statCards=
+  document.getElementById("statCards");
+
+ const table=
+  document.getElementById("transactionTable");
+
+ const themeBtn=
+  document.getElementById("themeBtn");
+
+ const cardBtn=
+  document.getElementById("cardBtn");
+
+ const densityBtn=
+  document.getElementById("densityBtn");
+
+ const cardsControl=
+  document.getElementById("cardsControl");
+
+ const densityControl=
+  document.getElementById("densityControl");
+
+ function renderPreferences(){
+
+  statCards.classList.toggle(
+   "hidden",
+   !cardsVisible
+  );
+
+  table.classList.toggle(
+   "compact",
+   compact
+  );
+
+  cardsControl.textContent=
+   `Cards ${cardsVisible?"On":"Off"}`;
+
+  densityControl.textContent=
+   compact?"Compact":"Comfortable";
+
+  cardBtn.textContent=
+   cardsVisible?"▦":"□";
+
+  densityBtn.textContent=
+   compact?"≡":"☷";
+
+  themeBtn.textContent=
+   root.dataset.theme==="dark"?"☼":"☾";
+ }
+
+ renderPreferences();
+
+ themeBtn.onclick=function(){
+
+  const next=
+   root.dataset.theme==="dark"
+    ?"light"
+    :"dark";
+
+  root.dataset.theme=next;
+
+  localStorage.setItem(
+   "primepay_admin_theme",
+   next
+  );
+
+  renderPreferences();
+
+  toast(
+   next==="dark"
+    ?"Dark theme enabled"
+    :"Light theme enabled"
+  );
+ };
+
+ function toggleCards(){
+
+  cardsVisible=!cardsVisible;
+
+  localStorage.setItem(
+   "primepay_admin_cards",
+   cardsVisible?"visible":"hidden"
+  );
+
+  renderPreferences();
+ }
+
+ cardBtn.onclick=toggleCards;
+
+ cardsControl.onclick=toggleCards;
+
+ function toggleDensity(){
+
+  compact=!compact;
+
+  localStorage.setItem(
+   "primepay_admin_density",
+   compact?"compact":"comfortable"
+  );
+
+  renderPreferences();
+ }
+
+ densityBtn.onclick=toggleDensity;
+
+ densityControl.onclick=toggleDensity;
+
+ const sidebar=
+  document.getElementById("sidebar");
+
+ document.getElementById("menuBtn")
+  .onclick=function(){
+   sidebar.classList.toggle("open");
+  };
+
+ document.addEventListener(
+  "click",
+  function(event){
+
+   if(window.innerWidth>800){
+    return;
+   }
+
+   if(
+    sidebar.classList.contains("open")&&
+    !sidebar.contains(event.target)&&
+    event.target.id!=="menuBtn"
+   ){
+    sidebar.classList.remove("open");
+   }
+  }
+ );
+
+ function escapeHTML(value){
+
+  return String(value??"")
+   .replace(/&/g,"&amp;")
+   .replace(/</g,"&lt;")
+   .replace(/>/g,"&gt;")
+   .replace(/"/g,"&quot;")
+   .replace(/'/g,"&#039;");
+ }
+
+ function formatDate(value){
+
+  if(!value){
+   return "—";
+  }
+
+  const date=new Date(value);
+
+  if(Number.isNaN(date.getTime())){
+   return "—";
+  }
+
+  return new Intl.DateTimeFormat(
+   undefined,
+   {
+    dateStyle:"medium",
+    timeStyle:"short"
+   }
+  ).format(date);
+ }
+
+ function formatAmount(amount,currency){
+
+  const number=Number(amount);
+
+  if(!Number.isFinite(number)){
+   return "—";
+  }
+
+  try{
+   return new Intl.NumberFormat(
+    undefined,
+    {
+     style:"currency",
+     currency:currency||"KES",
+     maximumFractionDigits:2
+    }
+   ).format(number);
+  }catch{
+   return `${currency||""} ${number.toFixed(2)}`.trim();
+  }
+ }
+
+ function statusClass(status){
+
+  return String(status||"")
+   .toLowerCase()
+   .replace(/[^a-z]/g,"");
+ }
+
+ function normalizedType(value){
+
+  return String(value||"")
+   .toLowerCase();
+ }
+
+ function normalizedStatus(value){
+
+  return String(value||"")
+   .toLowerCase();
+ }
+
+ function getReference(tx){
+
+  return tx.reference||
+   tx.transactionReference||
+   tx.paymentReference||
+   tx.id||
+   "—";
+ }
+
+ function getAmount(tx){
+
+  return tx.amount??tx.value??0;
+ }
+
+ function getCurrency(tx){
+
+  return tx.currency||
+   tx.settlementCurrency||
+   "KES";
+ }
+
+ function getProvider(tx){
+
+  return tx.provider||
+   "—";
+ }
+
+ function getCreated(tx){
+
+  return tx.createdAt||
+   tx.created||
+   tx.timestamp;
+ }
+
+ function getUpdated(tx){
+
+  return tx.updatedAt||
+   tx.updated||
+   getCreated(tx);
+ }
+
+ async function request(
+  path,
+  options={}
+ ){
+
+  const controller=
+   new AbortController();
+
+  const timeout=
+   setTimeout(
+    ()=>controller.abort(),
+    15000
+   );
+
+  try{
+
+   const response=
+    await fetch(
+     API_URL+path,
+     {
+      ...options,
+      headers:{
+       ...(options.headers||{}),
+       Authorization:`Bearer ${token}`
+      },
+      signal:controller.signal
+     }
+    );
+
+   let data=null;
+
+   try{
+    data=await response.json();
+   }catch{
+    data=null;
+   }
+
+   if(response.status===401){
+
+    localStorage.removeItem(
+     "primepay_token"
+    );
+
+    localStorage.removeItem(
+     "primepay_user"
+    );
+
+    location.href="../login.html";
+
+    throw new Error(
+     "Authentication expired."
+    );
+   }
+
+   if(!response.ok){
+
+    throw new Error(
+     data?.message||
+     `Request failed with HTTP ${response.status}.`
+    );
+   }
+
+   return data;
+
+  }catch(error){
+
+   if(error.name==="AbortError"){
+    throw new Error(
+     "Request timed out. Check the backend connection."
+    );
+   }
+
+   if(
+    error instanceof TypeError
+   ){
+    throw new Error(
+     "Unable to connect to PrimePay backend."
+    );
+   }
+
+   throw error;
+
+  }finally{
+
+   clearTimeout(timeout);
+
+  }
+ }
+
+ async function loadTransactions(){
+
+  const body=
+   document.getElementById(
+    "transactionBody"
+   );
+
+  body.innerHTML=`
+   <tr>
+    <td colspan="8" class="loading-cell">
+     <div class="loader"></div>
+     <strong>Loading transactions...</strong>
+    </td>
+   </tr>
+  `;
+
+  document.getElementById(
+   "resultSummary"
+  ).textContent=
+   "Loading transaction records...";
+
+  try{
+
+   const params=
+    new URLSearchParams();
+
+   params.set("page",String(page));
+   params.set("limit",String(limit));
+
+   const status=
+    document.getElementById(
+     "statusFilter"
+    ).value;
+
+   const type=
+    document.getElementById(
+     "typeFilter"
+    ).value;
+
+   if(status){
+    params.set("status",status);
+   }
+
+   if(type){
+    params.set("type",type);
+   }
+
+   const data=
+    await request(
+     `/transactions?${params.toString()}`
+    );
+
+   transactions=
+    Array.isArray(data?.transactions)
+     ?data.transactions
+     :[];
+
+   pagination=
+    data?.pagination||{
+     page,
+     limit,
+     total:transactions.length,
+     pages:transactions.length===limit?null:1
+    };
+
+   page=
+    Number(pagination.page)||page;
+
+   renderTransactions();
+
+   updateStats();
+
+   updatePagination();
+
+  }catch(error){
+
+   transactions=[];
+
+   body.innerHTML=`
+    <tr>
+     <td colspan="8" class="empty-cell">
+      <div class="empty-icon">!</div>
+      <strong>Unable to load transactions</strong>
+      <p>${escapeHTML(error.message)}</p>
+     </td>
+    </tr>
+   `;
+
+   document.getElementById(
+    "resultSummary"
+   ).textContent=
+    "Transaction request failed.";
+
+   document.getElementById(
+    "paginationInfo"
+   ).textContent=
+    "Unable to load pagination.";
+
+   updateStats();
+
+   toast(error.message);
+
+  }
+ }
+
+ function renderTransactions(){
+
+  const body=
+   document.getElementById(
+    "transactionBody"
+   );
+
+  if(!transactions.length){
+
+   body.innerHTML=`
+    <tr>
+     <td colspan="8" class="empty-cell">
+      <div class="empty-icon">◌</div>
+      <strong>No transactions found</strong>
+      <p>
+       No records match the current status and type filters.
+      </p>
+     </td>
+    </tr>
+   `;
+
+   return;
+  }
+
+  body.innerHTML=
+   transactions.map(
+    (tx,index)=>{
+
+     const reference=
+      getReference(tx);
+
+     const type=
+      normalizedType(
+       tx.type
+      )||"unknown";
+
+     const provider=
+      getProvider(tx);
+
+     const amount=
+      getAmount(tx);
+
+     const currency=
+      getCurrency(tx);
+
+     const status=
+      normalizedStatus(tx.status)||
+      "unknown";
+
+     const created=
+      getCreated(tx);
+
+     return `
+      <tr>
+
+       <td>
+        <span class="ref">
+         ${escapeHTML(reference)}
+        </span>
+       </td>
+
+       <td>
+        <span class="type">
+         ${escapeHTML(type)}
+        </span>
+       </td>
+
+       <td>
+        <span class="provider">
+         ${escapeHTML(provider)}
+        </span>
+       </td>
+
+       <td>
+        <span class="amount">
+         ${escapeHTML(
+          formatAmount(
+           amount,
+           currency
+          )
+         )}
+        </span>
+       </td>
+
+       <td>
+        ${escapeHTML(currency)}
+       </td>
+
+       <td>
+        <span class="status ${escapeHTML(statusClass(status))}">
+         ${escapeHTML(status)}
+        </span>
+       </td>
+
+       <td>
+        ${escapeHTML(
+         formatDate(created)
+        )}
+       </td>
+
+       <td>
+        <button
+         class="row-action"
+         data-index="${index}"
+         title="View transaction"
+        >
+         ↗
+        </button>
+       </td>
+
+      </tr>
+     `;
+    }
+   ).join("");
+
+  body
+   .querySelectorAll(".row-action")
+   .forEach(
+    button=>{
+     button.onclick=function(){
+
+      const index=
+       Number(this.dataset.index);
+
+      openDetails(
+       transactions[index]
+      );
+     };
+    }
+   );
+ }
+
+ function updateStats(){
+
+  const total=
+   transactions.length;
+
+  const completed=
+   transactions.filter(
+    tx=>
+     normalizedStatus(tx.status)==="completed"
+   ).length;
+
+  const pending=
+   transactions.filter(
+    tx=>{
+     const status=
+      normalizedStatus(tx.status);
+
+     return status==="pending"||
+      status==="processing";
+    }
+   ).length;
+
+  const failed=
+   transactions.filter(
+    tx=>{
+     const status=
+      normalizedStatus(tx.status);
+
+     return status==="failed"||
+      status==="cancelled";
+    }
+   ).length;
+
+  document.getElementById(
+   "statTotal"
+  ).textContent=total;
+
+  document.getElementById(
+   "statCompleted"
+  ).textContent=completed;
+
+  document.getElementById(
+   "statPending"
+  ).textContent=pending;
+
+  document.getElementById(
+   "statFailed"
+  ).textContent=failed;
+
+  const payments=
+   transactions.filter(
+    tx=>normalizedType(tx.type)==="payment"
+   ).length;
+
+  const refunds=
+   transactions.filter(
+    tx=>normalizedType(tx.type)==="refund"
+   ).length;
+
+  const payouts=
+   transactions.filter(
+    tx=>normalizedType(tx.type)==="payout"
+   ).length;
+
+  const other=
+   transactions.length-
+   payments-
+   refunds-
+   payouts;
+
+  document.getElementById(
+   "breakdownPayments"
+  ).textContent=payments;
+
+  document.getElementById(
+   "breakdownRefunds"
+  ).textContent=refunds;
+
+  document.getElementById(
+   "breakdownPayouts"
+  ).textContent=payouts;
+
+  document.getElementById(
+   "breakdownOther"
+  ).textContent=other;
+
+  const completedRecords=
+   transactions.filter(
+    tx=>normalizedStatus(tx.status)==="completed"
+   );
+
+  const currencies=
+   [
+    ...new Set(
+     completedRecords.map(
+      tx=>getCurrency(tx)
+     )
+    )
+   ];
+
+  if(currencies.length===1){
+
+   const currency=currencies[0];
+
+   const amount=
+    completedRecords.reduce(
+     (sum,tx)=>
+      sum+Number(getAmount(tx)||0),
+     0
+    );
+
+   document.getElementById(
+    "breakdownCompletedAmount"
+   ).textContent=
+    formatAmount(
+     amount,
+     currency
+    );
+
+  }else if(currencies.length>1){
+
+   document.getElementById(
+    "breakdownCompletedAmount"
+   ).textContent=
+    "Multiple currencies";
+
+  }else{
+
+   document.getElementById(
+    "breakdownCompletedAmount"
+   ).textContent=
+    "—";
+  }
+ }
+
+ function updatePagination(){
+
+  const current=
+   Number(pagination.page)||page;
+
+  const pages=
+   Number(pagination.pages)||0;
+
+  const total=
+   Number(pagination.total);
+
+  const safeTotal=
+   Number.isFinite(total)
+    ?total
+    :transactions.length;
+
+  let summary="";
+
+  if(safeTotal===0){
+
+   summary="No transaction records";
+
+  }else{
+
+   const start=
+    (current-1)*limit+1;
+
+   const end=
+    Math.min(
+     current*limit,
+     safeTotal
+    );
+
+   summary=
+    `Showing ${start}–${end} of ${safeTotal}`;
+  }
+
+  document.getElementById(
+   "paginationInfo"
+  ).textContent=summary;
+
+  document.getElementById(
+   "resultSummary"
+  ).textContent=
+   pages
+    ?`Page ${current} of ${pages} • ${safeTotal} total records`
+    :`${safeTotal} records returned`;
+
+  const hasPrevious=
+   current>1;
+
+  const hasNext=
+   pages
+    ?current<pages
+    :transactions.length===limit;
+
+  [
+   "previousTop",
+   "previousBottom"
+  ].forEach(id=>{
+   document.getElementById(id)
+    .disabled=!hasPrevious;
+  });
+
+  [
+   "nextTop",
+   "nextBottom"
+  ].forEach(id=>{
+   document.getElementById(id)
+    .disabled=!hasNext;
+  });
+ }
+
+ function openDetails(tx){
+
+  if(!tx){
+   return;
+  }
+
+  const reference=
+   getReference(tx);
+
+  const status=
+   normalizedStatus(tx.status)||
+   "unknown";
+
+  document.getElementById(
+   "detailTitle"
+  ).textContent=
+   `Transaction ${reference}`;
+
+  document.getElementById(
+   "detailReference"
+  ).textContent=reference;
+
+  document.getElementById(
+   "detailStatus"
+  ).textContent=status;
+
+  document.getElementById(
+   "detailType"
+  ).textContent=
+   normalizedType(tx.type)||"—";
+
+  document.getElementById(
+   "detailProvider"
+  ).textContent=
+   getProvider(tx);
+
+  document.getElementById(
+   "detailAmount"
+  ).textContent=
+   formatAmount(
+    getAmount(tx),
+    getCurrency(tx)
+   );
+
+  document.getElementById(
+   "detailCurrency"
+  ).textContent=
+   getCurrency(tx);
+
+  document.getElementById(
+   "detailMethod"
+  ).textContent=
+   tx.paymentMethod||"—";
+
+  document.getElementById(
+   "detailCountry"
+  ).textContent=
+   tx.country||"—";
+
+  document.getElementById(
+   "detailProviderId"
+  ).textContent=
+   tx.providerTransactionId||"—";
+
+  document.getElementById(
+   "detailProviderReference"
+  ).textContent=
+   tx.providerReference||"—";
+
+  document.getElementById(
+   "detailCreated"
+  ).textContent=
+   formatDate(
+    getCreated(tx)
+   );
+
+  document.getElementById(
+   "detailUpdated"
+  ).textContent=
+   formatDate(
+    getUpdated(tx)
+   );
+
+  document.getElementById(
+   "details"
+  ).classList.add("show");
+
+  document.getElementById(
+   "details"
+  ).scrollIntoView({
+   behavior:"smooth",
+   block:"nearest"
+  });
+ }
+
+ function closeDetails(){
+
+  document.getElementById(
+   "details"
+  ).classList.remove("show");
+ }
+
+ document.getElementById(
+  "closeDetails"
+ ).onclick=closeDetails;
+
+ function changePage(direction){
+
+  const next=
+   page+direction;
+
+  if(next<1){
+   return;
+  }
+
+  const pages=
+   Number(pagination.pages)||0;
+
+  if(pages&&next>pages){
+   return;
+  }
+
+  page=next;
+
+  closeDetails();
+
+  loadTransactions();
+ }
+
+ [
+  "previousTop",
+  "previousBottom"
+ ].forEach(id=>{
+  document.getElementById(id)
+   .onclick=()=>changePage(-1);
+ });
+
+ [
+  "nextTop",
+  "nextBottom"
+ ].forEach(id=>{
+  document.getElementById(id)
+   .onclick=()=>changePage(1);
+ });
+
+ function refresh(){
+
+  closeDetails();
+
+  loadTransactions();
+ }
+
+ document.getElementById(
+  "refreshBtn"
+ ).onclick=refresh;
+
+ document.getElementById(
+  "refreshHero"
+ ).onclick=refresh;
+
+ document.getElementById(
+  "statusFilter"
+ ).onchange=function(){
+
+  page=1;
+  closeDetails();
+  loadTransactions();
+ };
+
+ document.getElementById(
+  "typeFilter"
+ ).onchange=function(){
+
+  page=1;
+  closeDetails();
+  loadTransactions();
+ };
+
+ document.getElementById(
+  "clearFilters"
+ ).onclick=function(){
+
+  document.getElementById(
+   "search"
+  ).value="";
+
+  document.getElementById(
+   "statusFilter"
+  ).value="";
+
+  document.getElementById(
+   "typeFilter"
+  ).value="";
+
+  page=1;
+
+  closeDetails();
+
+  loadTransactions();
+
+  toast("Transaction filters cleared.");
+ };
+
+ let searchTimer=null;
+
+ document.getElementById(
+  "search"
+ ).addEventListener(
+  "input",
+  function(){
+
+   clearTimeout(searchTimer);
+
+   searchTimer=
+    setTimeout(
+     ()=>{
+      applyClientSearch();
+     },
+     250
+    );
+  }
+ );
+
+ function applyClientSearch(){
+
+  const query=
+   document.getElementById(
+    "search"
+   ).value
+    .trim()
+    .toLowerCase();
+
+  if(!query){
+
+   renderTransactions();
+   updateStats();
+   return;
+  }
+
+  const filtered=
+   transactions.filter(
+    tx=>{
+     const haystack=[
+      getReference(tx),
+      tx.type,
+      tx.provider,
+      tx.status,
+      tx.customerName,
+      tx.customerEmail,
+      tx.customerPhone,
+      tx.providerTransactionId,
+      tx.providerReference
+     ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+     return haystack.includes(query);
+    }
+   );
+
+  renderFiltered(filtered);
+
+  updateFilteredStats(filtered);
+
+  document.getElementById(
+   "resultSummary"
+  ).textContent=
+   `${filtered.length} matching records on current page`;
+ }
+
+ function renderFiltered(list){
+
+  const body=
+   document.getElementById(
+    "transactionBody"
+   );
+
+  if(!list.length){
+
+   body.innerHTML=`
+    <tr>
+     <td colspan="8" class="empty-cell">
+      <div class="empty-icon">⌕</div>
+      <strong>No matching transactions</strong>
+      <p>
+       The current page contains no records matching your search.
+      </p>
+     </td>
+    </tr>
+   `;
+
+   return;
+  }
+
+  body.innerHTML=
+   list.map(
+    tx=>{
+
+     const originalIndex=
+      transactions.indexOf(tx);
+
+     const status=
+      normalizedStatus(tx.status)||
+      "unknown";
+
+     return `
+      <tr>
+
+       <td>
+        <span class="ref">
+         ${escapeHTML(getReference(tx))}
+        </span>
+       </td>
+
+       <td>
+        <span class="type">
+         ${escapeHTML(
+          normalizedType(tx.type)||"unknown"
+         )}
+        </span>
+       </td>
+
+       <td>
+        <span class="provider">
+         ${escapeHTML(getProvider(tx))}
+        </span>
+       </td>
+
+       <td>
+        <span class="amount">
+         ${escapeHTML(
+          formatAmount(
+           getAmount(tx),
+           getCurrency(tx)
+          )
+         )}
+        </span>
+       </td>
+
+       <td>
+        ${escapeHTML(getCurrency(tx))}
+       </td>
+
+       <td>
+        <span class="status ${escapeHTML(statusClass(status))}">
+         ${escapeHTML(status)}
+        </span>
+       </td>
+
+       <td>
+        ${escapeHTML(formatDate(getCreated(tx)))}
+       </td>
+
+       <td>
+        <button
+         class="row-action"
+         data-index="${originalIndex}"
+         title="View transaction"
+        >
+         ↗
+        </button>
+       </td>
+
+      </tr>
+     `;
+    }
+   ).join("");
+
+  body
+   .querySelectorAll(".row-action")
+   .forEach(
+    button=>{
+     button.onclick=function(){
+
+      openDetails(
+       transactions[
+        Number(this.dataset.index)
+       ]
+      );
+     };
+    }
+   );
+ }
+
+ function updateFilteredStats(list){
+
+  const completed=
+   list.filter(
+    tx=>normalizedStatus(tx.status)==="completed"
+   ).length;
+
+  const pending=
+   list.filter(
+    tx=>{
+     const status=
+      normalizedStatus(tx.status);
+
+     return status==="pending"||
+      status==="processing";
+    }
+   ).length;
+
+  const failed=
+   list.filter(
+    tx=>{
+     const status=
+      normalizedStatus(tx.status);
+
+     return status==="failed"||
+      status==="cancelled";
+    }
+   ).length;
+
+  document.getElementById(
+   "statTotal"
+  ).textContent=list.length;
+
+  document.getElementById(
+   "statCompleted"
+  ).textContent=completed;
+
+  document.getElementById(
+   "statPending"
+  ).textContent=pending;
+
+  document.getElementById(
+   "statFailed"
+  ).textContent=failed;
+ }
+
+ document.getElementById(
+  "logoutBtn"
+ ).onclick=function(){
+
+  localStorage.removeItem(
+   "primepay_token"
+  );
+
+  localStorage.removeItem(
+   "primepay_user"
+  );
+
+  location.href="../login.html";
+ };
+
+ function toast(message){
+
+  const element=
+   document.getElementById(
+    "toast"
+   );
+
+  element.textContent=message;
+
+  element.classList.add("show");
+
+  clearTimeout(
+   window.__primepayToast
+  );
+
+  window.__primepayToast=
+   setTimeout(
+    ()=>{
+     element.classList.remove("show");
+    },
+    2800
+   );
+ }
+
+ loadTransactions();
+
+})();
+</script>
+
+</body>
+</html>

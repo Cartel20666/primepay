@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PrimePay Developer Documentation</title>
+
+<style>
+:root{
+  --bg:#020617;
+  --panel:#08101f;
+  --panel2:#0b1426;
+  --border:rgba(148,163,184,.14);
+  --border2:rgba(59,130,246,.28);
+  --text:#e5edf8;
+  --muted:#8ea0b8;
+  --blue:#3b82f6;
+  --blue2:#2563eb;
+  --green:#22c55e;
+  --yellow:#f59e0b;
+  --red:#ef4444;
+  --purple:#8b5cf6;
+  --shadow:0 18px 50px rgba(0,0,0,.28);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+button,input{
+  font:inherit;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+.app{
+  display:flex;
+  min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+  width:250px;
+  position:fixed;
+  inset:0 auto 0 0;
+  background:#050b18;
+  border-right:1px solid var(--border);
+  padding:24px 16px;
+  z-index:50;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:0 10px 28px;
+}
+
+.brand-mark{
+  width:38px;
+  height:38px;
+  border-radius:11px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(145deg,#2563eb,#1d4ed8);
+  font-weight:800;
+  letter-spacing:-1px;
+}
+
+.brand-text strong{
+  display:block;
+  font-size:16px;
+}
+
+.brand-text span{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.nav-label{
+  color:#64748b;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1.4px;
+  padding:10px;
+  margin-top:5px;
+}
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.nav a{
+  padding:11px 12px;
+  border-radius:10px;
+  color:#94a3b8;
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  transition:.2s;
+}
+
+.nav a:hover{
+  background:rgba(59,130,246,.08);
+  color:#dbeafe;
+}
+
+.nav a.active{
+  background:rgba(59,130,246,.14);
+  color:#bfdbfe;
+  border:1px solid rgba(59,130,246,.18);
+}
+
+.nav-icon{
+  width:18px;
+  text-align:center;
+}
+
+.sidebar-bottom{
+  position:absolute;
+  bottom:20px;
+  left:16px;
+  right:16px;
+}
+
+.account-mini{
+  border:1px solid var(--border);
+  background:rgba(15,23,42,.6);
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:8px;
+}
+
+.account-mini strong{
+  display:block;
+  font-size:12px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.account-mini span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:3px;
+}
+
+.signout{
+  width:100%;
+  border:1px solid var(--border);
+  background:transparent;
+  color:#94a3b8;
+  padding:10px;
+  border-radius:9px;
+  cursor:pointer;
+}
+
+.signout:hover{
+  color:#fff;
+  background:rgba(239,68,68,.08);
+}
+
+/* MAIN */
+
+.main{
+  margin-left:250px;
+  width:calc(100% - 250px);
+}
+
+.topbar{
+  height:72px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 34px;
+  position:sticky;
+  top:0;
+  z-index:30;
+  background:rgba(2,6,23,.9);
+  backdrop-filter:blur(16px);
+}
+
+.top-title{
+  font-size:14px;
+  font-weight:600;
+}
+
+.top-sub{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.user-pill{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  color:#cbd5e1;
+  font-size:12px;
+}
+
+.avatar{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:#172554;
+  color:#bfdbfe;
+  font-weight:700;
+}
+
+.content{
+  max-width:1280px;
+  margin:auto;
+  padding:34px;
+}
+
+/* HERO */
+
+.hero{
+  margin-bottom:28px;
+}
+
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:6px 10px;
+  border:1px solid var(--border2);
+  border-radius:999px;
+  background:rgba(37,99,235,.08);
+  color:#93c5fd;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-bottom:15px;
+}
+
+.dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--green);
+}
+
+h1{
+  font-size:36px;
+  letter-spacing:-1.5px;
+  margin-bottom:10px;
+}
+
+.hero p{
+  max-width:760px;
+  color:var(--muted);
+  line-height:1.7;
+  font-size:14px;
+}
+
+/* CONTENT */
+
+.layout{
+  display:grid;
+  grid-template-columns:220px minmax(0,1fr);
+  gap:28px;
+  align-items:start;
+}
+
+.doc-nav{
+  position:sticky;
+  top:98px;
+  border:1px solid var(--border);
+  background:rgba(8,16,31,.72);
+  border-radius:14px;
+  padding:12px;
+}
+
+.doc-nav-title{
+  color:#64748b;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  padding:8px;
+}
+
+.doc-nav a{
+  display:block;
+  padding:8px;
+  border-radius:7px;
+  color:#94a3b8;
+  font-size:11px;
+}
+
+.doc-nav a:hover{
+  color:#dbeafe;
+  background:rgba(59,130,246,.08);
+}
+
+.doc-section{
+  margin-bottom:42px;
+  scroll-margin-top:100px;
+}
+
+.doc-section h2{
+  font-size:23px;
+  margin-bottom:8px;
+  letter-spacing:-.5px;
+}
+
+.doc-section h3{
+  font-size:15px;
+  margin:26px 0 10px;
+}
+
+.doc-section > p{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.75;
+  margin-bottom:15px;
+}
+
+/* CARDS */
+
+.card{
+  background:linear-gradient(145deg,rgba(11,20,38,.95),rgba(6,13,27,.95));
+  border:1px solid var(--border);
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  margin:15px 0;
+}
+
+.card-body{
+  padding:18px;
+}
+
+.info-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.info{
+  border:1px solid var(--border);
+  background:rgba(15,23,42,.45);
+  border-radius:11px;
+  padding:14px;
+}
+
+.info strong{
+  display:block;
+  font-size:12px;
+  margin-bottom:5px;
+}
+
+.info span{
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.5;
+}
+
+/* ENDPOINT */
+
+.endpoint{
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+  margin:15px 0;
+  background:#060d1a;
+}
+
+.endpoint-head{
+  padding:13px 15px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  border-bottom:1px solid var(--border);
+  background:rgba(15,23,42,.65);
+}
+
+.method{
+  font-size:10px;
+  font-weight:800;
+  padding:5px 8px;
+  border-radius:6px;
+  letter-spacing:.5px;
+}
+
+.get{background:rgba(34,197,94,.12);color:#86efac}
+.post{background:rgba(59,130,246,.13);color:#93c5fd}
+.patch{background:rgba(245,158,11,.12);color:#fcd34d}
+.delete{background:rgba(239,68,68,.12);color:#fca5a5}
+
+.path{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:12px;
+  color:#e2e8f0;
+  word-break:break-all;
+}
+
+.endpoint-desc{
+  margin-left:auto;
+  color:#64748b;
+  font-size:10px;
+}
+
+.endpoint-body{
+  padding:15px;
+}
+
+.endpoint-body p{
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.6;
+  margin-bottom:10px;
+}
+
+.endpoint-body strong{
+  color:#cbd5e1;
+}
+
+/* CODE */
+
+pre{
+  background:#020617;
+  border:1px solid rgba(148,163,184,.1);
+  border-radius:9px;
+  padding:15px;
+  overflow:auto;
+  margin:11px 0;
+  color:#cbd5e1;
+  font:11px/1.65 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+}
+
+.code-label{
+  color:#64748b;
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-top:15px;
+}
+
+/* TABLE */
+
+.table-wrap{
+  overflow:auto;
+  border:1px solid var(--border);
+  border-radius:12px;
+  margin:15px 0;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:620px;
+}
+
+th,td{
+  padding:11px 13px;
+  border-bottom:1px solid var(--border);
+  text-align:left;
+  font-size:11px;
+}
+
+th{
+  color:#94a3b8;
+  background:rgba(15,23,42,.6);
+  font-weight:600;
+}
+
+td{
+  color:#cbd5e1;
+}
+
+td code{
+  color:#93c5fd;
+  font-family:ui-monospace,monospace;
+}
+
+/* LIFECYCLE */
+
+.lifecycle{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:8px;
+  margin:18px 0;
+}
+
+.life{
+  padding:13px 8px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  text-align:center;
+  background:rgba(15,23,42,.4);
+}
+
+.life strong{
+  display:block;
+  font-size:11px;
+}
+
+.life span{
+  color:#64748b;
+  font-size:9px;
+  display:block;
+  margin-top:4px;
+}
+
+/* ALERT */
+
+.alert{
+  border:1px solid rgba(59,130,246,.2);
+  background:rgba(37,99,235,.07);
+  border-radius:11px;
+  padding:14px;
+  color:#bfdbfe;
+  font-size:11px;
+  line-height:1.6;
+  margin:14px 0;
+}
+
+.alert.warning{
+  border-color:rgba(245,158,11,.2);
+  background:rgba(245,158,11,.06);
+  color:#fde68a;
+}
+
+.alert.danger{
+  border-color:rgba(239,68,68,.2);
+  background:rgba(239,68,68,.06);
+  color:#fecaca;
+}
+
+/* MOBILE */
+
+.mobile-menu{
+  display:none;
+  border:1px solid var(--border);
+  background:transparent;
+  color:#cbd5e1;
+  padding:7px 9px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+@media(max-width:950px){
+  .sidebar{
+    transform:translateX(-100%);
+    transition:.25s;
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .main{
+    margin-left:0;
+    width:100%;
+  }
+
+  .mobile-menu{
+    display:block;
+  }
+
+  .topbar{
+    padding:0 18px;
+  }
+
+  .content{
+    padding:25px 18px;
+  }
+
+  .layout{
+    grid-template-columns:1fr;
+  }
+
+  .doc-nav{
+    position:static;
+  }
+
+  .doc-nav a{
+    display:inline-block;
+    margin-right:4px;
+  }
+
+  .lifecycle{
+    grid-template-columns:repeat(3,1fr);
+  }
+}
+
+@media(max-width:600px){
+  h1{
+    font-size:28px;
+  }
+
+  .info-grid{
+    grid-template-columns:1fr;
+  }
+
+  .endpoint-head{
+    flex-wrap:wrap;
+  }
+
+  .endpoint-desc{
+    width:100%;
+    margin-left:0;
+  }
+
+  .lifecycle{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .user-pill span{
+    display:none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+
+  <div class="brand">
+    <div class="brand-mark">PP</div>
+    <div class="brand-text">
+      <strong>PrimePay</strong>
+      <span>Developer Platform</span>
+    </div>
+  </div>
+
+  <div class="nav-label">Developer</div>
+
+  <nav class="nav">
+    <a href="dashboard.html">
+      <span class="nav-icon">⌂</span> Dashboard
+    </a>
+
+    <a href="api-keys.html">
+      <span class="nav-icon">⌘</span> API Keys
+    </a>
+
+    <a href="webhooks.html">
+      <span class="nav-icon">↗</span> Webhooks
+    </a>
+
+    <a href="sandbox.html">
+      <span class="nav-icon">◇</span> Sandbox
+    </a>
+
+    <a href="docs.html" class="active">
+      <span class="nav-icon">▤</span> Documentation
+    </a>
+
+    <a href="logs.html">
+      <span class="nav-icon">≡</span> Logs
+    </a>
+
+    <a href="../merchant/dashboard.html">
+      <span class="nav-icon">◈</span> Merchant Portal
+    </a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="account-mini">
+      <strong id="sideName">Developer</strong>
+      <span id="sideEmail">Authenticated account</span>
+    </div>
+
+    <button class="signout" id="signOut">Sign out</button>
+  </div>
+
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button class="mobile-menu" id="mobileMenu">☰</button>
+
+    <div>
+      <div class="top-title">API Documentation</div>
+      <div class="top-sub">PrimePay V1 Developer Reference</div>
+    </div>
+  </div>
+
+  <div class="user-pill">
+    <div class="avatar" id="avatar">D</div>
+    <span id="topName">Developer</span>
+  </div>
+</header>
+
+<div class="content">
+
+<section class="hero">
+  <div class="eyebrow">
+    <span class="dot"></span>
+    PrimePay API V1
+  </div>
+
+  <h1>Developer Documentation</h1>
+
+  <p>
+    Integrate PrimePay using authenticated REST APIs, idempotent payment
+    requests and signed webhook events. This reference documents the
+    endpoints currently exposed by the PrimePay V1 backend.
+  </p>
+</section>
+
+<div class="layout">
+
+<nav class="doc-nav">
+  <div class="doc-nav-title">On this page</div>
+  <a href="#base">Base URL</a>
+  <a href="#auth">Authentication</a>
+  <a href="#payments">Payments</a>
+  <a href="#transactions">Transactions</a>
+  <a href="#customers">Customers</a>
+  <a href="#keys">API Keys</a>
+  <a href="#webhooks">Webhooks</a>
+  <a href="#lifecycle">Lifecycle</a>
+  <a href="#signing">Webhook Signing</a>
+  <a href="#errors">Errors</a>
+  <a href="#integration">Integration Example</a>
+</nav>
+
+<div>
+
+<!-- BASE URL -->
+
+<section class="doc-section" id="base">
+
+<h2>Base URL</h2>
+
+<p>
+All PrimePay V1 API routes are mounted under the following path.
+The production hostname is environment-specific, so keep the API base
+URL configurable in your integration rather than hard-coding it.
+</p>
+
+<pre>https://YOUR-PRIMEPAY-HOST/api/v1</pre>
+
+<div class="alert">
+For local development, the backend used by the current PrimePay frontend is:
+<code>http://localhost:5001/api/v1</code>
+</div>
+
+</section>
+
+
+<!-- AUTH -->
+
+<section class="doc-section" id="auth">
+
+<h2>Authentication</h2>
+
+<p>
+PrimePay uses two authentication models. Merchant dashboard operations
+use JWT bearer authentication. Developer API operations use an API key
+and API secret.
+</p>
+
+<div class="info-grid">
+
+<div class="info">
+<strong>Dashboard / Merchant API</strong>
+<span>JWT access token in the Authorization header.</span>
+</div>
+
+<div class="info">
+<strong>Developer API</strong>
+<span>X-API-Key and X-API-Secret headers.</span>
+</div>
+
+</div>
+
+<h3>JWT authentication</h3>
+
+<pre>Authorization: Bearer YOUR_JWT_TOKEN</pre>
+
+<p>
+JWT authentication is used by authenticated merchant and administrative
+routes such as businesses, payments, transactions, customers and API-key
+management.
+</p>
+
+<h3>Developer API authentication</h3>
+
+<pre>X-API-Key: pk_test_YOUR_KEY_ID
+X-API-Secret: YOUR_API_SECRET</pre>
+
+<div class="alert warning">
+API secrets are returned only when an API key is created or rotated.
+PrimePay does not expose the secret again through the API-key listing
+endpoint. Store it securely when it is shown.
+</div>
+
+<h3>Supported headers</h3>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Header</th>
+<th>Required</th>
+<th>Used by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Authorization</code></td>
+<td>Yes for JWT routes</td>
+<td>Merchant/Admin API</td>
+</tr>
+<tr>
+<td><code>X-API-Key</code></td>
+<td>Yes for developer API</td>
+<td>Developer endpoints</td>
+</tr>
+<tr>
+<td><code>X-API-Secret</code></td>
+<td>Yes for developer API</td>
+<td>Developer endpoints</td>
+</tr>
+<tr>
+<td><code>Idempotency-Key</code></td>
+<td>Yes for payment creation</td>
+<td>Payment creation</td>
+</tr>
+<tr>
+<td><code>Content-Type</code></td>
+<td>Yes for JSON bodies</td>
+<td>JSON requests</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</section>
+
+
+<!-- PAYMENTS -->
+
+<section class="doc-section" id="payments">
+
+<h2>Payments</h2>
+
+<p>
+Payments represent a customer payment request made through an active
+PrimePay provider. Payment creation is protected by idempotency.
+</p>
+
+<div class="endpoint">
+<div class="endpoint-head">
+<span class="method post">POST</span>
+<span class="path">/payments</span>
+<span class="endpoint-desc">Create payment</span>
+</div>
+<div class="endpoint-body">
+<p>Requires JWT authentication and an <strong>Idempotency-Key</strong>.</p>
+
+<div class="code-label">Request</div>
+<pre>{
+  "amount": 1000,
+  "currency": "KES",
+  "country": "KE",
+  "provider": "mpesa",
+  "paymentMethod": "mobile_money",
+  "customerName": "John Doe",
+  "customerEmail": "john@example.com",
+  "customerPhone": "+254700000000",
+  "description": "Order payment",
+  "metadata": {
+    "orderId": "ORDER-1001"
+  }
+}</pre>
+
+<div class="code-label">Headers</div>
+<pre>Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+Idempotency-Key: YOUR_UNIQUE_REQUEST_KEY</pre>
+
+<div class="code-label">Response shape</div>
+<pre>{
+  "success": true,
+  "message": "...",
+  "payment": { },
+  "transaction": { },
+  "provider": "...",
+  "idempotentReplay": false
+}</pre>
+</div>
+</div>
+
+<div class="endpoint">
+<div class="endpoint-head">
+<span class="method get">GET</span>
+<span class="path">/payments/:reference</span>
+<span class="endpoint-desc">Payment details</span>
+</div>
+<div class="endpoint-body">
+<p>Returns the payment associated with the supplied PrimePay reference.</p>
+
+<pre>GET /api/v1/payments/PP-REFERENCE</pre>
+</div>
+</div>
+
+<div class="endpoint">
+<div class="endpoint-head">
+<span class="method get">GET</span>
+<span class="path">/payments/:reference/status</span>
+<span class="endpoint-desc">Payment status</span>
+</div>
+<div class="endpoint-body">
+<p>
+Retrieves the payment status and performs provider verification before
+synchronizing the payment state.
+</p>
+
+<pre>GET /api/v1/payments/PP-REFERENCE/status</pre>
+</div>
+</div>
+
+<h3>Developer sandbox payment</h3>
+
+<div class="endpoint">
+<div class="endpoint-head">
+<span class="method post">POST</span>
+<span class="path">/developer/payments</span>
+<span class="endpoint-desc">Sandbox payment</span>
+</div>
+<div class="endpoint-body">
+
+<p>
+Uses sandbox API credentials instead of a JWT. The API key must belong
+to the sandbox environment.
+</p>
+
+<pre>X-API-Key: pk_test_YOUR_KEY_ID
+X-API-Secret: YOUR_SANDBOX_SECRET
+Idempotency-Key: SANDBOX_REQUEST_123</pre>
+
+<pre>{
+  "amount": 100,
+  "currency": "KES",
+  "country": "KE",
+  "provider": "mpesa",
+  "paymentMethod": "mobile_money",
+  "customerName": "Sandbox Customer",
+  "customerPhone": "+254700000000",
+  "description": "Sandbox test payment"
+}</pre>
+
+</div>
+</div>
+
+</section>
+
+
+<!-- TRANSACTIONS -->
+
+<section class="doc-section" id="transactions">
+
+<h2>Transactions</h2>
+
+<p>
+Transactions provide the financial record associated with payments and
+other supported financial operations.
+</p>
+
+<div class="endpoint">
+<div class="endpoint-head">
+<span class="method get">GET</span>
+<span class="path">/transactions</span>
+<span class="endpoint-desc">List transactions</span>
+</div>
+<div class="endpoint-body">
+
+<pre>GET /api/v1/transactions?page=1&amp;limit=20&amp;status=completed&amp;type=payment</pre>
+
+<p>
+Supported query parameters include <strong>page</strong>,
+<strong>limit</strong>, <strong>status</strong> and <strong>type</strong>.
+</p>
+
+<pre>{
+  "success": true,
+  "transactions": [],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 0,
+    "pages": 0
+  }
+}</pre>
+
+</div>
+</div>
+
+<div class="endpoint">
+<div class="endpoint-head">
+<span class="method get">GET</span>
+<span class="path">/transactions/:reference</span>
+<span class="endpoint-desc">Transaction details</span>
+</div>
+<div class="endpoint-body">
+
+<pre>GET /api/v1/transactions/TRANSACTION-REFERENCE</pre>
+
+</div>
+</div>
+
+</section>
+
+
+<!-- CUSTOMERS -->
+
+<section class="doc-section" id="customers">
+
+<h2>Customers</h2>
+
+<p>
+Customer information is derived from payment records belonging to the
+authenticated business.
+</p>
+
+<div class="endpoint">
+<div class="endpoint-head">
+<span class="method get">GET</span>
+<span class="path">/customers</span>
+<span class="endpoint-desc">List/search customers</span>
+</div>
+<div class="endpoint-body">
+
+<pre>GET /api/v1/customers?search=john</pre>
+
+<p>
+The search parameter can match customer name, email or phone.
+</p>
+
+<pre>{
+  "success": true,
+  "customers": []
+}</pre>
+
+</div>
+</div>
+
+</section>
+
+
+<!-- API KEYS -->
+
+<section class="doc-section" id="keys">
+
+<h2>API Keys</h2>
+
+<p>
+API keys identify developer integrations and separate sandbox from live
+environments.
+</p>
+
+<div class="endpoint">
+<div class="endpoint-head">
+<span class="method get">GET</span>
+<span class="path">/api-keys</span>
+<span class="endpoint-desc">List keys</span>
+</div>
+<div class="endpoint-body">
+
+<pre>GET /api/v1/api-keys</pre>
+
+<p>
+Secrets are intentionally excluded from list responses.
+</p>
+
+</div>
+</div>
+
+<div class="endpoint">
+<div class="endpoint-head">
+<span class="method post">POST</span>
+<span class="path">/api-keys</span>
+<span class="endpoint-desc">Create key</span>
+</div>
+<div class="endpoint-body">
+
+<pre>{
+  "name": "My Sandbox Integration",
+  "environment": "sandbox"
+}</pre>
+
+<p>
+Live keys require an approved business with live API access enabled.
+</p>
+
+</div>
+</div>
+
+<div class="endpoint">
+<div class="endpoint-head">
+<span class="method post">POST</span>
+<span class="path">/api-keys/:id/revoke</span>
+<span class="endpoint-desc">Revoke key</span>
+</div>
+<div class="endpoint-body">
+
+<pre>POST /api/v1/api-keys/KEY_ID/revoke</pre>
+
+</div>
+</div>
+
+<div class="endpoint">
+<div class="endpoint-head">
+<span class="method post">POST</span>
+<span class="path">/api-keys/:id/rotate</span>
+<span class="endpoint-desc">Rotate key</span>
+</div>
+<div class="endpoint-body">
+
+<pre>POST /api/v1/api-keys/KEY_ID/rotate</pre>
+
+<p>
+Rotation invalidates the old secret and returns the replacement secret
+once.
+</p>
+
+</div>
+</div>
+
+</section>
+
+
+<!-- WEBHOOKS -->
+
+<section class="doc-section" id="webhooks">
+
+<h2>Webhooks</h2>
+
+<p>
+PrimePay can deliver signed event notifications to merchant endpoints.
+Webhook endpoints must use HTTPS, except localhost and 127.0.0.1 during
+development.
+</p>
+
+<h3>Supported events</h3>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr><td><code>payment.created</code></td><td>Payment record created</td></tr>
+<tr><td><code>payment.pending</code></td><td>Payment is pending</td></tr>
+<tr><td><code>payment.completed</code></td><td>Payment completed</td></tr>
+<tr><td><code>payment.failed</code></td><td>Payment failed</td></tr>
+<tr><td><code>payment.cancelled</code></td><td>Payment cancelled</td></tr>
+<tr><td><code>payment.refunded</code></td><td>Payment refunded</td></tr>
+<tr><td><code>payout.created</code></td><td>Payout created</td></tr>
+<tr><td><code>payout.completed</code></td><td>Payout completed</td></tr>
+<tr><td><code>payout.failed</code></td><td>Payout failed</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="endpoint">
+<div class="endpoint-head">
+<span class="method post">POST</span>
+<span class="path">/webhooks</span>
+<span class="endpoint-desc">Create endpoint</span>
+</div>
+<div class="endpoint-body">
+
+<pre>{
+  "name": "My Payment Listener",
+  "url": "https://example.com/primepay/webhook",
+  "events": [
+    "payment.completed",
+    "payment.failed"
+  ]
+}</pre>
+
+<p>
+The webhook secret is returned once when the endpoint is created.
+</p>
+
+</div>
+</div>
+
+<div class="endpoint">
+<div class="endpoint-head">
+<span class="method get">GET</span>
+<span class="path">/webhooks</span>
+<span class="endpoint-desc">List endpoints</span>
+</div>
+<div class="endpoint-body">
+<pre>GET /api/v1/webhooks</pre>
+<p>Webhook secrets are not returned.</p>
+</div>
+</div>
+
+<div class="endpoint">
+<div class="endpoint-head">
+<span class="method patch">PATCH</span>
+<span class="path">/webhooks/:id</span>
+<span class="endpoint-desc">Update endpoint</span>
+</div>
+<div class="endpoint-body">
+<pre>PATCH /api/v1/webhooks/WEBHOOK_ID</pre>
+</div>
+</div>
+
+<div class="endpoint">
+<div class="endpoint-head">
+<span class="method delete">DELETE</span>
+<span class="path">/webhooks/:id</span>
+<span class="endpoint-desc">Delete endpoint</span>
+</div>
+<div class="endpoint-body">
+<pre>DELETE /api/v1/webhooks/WEBHOOK_ID</pre>
+</div>
+</div>
+
+<div class="endpoint">
+<div class="endpoint-head">
+<span class="method get">GET</span>
+<span class="path">/webhooks/:id/deliveries</span>
+<span class="endpoint-desc">Delivery history</span>
+</div>
+<div class="endpoint-body">
+<pre>GET /api/v1/webhooks/WEBHOOK_ID/deliveries?page=1&amp;limit=20&amp;status=failed</pre>
+</div>
+</div>
+
+<div class="endpoint">
+<div class="endpoint-head">
+<span class="method post">POST</span>
+<span class="path">/webhooks/:id/deliveries/:deliveryId/retry</span>
+<span class="endpoint-desc">Retry delivery</span>
+</div>
+<div class="endpoint-body">
+<pre>POST /api/v1/webhooks/WEBHOOK_ID/deliveries/DELIVERY_ID/retry</pre>
+</div>
+</div>
+
+</section>
+
+
+<!-- LIFECYCLE -->
+
+<section class="doc-section" id="lifecycle">
+
+<h2>Payment Lifecycle</h2>
+
+<p>
+A payment does not become completed merely because a request was
+accepted. PrimePay maintains explicit payment states and provider
+verification controls the final state.
+</p>
+
+<div class="lifecycle">
+
+<div class="life">
+<strong>Pending</strong>
+<span>Created</span>
+</div>
+
+<div class="life">
+<strong>Processing</strong>
+<span>Provider action</span>
+</div>
+
+<div class="life">
+<strong>Completed</strong>
+<span>Verified success</span>
+</div>
+
+<div class="life">
+<strong>Failed</strong>
+<span>Verified failure</span>
+</div>
+
+<div class="life">
+<strong>Cancelled</strong>
+<span>Cancelled</span>
+</div>
+
+<div class="life">
+<strong>Refunded</strong>
+<span>Refunded</span>
+</div>
+
+</div>
+
+<div class="alert">
+Provider callbacks are not treated as unquestionable truth. PrimePay
+performs server-side provider verification before allowing a payment to
+reach a verified completed state.
+</div>
+
+<h3>Important integration rule</h3>
+
+<p>
+Your application should treat the webhook and payment status as
+authoritative PrimePay state, rather than assuming that a successful
+HTTP response from the payment creation request means the customer's
+money has been received.
+</p>
+
+</section>
+
+
+<!-- IDEMPOTENCY -->
+
+<section class="doc-section" id="idempotency">
+
+<h2>Idempotency</h2>
+
+<p>
+Payment creation requires an <code>Idempotency-Key</code>. This prevents
+duplicate payment creation when a client retries a request because of a
+network timeout or interrupted connection.
+</p>
+
+<pre>Idempotency-Key: order-1001-attempt-1</pre>
+
+<h3>Same key + same request</h3>
+
+<p>
+PrimePay replays the existing payment response instead of creating a
+second payment.
+</p>
+
+<pre>{
+  "success": true,
+  "idempotentReplay": true
+}</pre>
+
+<h3>Same key + different request</h3>
+
+<p>
+Changing the request payload while reusing an existing idempotency key
+is rejected as a conflicting request.
+</p>
+
+<div class="alert warning">
+Generate a new idempotency key for a genuinely new payment. Do not
+generate a new key merely because the original request timed out.
+</div>
+
+</section>
+
+
+<!-- SIGNING -->
+
+<section class="doc-section" id="signing">
+
+<h2>Webhook Signing</h2>
+
+<p>
+PrimePay signs webhook deliveries using HMAC-SHA256. The signature is
+calculated from the timestamp and exact request payload.
+</p>
+
+<h3>Signature header</h3>
+
+<pre>X-PrimePay-Signature: t=TIMESTAMP,v1=SIGNATURE</pre>
+
+<h3>Signed content</h3>
+
+<pre>${timestamp}.${rawPayload}</pre>
+
+<p>
+Your webhook receiver should read the raw request body, construct the
+signed message using the timestamp from the header, calculate HMAC-SHA256
+with the webhook secret and compare the resulting signature securely.
+</p>
+
+<h3>Verification example</h3>
+
+<pre>const crypto = require("crypto");
+
+function verifyPrimePayWebhook(rawPayload, signatureHeader, secret) {
+  const parts = Object.fromEntries(
+    signatureHeader.split(",").map(part => part.split("="))
+  );
+
+  const timestamp = parts.t;
+  const receivedSignature = parts.v1;
+
+  const signedPayload = `${timestamp}.${rawPayload}`;
+
+  const expectedSignature = crypto
+    .createHmac("sha256", secret)
+    .update(signedPayload)
+    .digest("hex");
+
+  return crypto.timingSafeEqual(
+    Buffer.from(expectedSignature),
+    Buffer.from(receivedSignature)
+  );
+}</pre>
+
+<div class="alert danger">
+Do not parse and re-serialize the JSON body before signature verification.
+Whitespace and serialization changes can alter the signed payload.
+Verify the raw request body first.
+</div>
+
+</section>
+
+
+<!-- ERRORS -->
+
+<section class="doc-section" id="errors">
+
+<h2>Errors & HTTP Behavior</h2>
+
+<p>
+PrimePay uses HTTP status codes together with JSON responses describing
+the failure.
+</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>400</code></td>
+<td>Invalid or malformed request</td>
+</tr>
+<tr>
+<td><code>401</code></td>
+<td>Authentication failed or token missing</td>
+</tr>
+<tr>
+<td><code>403</code></td>
+<td>Authenticated but not permitted</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td>Resource not found</td>
+</tr>
+<tr>
+<td><code>409</code></td>
+<td>Conflict, including idempotency conflicts</td>
+</tr>
+<tr>
+<td><code>429</code></td>
+<td>Rate limit exceeded</td>
+</tr>
+<tr>
+<td><code>500</code></td>
+<td>Unexpected server error</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<pre>{
+  "success": false,
+  "message": "Human-readable error message"
+}</pre>
+
+</section>
+
+
+<!-- INTEGRATION -->
+
+<section class="doc-section" id="integration">
+
+<h2>Integration Example</h2>
+
+<p>
+The following example demonstrates the basic pattern for creating a
+payment from a server-side application.
+</p>
+
+<h3>Node.js</h3>
+
+<pre>const crypto = require("crypto");
+
+const API_URL = "https://YOUR-PRIMEPAY-HOST/api/v1";
+
+const response = await fetch(
+  `${API_URL}/developer/payments`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-Key": process.env.PRIMEPAY_API_KEY,
+      "X-API-Secret": process.env.PRIMEPAY_API_SECRET,
+      "Idempotency-Key": crypto.randomUUID()
+    },
+    body: JSON.stringify({
+      amount: 1000,
+      currency: "KES",
+      country: "KE",
+      provider: "mpesa",
+      paymentMethod: "mobile_money",
+      customerName: "John Doe",
+      customerPhone: "+254700000000",
+      description: "Order payment",
+      metadata: {
+        orderId: "ORDER-1001"
+      }
+    })
+  }
+);
+
+const data = await response.json();
+
+console.log(data);</pre>
+
+<h3>Recommended production flow</h3>
+
+<div class="card">
+<div class="card-body">
+
+<div class="info-grid">
+
+<div class="info">
+<strong>1. Create</strong>
+<span>Create the payment with a unique idempotency key.</span>
+</div>
+
+<div class="info">
+<strong>2. Store reference</strong>
+<span>Persist the PrimePay payment reference against your order.</span>
+</div>
+
+<div class="info">
+<strong>3. Wait for state</strong>
+<span>Do not assume payment creation means completed payment.</span>
+</div>
+
+<div class="info">
+<strong>4. Receive webhook</strong>
+<span>Verify the PrimePay signature before processing the event.</span>
+</div>
+
+<div class="info">
+<strong>5. Verify status</strong>
+<span>Use the payment status endpoint when reconciliation or confirmation is required.</span>
+</div>
+
+<div class="info">
+<strong>6. Fulfil order</strong>
+<span>Only fulfil the order after your application has accepted the verified completed state.</span>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<h3>Security checklist</h3>
+
+<div class="alert">
+<strong>Never expose an API secret in browser JavaScript.</strong><br>
+Use PrimePay API credentials from your server-side environment. Browser
+applications should communicate with your own backend rather than
+embedding private PrimePay credentials in frontend code.
+</div>
+
+<div class="alert">
+<strong>Use HTTPS in production.</strong><br>
+Webhook endpoints must be HTTPS outside localhost/127.0.0.1 development
+environments.
+</div>
+
+<div class="alert">
+<strong>Keep idempotency keys stable during retries.</strong><br>
+A timeout does not mean that PrimePay failed to create the payment.
+Retry the same logical request using the same idempotency key.
+</div>
+
+</section>
+
+</div>
+</div>
+
+</div>
+
+</main>
+</div>
+
+<script>
+const API_URL = "http://localhost:5001/api/v1";
+
+const token = localStorage.getItem("primepay_token");
+const storedUser = localStorage.getItem("primepay_user");
+
+if (!token) {
+  window.location.href = "../login.html";
+}
+
+let user = null;
+
+try {
+  user = storedUser ? JSON.parse(storedUser) : null;
+} catch {
+  user = null;
+}
+
+const name =
+  user?.name ||
+  user?.email ||
+  "Developer";
+
+const email =
+  user?.email ||
+  "Authenticated account";
+
+document.getElementById("topName").textContent = name;
+document.getElementById("sideName").textContent = name;
+document.getElementById("sideEmail").textContent = email;
+
+const avatarText = name
+  .trim()
+  .charAt(0)
+  .toUpperCase() || "D";
+
+document.getElementById("avatar").textContent = avatarText;
+
+document.getElementById("signOut").addEventListener("click", () => {
+  localStorage.removeItem("primepay_token");
+  localStorage.removeItem("primepay_user");
+  window.location.href = "../login.html";
+});
+
+document.getElementById("mobileMenu").addEventListener("click", () => {
+  document.getElementById("sidebar").classList.toggle("open");
+});
+
+document.querySelectorAll(".doc-nav a").forEach(link => {
+  link.addEventListener("click", () => {
+    document.getElementById("sidebar").classList.remove("open");
+  });
+});
+</script>
+
+</body>
+</html>

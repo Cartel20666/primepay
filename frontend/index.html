@@ -1,0 +1,2488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="PrimePay provides secure payment infrastructure for modern businesses, with payment processing, developer tools, webhooks and transaction management."
+    >
+
+    <meta name="theme-color" content="#020617">
+
+    <title>PrimePay | Payment Infrastructure for Modern Businesses</title>
+
+    <style>
+        /* =========================================================
+           PRIMEPAY
+           Complete Landing Page
+           Internal CSS
+        ========================================================= */
+
+        :root {
+            --bg: #020617;
+            --bg-soft: #050b18;
+            --surface: #081225;
+            --surface-2: #0b162b;
+            --border: rgba(148, 163, 184, 0.14);
+
+            --text: #f8fafc;
+            --text-soft: #cbd5e1;
+            --muted: #94a3b8;
+
+            --primary: #2563eb;
+            --primary-light: #60a5fa;
+            --primary-dark: #1d4ed8;
+
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+
+            --container: 1180px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(
+                    circle at 50% -10%,
+                    rgba(37, 99, 235, 0.14),
+                    transparent 35%
+                ),
+                var(--bg);
+            color: var(--text);
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+            line-height: 1.5;
+        }
+
+        body.menu-open {
+            overflow: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font: inherit;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        .container {
+            width: min(var(--container), calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-heading {
+            max-width: 720px;
+            margin-bottom: 52px;
+        }
+
+        .section-heading.center {
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            color: var(--primary-light);
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .section-label::before {
+            content: "";
+            width: 24px;
+            height: 2px;
+            border-radius: 99px;
+            background: var(--primary);
+        }
+
+        .section-heading h2 {
+            margin-bottom: 16px;
+            font-size: clamp(32px, 5vw, 48px);
+            line-height: 1.08;
+            letter-spacing: -1.8px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 17px;
+            line-height: 1.75;
+        }
+
+        /* =========================================================
+           BUTTONS
+        ========================================================= */
+
+        .btn {
+            min-height: 46px;
+            padding: 0 20px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 750;
+            cursor: pointer;
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            border-color: var(--border);
+            background: rgba(15, 23, 42, 0.65);
+            color: var(--text-soft);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(30, 41, 59, 0.8);
+            color: #fff;
+        }
+
+        /* =========================================================
+           1. NAVBAR
+        ========================================================= */
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            background: rgba(2, 6, 23, 0.86);
+            backdrop-filter: blur(20px);
+        }
+
+        .nav-inner {
+            min-height: 74px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 21px;
+            font-weight: 850;
+            letter-spacing: -0.6px;
+        }
+
+        .brand-mark {
+            width: 37px;
+            height: 37px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            background: linear-gradient(
+                135deg,
+                #3b82f6,
+                #1d4ed8
+            );
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.25);
+            color: white;
+            font-weight: 900;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            color: var(--text-soft);
+            font-size: 14px;
+        }
+
+        .nav-links a {
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mobile-menu-button {
+            display: none;
+            width: 42px;
+            height: 42px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        /* =========================================================
+           2. HERO
+        ========================================================= */
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding: 115px 0 90px;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            top: -250px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(37, 99, 235, 0.12);
+            filter: blur(130px);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            max-width: 850px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 13px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 999px;
+            background: rgba(37, 99, 235, 0.08);
+            color: #93c5fd;
+            font-size: 13px;
+            font-weight: 750;
+        }
+
+        .eyebrow-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.6);
+        }
+
+        .hero h1 {
+            font-size: clamp(44px, 7vw, 78px);
+            line-height: 1.01;
+            letter-spacing: -3.8px;
+            font-weight: 900;
+        }
+
+        .hero h1 span {
+            color: var(--primary-light);
+        }
+
+        .hero-description {
+            max-width: 700px;
+            margin: 26px auto 0;
+            color: var(--muted);
+            font-size: 18px;
+            line-height: 1.75;
+        }
+
+        .hero-actions {
+            margin-top: 36px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .hero-actions .btn {
+            min-height: 50px;
+            padding: 0 23px;
+        }
+
+        .hero-preview {
+            position: relative;
+            max-width: 960px;
+            margin: 70px auto 0;
+            padding: 1px;
+            border: 1px solid rgba(96, 165, 250, 0.18);
+            border-radius: 22px;
+            background: linear-gradient(
+                135deg,
+                rgba(96, 165, 250, 0.14),
+                rgba(15, 23, 42, 0.3)
+            );
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.35);
+        }
+
+        .preview-window {
+            overflow: hidden;
+            border-radius: 21px;
+            background: #071225;
+        }
+
+        .preview-topbar {
+            height: 48px;
+            padding: 0 18px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .window-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #334155;
+        }
+
+        .preview-body {
+            padding: 28px;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: 1.35fr 0.8fr 0.8fr;
+            gap: 16px;
+        }
+
+        .preview-card {
+            min-height: 120px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: rgba(15, 23, 42, 0.62);
+        }
+
+        .preview-card.large {
+            grid-column: span 3;
+            min-height: 190px;
+        }
+
+        .preview-label {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .preview-value {
+            margin-top: 10px;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        .preview-line {
+            height: 8px;
+            margin-top: 24px;
+            border-radius: 99px;
+            background: #172554;
+        }
+
+        .preview-line.short {
+            width: 55%;
+        }
+
+        /* =========================================================
+           3. TRUST
+        ========================================================= */
+
+        .trust {
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            background: rgba(8, 18, 37, 0.55);
+        }
+
+        .trust-inner {
+            min-height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .trust-content p {
+            margin-bottom: 18px;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 750;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .trust-items {
+            display: flex;
+            justify-content: center;
+            gap: 42px;
+            flex-wrap: wrap;
+            color: #cbd5e1;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* =========================================================
+           4. WHAT IS PRIMEPAY
+        ========================================================= */
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 70px;
+            align-items: center;
+        }
+
+        .about-copy p {
+            color: var(--muted);
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .about-copy p + p {
+            margin-top: 18px;
+        }
+
+        .about-panel {
+            padding: 30px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(37, 99, 235, 0.08),
+                    rgba(15, 23, 42, 0.65)
+                );
+        }
+
+        .about-panel h3 {
+            margin-bottom: 24px;
+            font-size: 21px;
+        }
+
+        .about-list {
+            display: grid;
+            gap: 18px;
+        }
+
+        .about-item {
+            display: flex;
+            gap: 14px;
+        }
+
+        .about-icon {
+            flex: 0 0 36px;
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            background: rgba(37, 99, 235, 0.14);
+            color: var(--primary-light);
+            font-weight: 900;
+        }
+
+        .about-item strong {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 14px;
+        }
+
+        .about-item span {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* =========================================================
+           5. PAYMENT SOLUTIONS
+        ========================================================= */
+
+        .solutions {
+            background: rgba(8, 18, 37, 0.35);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .feature-card {
+            padding: 28px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: rgba(8, 18, 37, 0.62);
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(96, 165, 250, 0.28);
+        }
+
+        .feature-icon {
+            width: 45px;
+            height: 45px;
+            margin-bottom: 22px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: rgba(37, 99, 235, 0.13);
+            color: var(--primary-light);
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .feature-card p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        /* =========================================================
+           6. HOW IT WORKS
+        ========================================================= */
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+        }
+
+        .step {
+            position: relative;
+            padding: 26px 20px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: rgba(8, 18, 37, 0.52);
+        }
+
+        .step-number {
+            width: 38px;
+            height: 38px;
+            margin-bottom: 20px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            background: var(--primary);
+            color: white;
+            font-weight: 850;
+        }
+
+        .step h3 {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .step p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.65;
+        }
+
+        /* =========================================================
+           7. DEVELOPER PLATFORM
+        ========================================================= */
+
+        .developer-section {
+            background:
+                radial-gradient(
+                    circle at 90% 50%,
+                    rgba(37, 99, 235, 0.09),
+                    transparent 35%
+                ),
+                rgba(8, 18, 37, 0.3);
+        }
+
+        .developer-grid {
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            gap: 55px;
+            align-items: center;
+        }
+
+        .developer-copy p {
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        .developer-features {
+            margin-top: 28px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .developer-feature {
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.5);
+            font-size: 13px;
+            color: var(--text-soft);
+        }
+
+        .code-window {
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: #030712;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35);
+        }
+
+        .code-header {
+            height: 46px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .code-body {
+            padding: 24px;
+            overflow-x: auto;
+        }
+
+        .code-body pre {
+            color: #cbd5e1;
+            font-family: "SFMono-Regular", Consolas, monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .code-key {
+            color: #60a5fa;
+        }
+
+        .code-string {
+            color: #86efac;
+        }
+
+        /* =========================================================
+           8. SECURITY
+        ========================================================= */
+
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .security-card {
+            padding: 27px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: rgba(8, 18, 37, 0.58);
+        }
+
+        .security-card h3 {
+            margin-bottom: 9px;
+            font-size: 17px;
+        }
+
+        .security-card p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .security-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 20px;
+            color: #86efac;
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        .security-status::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+
+        /* =========================================================
+           9. PAYMENT PROVIDERS
+        ========================================================= */
+
+        .provider-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .provider-card {
+            min-height: 150px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: rgba(8, 18, 37, 0.55);
+        }
+
+        .provider-logo {
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: #172554;
+            color: #bfdbfe;
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .provider-card h3 {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .provider-card span {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        /* =========================================================
+           10. BUSINESS BENEFITS
+        ========================================================= */
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .benefit-card {
+            padding: 28px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(15, 23, 42, 0.8),
+                    rgba(8, 18, 37, 0.55)
+                );
+        }
+
+        .benefit-card h3 {
+            margin-bottom: 9px;
+            font-size: 18px;
+        }
+
+        .benefit-card p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.75;
+        }
+
+        /* =========================================================
+           11. FAQ
+        ========================================================= */
+
+        .faq {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .faq-question {
+            width: 100%;
+            padding: 23px 0;
+            border: 0;
+            background: transparent;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 750;
+        }
+
+        .faq-icon {
+            flex: 0 0 auto;
+            width: 28px;
+            height: 28px;
+            display: grid;
+            place-items: center;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--primary-light);
+            transition: transform 0.2s ease;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-answer p {
+            padding: 0 0 22px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.75;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        /* =========================================================
+           12. FINAL CTA
+        ========================================================= */
+
+        .final-cta {
+            padding: 100px 0;
+        }
+
+        .cta-box {
+            position: relative;
+            overflow: hidden;
+            padding: 70px 35px;
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 28px;
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(37, 99, 235, 0.22),
+                    transparent 55%
+                ),
+                #071225;
+            text-align: center;
+        }
+
+        .cta-box h2 {
+            font-size: clamp(32px, 5vw, 50px);
+            line-height: 1.08;
+            letter-spacing: -2px;
+        }
+
+        .cta-box p {
+            max-width: 620px;
+            margin: 18px auto 30px;
+            color: var(--muted);
+            line-height: 1.75;
+        }
+
+        .cta-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* =========================================================
+           13. FOOTER
+        ========================================================= */
+
+        .footer {
+            border-top: 1px solid var(--border);
+            background: #01040c;
+        }
+
+        .footer-main {
+            padding: 65px 0 45px;
+            display: grid;
+            grid-template-columns: 1.5fr repeat(3, 1fr);
+            gap: 45px;
+        }
+
+        .footer-brand p {
+            max-width: 300px;
+            margin-top: 16px;
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .footer-column h4 {
+            margin-bottom: 17px;
+            color: #e2e8f0;
+            font-size: 13px;
+        }
+
+        .footer-column {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .footer-column a {
+            display: block;
+            margin-bottom: 11px;
+            transition: color 0.2s ease;
+        }
+
+        .footer-column a:hover {
+            color: #fff;
+        }
+
+        .footer-bottom {
+            min-height: 70px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            color: #475569;
+            font-size: 12px;
+        }
+
+        .footer-legal {
+            display: flex;
+            gap: 18px;
+        }
+
+        .footer-legal a:hover {
+            color: #cbd5e1;
+        }
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 980px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-button {
+                display: block;
+            }
+
+            .nav-actions {
+                margin-left: auto;
+            }
+
+            .feature-grid,
+            .security-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .provider-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .about-grid,
+            .developer-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .footer-main {
+                grid-template-columns: 1.5fr 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                width: min(var(--container), calc(100% - 28px));
+            }
+
+            .section {
+                padding: 75px 0;
+            }
+
+            .hero {
+                padding: 80px 0 70px;
+            }
+
+            .hero h1 {
+                letter-spacing: -2.5px;
+            }
+
+            .hero-description {
+                font-size: 16px;
+            }
+
+            .hero-actions,
+            .cta-actions {
+                flex-direction: column;
+            }
+
+            .hero-actions .btn,
+            .cta-actions .btn {
+                width: 100%;
+            }
+
+            .hero-preview {
+                margin-top: 50px;
+            }
+
+            .preview-body {
+                padding: 16px;
+            }
+
+            .preview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-card.large {
+                grid-column: auto;
+            }
+
+            .trust-items {
+                gap: 15px 25px;
+            }
+
+            .feature-grid,
+            .security-grid,
+            .benefits-grid,
+            .developer-features {
+                grid-template-columns: 1fr;
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .provider-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .footer-main {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .footer-brand {
+                grid-column: span 2;
+            }
+
+            .footer-bottom {
+                padding: 18px 0;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 430px) {
+            .nav-actions .btn-secondary {
+                display: none;
+            }
+
+            .provider-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-main {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-brand {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================================================
+         1. NAVIGATION
+    ========================================================== -->
+
+    <header class="navbar">
+        <div class="container nav-inner">
+
+            <a href="index.html" class="brand" aria-label="PrimePay home">
+                <span class="brand-mark">P</span>
+                <span>PrimePay</span>
+            </a>
+
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="#solutions">Solutions</a>
+                <a href="#developers">Developers</a>
+                <a href="#security">Security</a>
+                <a href="#providers">Providers</a>
+                <a href="#faq">FAQ</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="login.html" class="btn btn-secondary">
+                    Sign in
+                </a>
+
+                <a href="register.html" class="btn btn-primary">
+                    Get started
+                </a>
+
+                <button
+                    class="mobile-menu-button"
+                    id="mobileMenuButton"
+                    aria-label="Open navigation"
+                    aria-expanded="false"
+                >
+                    ☰
+                </button>
+            </div>
+
+        </div>
+    </header>
+
+
+    <main>
+
+        <!-- =====================================================
+             2. HERO
+        ====================================================== -->
+
+        <section class="hero" id="home">
+
+            <div class="container">
+
+                <div class="hero-content">
+
+                    <div class="eyebrow">
+                        <span class="eyebrow-dot"></span>
+                        Payment infrastructure for modern businesses
+                    </div>
+
+                    <h1>
+                        Move money with
+                        <span>confidence.</span>
+                    </h1>
+
+                    <p class="hero-description">
+                        PrimePay gives businesses the infrastructure to
+                        accept payments, manage transactions and connect
+                        payment providers through one secure platform.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a href="register.html" class="btn btn-primary">
+                            Create your account
+                        </a>
+
+                        <a href="#developers" class="btn btn-secondary">
+                            Explore the platform
+                        </a>
+                    </div>
+
+                </div>
+
+
+                <div class="hero-preview" aria-label="PrimePay dashboard preview">
+
+                    <div class="preview-window">
+
+                        <div class="preview-topbar">
+                            <span class="window-dot"></span>
+                            <span class="window-dot"></span>
+                            <span class="window-dot"></span>
+                        </div>
+
+                        <div class="preview-body">
+
+                            <div class="preview-grid">
+
+                                <div class="preview-card">
+                                    <div class="preview-label">
+                                        Available balance
+                                    </div>
+
+                                    <div class="preview-value">
+                                        Your balance
+                                    </div>
+
+                                    <div class="preview-line short"></div>
+                                </div>
+
+                                <div class="preview-card">
+                                    <div class="preview-label">
+                                        Payments
+                                    </div>
+
+                                    <div class="preview-value">
+                                        Real-time
+                                    </div>
+
+                                    <div class="preview-line"></div>
+                                </div>
+
+                                <div class="preview-card">
+                                    <div class="preview-label">
+                                        Transactions
+                                    </div>
+
+                                    <div class="preview-value">
+                                        Live
+                                    </div>
+
+                                    <div class="preview-line"></div>
+                                </div>
+
+                                <div class="preview-card large">
+                                    <div class="preview-label">
+                                        Transaction activity
+                                    </div>
+
+                                    <div class="preview-line"></div>
+                                    <div class="preview-line short"></div>
+                                    <div class="preview-line"></div>
+                                    <div class="preview-line short"></div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             3. TRUST / CREDIBILITY
+        ====================================================== -->
+
+        <section class="trust">
+
+            <div class="container trust-inner">
+
+                <div class="trust-content">
+
+                    <p>
+                        Built around reliable payment operations
+                    </p>
+
+                    <div class="trust-items">
+                        <span>Secure APIs</span>
+                        <span>Provider integrations</span>
+                        <span>Transaction visibility</span>
+                        <span>Developer tools</span>
+                        <span>Business controls</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             4. WHAT IS PRIMEPAY?
+        ====================================================== -->
+
+        <section class="section" id="about">
+
+            <div class="container">
+
+                <div class="about-grid">
+
+                    <div class="about-copy">
+
+                        <div class="section-heading">
+                            <div class="section-label">
+                                PrimePay
+                            </div>
+
+                            <h2>
+                                One infrastructure layer for your payments.
+                            </h2>
+                        </div>
+
+                        <p>
+                            PrimePay is designed to give businesses a
+                            centralized environment for payment operations,
+                            from initiating transactions to monitoring their
+                            status and managing provider integrations.
+                        </p>
+
+                        <p>
+                            Instead of building every payment workflow from
+                            scratch, businesses can use PrimePay as the
+                            infrastructure layer between their applications,
+                            customers and payment providers.
+                        </p>
+
+                    </div>
+
+
+                    <div class="about-panel">
+
+                        <h3>
+                            Built around the payment lifecycle
+                        </h3>
+
+                        <div class="about-list">
+
+                            <div class="about-item">
+                                <div class="about-icon">01</div>
+
+                                <div>
+                                    <strong>Initiate</strong>
+                                    <span>
+                                        Create payment requests through the
+                                        platform or API.
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="about-item">
+                                <div class="about-icon">02</div>
+
+                                <div>
+                                    <strong>Process</strong>
+                                    <span>
+                                        Route payments through supported
+                                        providers.
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="about-item">
+                                <div class="about-icon">03</div>
+
+                                <div>
+                                    <strong>Verify</strong>
+                                    <span>
+                                        Track provider responses and payment
+                                        state changes.
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="about-item">
+                                <div class="about-icon">04</div>
+
+                                <div>
+                                    <strong>Reconcile</strong>
+                                    <span>
+                                        Maintain reliable transaction and
+                                        financial records.
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             5. PAYMENT SOLUTIONS
+        ====================================================== -->
+
+        <section class="section solutions" id="solutions">
+
+            <div class="container">
+
+                <div class="section-heading center">
+
+                    <div class="section-label">
+                        Solutions
+                    </div>
+
+                    <h2>
+                        Everything you need to operate payments.
+                    </h2>
+
+                    <p>
+                        PrimePay brings essential payment operations into
+                        one platform without hiding the important details.
+                    </p>
+
+                </div>
+
+
+                <div class="feature-grid">
+
+                    <article class="feature-card">
+                        <div class="feature-icon">₿</div>
+
+                        <h3>
+                            Payment Processing
+                        </h3>
+
+                        <p>
+                            Create and manage payment requests through
+                            supported payment providers.
+                        </p>
+                    </article>
+
+
+                    <article class="feature-card">
+                        <div class="feature-icon">↔</div>
+
+                        <h3>
+                            Transaction Management
+                        </h3>
+
+                        <p>
+                            Track transaction references, statuses,
+                            providers, amounts, fees and settlement details.
+                        </p>
+                    </article>
+
+
+                    <article class="feature-card">
+                        <div class="feature-icon">◎</div>
+
+                        <h3>
+                            Customer Payments
+                        </h3>
+
+                        <p>
+                            Keep payment information organized around the
+                            customers interacting with your business.
+                        </p>
+                    </article>
+
+
+                    <article class="feature-card">
+                        <div class="feature-icon">⌘</div>
+
+                        <h3>
+                            Developer APIs
+                        </h3>
+
+                        <p>
+                            Integrate payment functionality into your own
+                            applications using PrimePay's API infrastructure.
+                        </p>
+                    </article>
+
+
+                    <article class="feature-card">
+                        <div class="feature-icon">⚡</div>
+
+                        <h3>
+                            Webhooks
+                        </h3>
+
+                        <p>
+                            Receive structured payment events and monitor
+                            webhook delivery attempts.
+                        </p>
+                    </article>
+
+
+                    <article class="feature-card">
+                        <div class="feature-icon">▣</div>
+
+                        <h3>
+                            Business Visibility
+                        </h3>
+
+                        <p>
+                            Access your payment activity, business balance
+                            and operational information from one dashboard.
+                        </p>
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             6. HOW PRIMEPAY WORKS
+        ====================================================== -->
+
+        <section class="section" id="how-it-works">
+
+            <div class="container">
+
+                <div class="section-heading center">
+
+                    <div class="section-label">
+                        How it works
+                    </div>
+
+                    <h2>
+                        From setup to payment in a clear workflow.
+                    </h2>
+
+                    <p>
+                        PrimePay is designed to keep the payment lifecycle
+                        understandable from beginning to end.
+                    </p>
+
+                </div>
+
+
+                <div class="steps">
+
+                    <article class="step">
+                        <div class="step-number">1</div>
+
+                        <h3>
+                            Create an account
+                        </h3>
+
+                        <p>
+                            Register your business and establish your
+                            PrimePay account.
+                        </p>
+                    </article>
+
+
+                    <article class="step">
+                        <div class="step-number">2</div>
+
+                        <h3>
+                            Set up your business
+                        </h3>
+
+                        <p>
+                            Add your business information and configure the
+                            appropriate operating environment.
+                        </p>
+                    </article>
+
+
+                    <article class="step">
+                        <div class="step-number">3</div>
+
+                        <h3>
+                            Connect payments
+                        </h3>
+
+                        <p>
+                            Use supported payment providers and PrimePay
+                            payment infrastructure.
+                        </p>
+                    </article>
+
+
+                    <article class="step">
+                        <div class="step-number">4</div>
+
+                        <h3>
+                            Accept payments
+                        </h3>
+
+                        <p>
+                            Initiate payments through the dashboard or
+                            integrated applications.
+                        </p>
+                    </article>
+
+
+                    <article class="step">
+                        <div class="step-number">5</div>
+
+                        <h3>
+                            Monitor activity
+                        </h3>
+
+                        <p>
+                            Follow payment states, transactions, fees and
+                            other operational details.
+                        </p>
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             7. DEVELOPER PLATFORM
+        ====================================================== -->
+
+        <section class="section developer-section" id="developers">
+
+            <div class="container">
+
+                <div class="developer-grid">
+
+                    <div class="developer-copy">
+
+                        <div class="section-heading">
+
+                            <div class="section-label">
+                                Developers
+                            </div>
+
+                            <h2>
+                                Payment infrastructure developers can build on.
+                            </h2>
+
+                            <p>
+                                Integrate PrimePay into your applications
+                                using authenticated APIs, sandbox credentials,
+                                idempotency and webhook events.
+                            </p>
+
+                        </div>
+
+
+                        <div class="developer-features">
+
+                            <div class="developer-feature">
+                                API authentication
+                            </div>
+
+                            <div class="developer-feature">
+                                Sandbox environment
+                            </div>
+
+                            <div class="developer-feature">
+                                Idempotent payments
+                            </div>
+
+                            <div class="developer-feature">
+                                Webhook events
+                            </div>
+
+                            <div class="developer-feature">
+                                API key management
+                            </div>
+
+                            <div class="developer-feature">
+                                Delivery monitoring
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="code-window">
+
+                        <div class="code-header">
+                            POST /api/v1/developer/payments
+                        </div>
+
+                        <div class="code-body">
+
+<pre><span class="code-key">{
+  "amount"</span>: <span class="code-string">1000</span>,
+  <span class="code-key">"currency"</span>: <span class="code-string">"KES"</span>,
+  <span class="code-key">"provider"</span>: <span class="code-string">"mpesa"</span>,
+  <span class="code-key">"paymentMethod"</span>: <span class="code-string">"stk_push"</span>,
+  <span class="code-key">"customerName"</span>: <span class="code-string">"Customer"</span>,
+  <span class="code-key">"description"</span>: <span class="code-string">"Payment"</span>
+}</pre>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             8. SECURITY & RELIABILITY
+        ====================================================== -->
+
+        <section class="section" id="security">
+
+            <div class="container">
+
+                <div class="section-heading center">
+
+                    <div class="section-label">
+                        Security & reliability
+                    </div>
+
+                    <h2>
+                        Payment infrastructure built around control.
+                    </h2>
+
+                    <p>
+                        Financial systems need more than a nice interface.
+                        PrimePay's backend is designed around verification,
+                        state integrity and controlled access.
+                    </p>
+
+                </div>
+
+
+                <div class="security-grid">
+
+                    <article class="security-card">
+
+                        <div class="security-status">
+                            Protected access
+                        </div>
+
+                        <h3>
+                            Authentication
+                        </h3>
+
+                        <p>
+                            Protected business and administrative resources
+                            require authenticated access.
+                        </p>
+
+                    </article>
+
+
+                    <article class="security-card">
+
+                        <div class="security-status">
+                            Verified requests
+                        </div>
+
+                        <h3>
+                            API security
+                        </h3>
+
+                        <p>
+                            API credentials are separated by environment and
+                            protected through server-side validation.
+                        </p>
+
+                    </article>
+
+
+                    <article class="security-card">
+
+                        <div class="security-status">
+                            Controlled events
+                        </div>
+
+                        <h3>
+                            Webhook integrity
+                        </h3>
+
+                        <p>
+                            Webhook deliveries use signed payloads and tracked
+                            delivery attempts.
+                        </p>
+
+                    </article>
+
+
+                    <article class="security-card">
+
+                        <div class="security-status">
+                            Duplicate protection
+                        </div>
+
+                        <h3>
+                            Idempotency
+                        </h3>
+
+                        <p>
+                            Payment requests can be protected against
+                            accidental duplicate creation.
+                        </p>
+
+                    </article>
+
+
+                    <article class="security-card">
+
+                        <div class="security-status">
+                            State controlled
+                        </div>
+
+                        <h3>
+                            Payment state machine
+                        </h3>
+
+                        <p>
+                            Payment transitions are controlled rather than
+                            allowing arbitrary status changes.
+                        </p>
+
+                    </article>
+
+
+                    <article class="security-card">
+
+                        <div class="security-status">
+                            Reconciled
+                        </div>
+
+                        <h3>
+                            Reconciliation
+                        </h3>
+
+                        <p>
+                            Provider verification and reconciliation workflows
+                            help maintain accurate payment records.
+                        </p>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             9. PAYMENT PROVIDERS
+        ====================================================== -->
+
+        <section class="section" id="providers">
+
+            <div class="container">
+
+                <div class="section-heading center">
+
+                    <div class="section-label">
+                        Providers
+                    </div>
+
+                    <h2>
+                        Connect payment providers through one platform.
+                    </h2>
+
+                    <p>
+                        PrimePay is designed around a provider-adapter
+                        architecture so payment integrations can operate
+                        through a consistent platform.
+                    </p>
+
+                </div>
+
+
+                <div class="provider-grid">
+
+                    <article class="provider-card">
+
+                        <div class="provider-logo">
+                            M
+                        </div>
+
+                        <div>
+                            <h3>M-Pesa</h3>
+                            <span>Mobile payments</span>
+                        </div>
+
+                    </article>
+
+
+                    <article class="provider-card">
+
+                        <div class="provider-logo">
+                            S
+                        </div>
+
+                        <div>
+                            <h3>Stripe</h3>
+                            <span>Online payments</span>
+                        </div>
+
+                    </article>
+
+
+                    <article class="provider-card">
+
+                        <div class="provider-logo">
+                            P
+                        </div>
+
+                        <div>
+                            <h3>PayPal</h3>
+                            <span>Digital payments</span>
+                        </div>
+
+                    </article>
+
+
+                    <article class="provider-card">
+
+                        <div class="provider-logo">
+                            dL
+                        </div>
+
+                        <div>
+                            <h3>dLocal</h3>
+                            <span>Cross-border payments</span>
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             10. BUSINESS BENEFITS
+        ====================================================== -->
+
+        <section class="section solutions">
+
+            <div class="container">
+
+                <div class="section-heading">
+
+                    <div class="section-label">
+                        Built for business
+                    </div>
+
+                    <h2>
+                        Less payment complexity. More operational visibility.
+                    </h2>
+
+                    <p>
+                        PrimePay is designed to give businesses the tools
+                        required to understand and manage their payment
+                        operations.
+                    </p>
+
+                </div>
+
+
+                <div class="benefits-grid">
+
+                    <article class="benefit-card">
+
+                        <h3>
+                            One operational layer
+                        </h3>
+
+                        <p>
+                            Manage payment activity through a centralized
+                            environment instead of scattering payment logic
+                            across multiple systems.
+                        </p>
+
+                    </article>
+
+
+                    <article class="benefit-card">
+
+                        <h3>
+                            Real financial visibility
+                        </h3>
+
+                        <p>
+                            Track balances, payment statuses, transaction
+                            references, fees and net amounts using recorded
+                            financial data.
+                        </p>
+
+                    </article>
+
+
+                    <article class="benefit-card">
+
+                        <h3>
+                            Developer-ready
+                        </h3>
+
+                        <p>
+                            Give technical teams access to API credentials,
+                            sandbox functionality, webhooks and integration
+                            documentation.
+                        </p>
+
+                    </article>
+
+
+                    <article class="benefit-card">
+
+                        <h3>
+                            Designed to scale
+                        </h3>
+
+                        <p>
+                            Provider adapters, controlled payment states and
+                            reconciliation workflows provide a foundation
+                            for expanding payment infrastructure.
+                        </p>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             11. FAQ
+        ====================================================== -->
+
+        <section class="section" id="faq">
+
+            <div class="container">
+
+                <div class="section-heading center">
+
+                    <div class="section-label">
+                        FAQ
+                    </div>
+
+                    <h2>
+                        Questions, answered.
+                    </h2>
+
+                    <p>
+                        The important things before you start using PrimePay.
+                    </p>
+
+                </div>
+
+
+                <div class="faq">
+
+                    <div class="faq-item">
+
+                        <button class="faq-question">
+                            <span>What is PrimePay?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+
+                        <div class="faq-answer">
+                            <p>
+                                PrimePay is payment infrastructure for
+                                businesses that need to accept, manage and
+                                monitor payments through a centralized
+                                platform and developer API.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="faq-item">
+
+                        <button class="faq-question">
+                            <span>Who can use PrimePay?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+
+                        <div class="faq-answer">
+                            <p>
+                                PrimePay is designed for businesses that need
+                                payment processing and operational tools,
+                                including businesses integrating payments
+                                into their own applications.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="faq-item">
+
+                        <button class="faq-question">
+                            <span>Which currencies are supported?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+
+                        <div class="faq-answer">
+                            <p>
+                                The current payment configuration supports
+                                KES, USD, EUR and GBP.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="faq-item">
+
+                        <button class="faq-question">
+                            <span>Does PrimePay have a sandbox?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+
+                        <div class="faq-answer">
+                            <p>
+                                Yes. PrimePay supports a sandbox environment
+                                for developer API access and testing.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="faq-item">
+
+                        <button class="faq-question">
+                            <span>Does PrimePay support webhooks?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+
+                        <div class="faq-answer">
+                            <p>
+                                Yes. Businesses can configure webhook
+                                endpoints for supported payment events and
+                                monitor their delivery attempts.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="faq-item">
+
+                        <button class="faq-question">
+                            <span>How are payment requests protected against duplicates?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+
+                        <div class="faq-answer">
+                            <p>
+                                PrimePay supports idempotency keys for payment
+                                creation so the same request can safely be
+                                retried without unintentionally creating
+                                another payment.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="faq-item">
+
+                        <button class="faq-question">
+                            <span>Can I use PrimePay through an API?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+
+                        <div class="faq-answer">
+                            <p>
+                                Yes. Developers can use authenticated API
+                                credentials to integrate supported payment
+                                functionality into their applications.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             12. FINAL CTA
+        ====================================================== -->
+
+        <section class="final-cta">
+
+            <div class="container">
+
+                <div class="cta-box">
+
+                    <h2>
+                        Build your payment infrastructure with PrimePay.
+                    </h2>
+
+                    <p>
+                        Create your business account, explore the platform
+                        and build payment experiences around infrastructure
+                        designed for reliability and control.
+                    </p>
+
+                    <div class="cta-actions">
+
+                        <a href="register.html" class="btn btn-primary">
+                            Get started
+                        </a>
+
+                        <a href="login.html" class="btn btn-secondary">
+                            Sign in
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================================================
+         13. FOOTER
+    ========================================================== -->
+
+    <footer class="footer">
+
+        <div class="container">
+
+            <div class="footer-main">
+
+                <div class="footer-brand">
+
+                    <a href="index.html" class="brand">
+                        <span class="brand-mark">P</span>
+                        <span>PrimePay</span>
+                    </a>
+
+                    <p>
+                        Payment infrastructure designed to help businesses
+                        accept, manage and understand their payment activity.
+                    </p>
+
+                </div>
+
+
+                <div class="footer-column">
+
+                    <h4>Product</h4>
+
+                    <a href="#solutions">Solutions</a>
+                    <a href="#providers">Providers</a>
+                    <a href="#security">Security</a>
+                    <a href="#faq">FAQ</a>
+
+                </div>
+
+
+                <div class="footer-column">
+
+                    <h4>Developers</h4>
+
+                    <a href="#developers">Developer Platform</a>
+                    <a href="login.html">Developer Login</a>
+
+                </div>
+
+
+                <div class="footer-column">
+
+                    <h4>Company</h4>
+
+                    <a href="#about">About PrimePay</a>
+                    <a href="register.html">Create Account</a>
+                    <a href="login.html">Sign In</a>
+
+                </div>
+
+            </div>
+
+
+            <div class="footer-bottom">
+
+                <span>
+                    © <span id="currentYear"></span> PrimePay. All rights reserved.
+                </span>
+
+                <div class="footer-legal">
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <script>
+        /* =========================================================
+           PRIMEPAY LANDING PAGE JAVASCRIPT
+        ========================================================= */
+
+        // Current year
+        document.getElementById("currentYear").textContent =
+            new Date().getFullYear();
+
+
+        // FAQ accordion
+        const faqItems = document.querySelectorAll(".faq-item");
+
+        faqItems.forEach((item) => {
+
+            const button = item.querySelector(".faq-question");
+            const answer = item.querySelector(".faq-answer");
+
+            button.addEventListener("click", () => {
+
+                const isOpen = item.classList.contains("active");
+
+                faqItems.forEach((otherItem) => {
+
+                    otherItem.classList.remove("active");
+
+                    const otherAnswer =
+                        otherItem.querySelector(".faq-answer");
+
+                    otherAnswer.style.maxHeight = null;
+
+                });
+
+                if (!isOpen) {
+
+                    item.classList.add("active");
+
+                    answer.style.maxHeight =
+                        answer.scrollHeight + "px";
+
+                }
+
+            });
+
+        });
+
+
+        // Mobile navigation
+        const mobileMenuButton =
+            document.getElementById("mobileMenuButton");
+
+        const navLinks =
+            document.querySelector(".nav-links");
+
+        if (mobileMenuButton) {
+
+            mobileMenuButton.addEventListener("click", () => {
+
+                const isOpen =
+                    document.body.classList.toggle("menu-open");
+
+                mobileMenuButton.setAttribute(
+                    "aria-expanded",
+                    String(isOpen)
+                );
+
+                if (isOpen) {
+
+                    navLinks.style.display = "flex";
+                    navLinks.style.position = "absolute";
+                    navLinks.style.top = "74px";
+                    navLinks.style.left = "0";
+                    navLinks.style.right = "0";
+                    navLinks.style.padding = "22px";
+                    navLinks.style.flexDirection = "column";
+                    navLinks.style.alignItems = "flex-start";
+                    navLinks.style.background = "#020617";
+                    navLinks.style.borderBottom =
+                        "1px solid rgba(148, 163, 184, 0.14)";
+
+                } else {
+
+                    navLinks.removeAttribute("style");
+
+                }
+
+            });
+
+        }
+
+
+        // Close mobile menu after navigation
+        document.querySelectorAll(".nav-links a").forEach((link) => {
+
+            link.addEventListener("click", () => {
+
+                document.body.classList.remove("menu-open");
+
+                if (mobileMenuButton) {
+                    mobileMenuButton.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+                }
+
+                navLinks.removeAttribute("style");
+
+            });
+
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,2677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PrimePay webhook management">
+<title>PrimePay | Webhooks</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+ --bg:#020617;
+ --sidebar:#050b18;
+ --panel:#08101f;
+ --panel2:#0b1426;
+ --border:rgba(148,163,184,.14);
+ --text:#f8fafc;
+ --muted:#94a3b8;
+ --soft:#64748b;
+ --accent:#38bdf8;
+ --blue:#2563eb;
+ --green:#4ade80;
+ --yellow:#facc15;
+ --red:#f87171;
+}
+
+body{
+ min-height:100vh;
+ background:
+ radial-gradient(circle at 82% 0%,rgba(37,99,235,.08),transparent 28%),
+ var(--bg);
+ color:var(--text);
+ font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+a{
+ color:inherit;
+ text-decoration:none;
+}
+
+button,input,select{
+ font:inherit;
+}
+
+button{
+ cursor:pointer;
+}
+
+.app{
+ min-height:100vh;
+ display:flex;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+ width:250px;
+ position:fixed;
+ inset:0 auto 0 0;
+ z-index:50;
+ padding:22px 15px;
+ background:rgba(5,11,24,.97);
+ border-right:1px solid var(--border);
+ overflow-y:auto;
+ transition:transform .25s ease;
+}
+
+.logo{
+ display:flex;
+ align-items:center;
+ gap:11px;
+ padding:4px 10px 28px;
+ font-size:1.2rem;
+ font-weight:800;
+}
+
+.logo-mark{
+ width:38px;
+ height:38px;
+ display:grid;
+ place-items:center;
+ border-radius:11px;
+ background:linear-gradient(135deg,var(--blue),var(--accent));
+ box-shadow:0 8px 25px rgba(37,99,235,.23);
+ font-weight:900;
+}
+
+.dev-badge{
+ margin-left:auto;
+ padding:4px 7px;
+ border:1px solid rgba(56,189,248,.18);
+ border-radius:6px;
+ color:var(--accent);
+ background:rgba(56,189,248,.06);
+ font-size:.55rem;
+ font-weight:800;
+}
+
+.nav-label{
+ padding:0 11px 8px;
+ color:#475569;
+ font-size:.67rem;
+ font-weight:750;
+ text-transform:uppercase;
+ letter-spacing:.1em;
+}
+
+.nav{
+ display:grid;
+ gap:4px;
+ margin-bottom:24px;
+}
+
+.nav a,.logout-btn{
+ width:100%;
+ display:flex;
+ align-items:center;
+ gap:12px;
+ padding:11px 12px;
+ border:1px solid transparent;
+ border-radius:10px;
+ background:transparent;
+ color:var(--muted);
+ font-size:.84rem;
+ text-align:left;
+}
+
+.nav a:hover,.logout-btn:hover{
+ color:white;
+ background:rgba(30,41,59,.5);
+}
+
+.nav a.active{
+ color:white;
+ background:rgba(37,99,235,.12);
+ border-color:rgba(56,189,248,.1);
+}
+
+.nav-icon{
+ width:20px;
+ text-align:center;
+}
+
+.sidebar-bottom{
+ padding-top:18px;
+ border-top:1px solid var(--border);
+}
+
+/* MAIN */
+
+.main{
+ width:calc(100% - 250px);
+ margin-left:250px;
+ min-height:100vh;
+}
+
+.topbar{
+ height:74px;
+ position:sticky;
+ top:0;
+ z-index:30;
+ padding:0 30px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ background:rgba(2,6,23,.86);
+ backdrop-filter:blur(14px);
+ border-bottom:1px solid var(--border);
+}
+
+.topbar-left{
+ display:flex;
+ align-items:center;
+ gap:12px;
+}
+
+.mobile-menu{
+ display:none;
+ width:40px;
+ height:40px;
+ border:1px solid var(--border);
+ border-radius:10px;
+ background:var(--panel);
+ color:white;
+}
+
+.page-title{
+ font-size:.92rem;
+ font-weight:750;
+}
+
+.page-subtitle{
+ margin-top:2px;
+ color:var(--muted);
+ font-size:.73rem;
+}
+
+.account{
+ display:flex;
+ align-items:center;
+ gap:10px;
+}
+
+.account-info{
+ text-align:right;
+}
+
+.account-name{
+ font-size:.8rem;
+ font-weight:700;
+}
+
+.account-role{
+ margin-top:2px;
+ color:var(--muted);
+ font-size:.68rem;
+}
+
+.avatar{
+ width:38px;
+ height:38px;
+ display:grid;
+ place-items:center;
+ border-radius:11px;
+ background:linear-gradient(135deg,#1d4ed8,#0ea5e9);
+ font-size:.78rem;
+ font-weight:800;
+}
+
+/* CONTENT */
+
+.content{
+ max-width:1250px;
+ padding:30px;
+}
+
+.heading{
+ margin-bottom:22px;
+ display:flex;
+ justify-content:space-between;
+ align-items:flex-end;
+ gap:20px;
+}
+
+.heading h1{
+ margin-bottom:7px;
+ font-size:clamp(1.6rem,3vw,2.1rem);
+ letter-spacing:-1px;
+}
+
+.heading p{
+ color:var(--muted);
+ font-size:.83rem;
+ line-height:1.5;
+}
+
+.notice{
+ display:none;
+ margin-bottom:18px;
+ padding:13px 14px;
+ border-radius:10px;
+ font-size:.75rem;
+ line-height:1.5;
+}
+
+.notice.show{
+ display:block;
+}
+
+.notice.error{
+ color:#fca5a5;
+ background:rgba(239,68,68,.07);
+ border:1px solid rgba(248,113,113,.17);
+}
+
+.notice.success{
+ color:#86efac;
+ background:rgba(34,197,94,.07);
+ border:1px solid rgba(74,222,128,.16);
+}
+
+/* BUTTONS */
+
+.primary{
+ min-height:42px;
+ padding:0 16px;
+ border:1px solid rgba(56,189,248,.25);
+ border-radius:10px;
+ background:linear-gradient(135deg,#2563eb,#0284c7);
+ color:white;
+ font-size:.72rem;
+ font-weight:750;
+ box-shadow:0 8px 20px rgba(37,99,235,.15);
+}
+
+.primary:hover{
+ filter:brightness(1.08);
+}
+
+.primary:disabled{
+ opacity:.55;
+ cursor:not-allowed;
+}
+
+.secondary{
+ min-height:40px;
+ padding:0 14px;
+ border:1px solid var(--border);
+ border-radius:9px;
+ background:rgba(15,23,42,.7);
+ color:#cbd5e1;
+ font-size:.68rem;
+ font-weight:700;
+}
+
+.secondary:hover{
+ color:white;
+ background:rgba(30,41,59,.7);
+}
+
+.danger{
+ color:#fca5a5;
+ border-color:rgba(248,113,113,.14);
+}
+
+.danger:hover{
+ background:rgba(239,68,68,.08);
+}
+
+/* PANEL */
+
+.panel{
+ overflow:hidden;
+ margin-bottom:18px;
+ border:1px solid var(--border);
+ border-radius:18px;
+ background:linear-gradient(145deg,rgba(15,23,42,.88),rgba(8,16,31,.97));
+}
+
+.panel-head{
+ padding:19px 21px;
+ border-bottom:1px solid var(--border);
+}
+
+.panel-title{
+ font-size:.9rem;
+ font-weight:750;
+}
+
+.panel-description{
+ margin-top:5px;
+ color:var(--muted);
+ font-size:.7rem;
+ line-height:1.5;
+}
+
+.panel-body{
+ padding:20px;
+}
+
+/* FORM */
+
+.form-grid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:17px;
+}
+
+.field{
+ display:flex;
+ flex-direction:column;
+ gap:7px;
+}
+
+.field.full{
+ grid-column:1/-1;
+}
+
+.field label{
+ color:#cbd5e1;
+ font-size:.69rem;
+ font-weight:650;
+}
+
+.field input,
+.field select{
+ width:100%;
+ height:43px;
+ padding:0 12px;
+ outline:none;
+ border:1px solid rgba(148,163,184,.16);
+ border-radius:10px;
+ background:rgba(2,6,23,.55);
+ color:white;
+ font-size:.77rem;
+ transition:.2s;
+}
+
+.field input:focus,
+.field select:focus{
+ border-color:rgba(56,189,248,.5);
+ box-shadow:0 0 0 3px rgba(56,189,248,.07);
+}
+
+.field small{
+ color:#64748b;
+ font-size:.62rem;
+ line-height:1.45;
+}
+
+.form-actions{
+ margin-top:20px;
+ padding-top:18px;
+ border-top:1px solid rgba(148,163,184,.08);
+ display:flex;
+ justify-content:flex-end;
+}
+
+/* EVENT CHECKBOXES */
+
+.events{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:9px;
+}
+
+.event-option{
+ position:relative;
+}
+
+.event-option input{
+ position:absolute;
+ opacity:0;
+ pointer-events:none;
+}
+
+.event-option label{
+ min-height:43px;
+ padding:0 11px;
+ display:flex;
+ align-items:center;
+ border:1px solid rgba(148,163,184,.13);
+ border-radius:9px;
+ background:rgba(2,6,23,.35);
+ color:#94a3b8;
+ font-size:.66rem;
+ cursor:pointer;
+ transition:.2s;
+}
+
+.event-option input:checked + label{
+ border-color:rgba(56,189,248,.28);
+ background:rgba(37,99,235,.1);
+ color:#bae6fd;
+}
+
+/* TABLE */
+
+.table-wrap{
+ width:100%;
+ overflow-x:auto;
+}
+
+table{
+ width:100%;
+ min-width:900px;
+ border-collapse:collapse;
+}
+
+th{
+ padding:12px 16px;
+ color:#64748b;
+ border-bottom:1px solid var(--border);
+ text-align:left;
+ font-size:.62rem;
+ text-transform:uppercase;
+ letter-spacing:.06em;
+ white-space:nowrap;
+}
+
+td{
+ padding:15px 16px;
+ border-bottom:1px solid rgba(148,163,184,.07);
+ color:#dbe4ef;
+ font-size:.72rem;
+ vertical-align:middle;
+}
+
+tbody tr:hover{
+ background:rgba(30,41,59,.18);
+}
+
+tbody tr:last-child td{
+ border-bottom:0;
+}
+
+.webhook-name{
+ color:white;
+ font-weight:700;
+}
+
+.webhook-url{
+ max-width:280px;
+ margin-top:4px;
+ overflow:hidden;
+ color:var(--soft);
+ font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+ font-size:.6rem;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+
+.events-list{
+ display:flex;
+ gap:4px;
+ flex-wrap:wrap;
+}
+
+.event-tag{
+ padding:4px 6px;
+ border-radius:5px;
+ background:rgba(56,189,248,.06);
+ color:#7dd3fc;
+ font-size:.55rem;
+}
+
+.status-badge{
+ display:inline-flex;
+ padding:5px 8px;
+ border-radius:999px;
+ font-size:.59rem;
+ font-weight:750;
+}
+
+.status-badge.active{
+ color:#86efac;
+ background:rgba(74,222,128,.08);
+}
+
+.status-badge.inactive{
+ color:#cbd5e1;
+ background:rgba(148,163,184,.08);
+}
+
+.status-badge.failed{
+ color:#fca5a5;
+ background:rgba(248,113,113,.08);
+}
+
+.row-actions{
+ display:flex;
+ gap:6px;
+ flex-wrap:wrap;
+}
+
+.small-btn{
+ min-height:32px;
+ padding:0 9px;
+ border:1px solid rgba(148,163,184,.13);
+ border-radius:8px;
+ background:rgba(15,23,42,.65);
+ color:#cbd5e1;
+ font-size:.61rem;
+ font-weight:700;
+}
+
+.small-btn:hover{
+ color:white;
+ border-color:rgba(56,189,248,.25);
+}
+
+.small-btn.danger{
+ color:#fca5a5;
+ border-color:rgba(248,113,113,.12);
+}
+
+/* EMPTY */
+
+.state{
+ padding:45px 20px;
+ text-align:center;
+ color:var(--muted);
+ font-size:.74rem;
+}
+
+/* DELIVERY PANEL */
+
+.delivery-panel{
+ display:none;
+}
+
+.delivery-panel.open{
+ display:block;
+}
+
+.delivery-meta{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:10px;
+ margin-bottom:17px;
+}
+
+.meta-box{
+ padding:12px;
+ border:1px solid rgba(148,163,184,.09);
+ border-radius:10px;
+ background:rgba(2,6,23,.3);
+}
+
+.meta-label{
+ color:#64748b;
+ font-size:.59rem;
+ text-transform:uppercase;
+ letter-spacing:.05em;
+}
+
+.meta-value{
+ margin-top:5px;
+ color:#e2e8f0;
+ font-size:.72rem;
+ font-weight:700;
+}
+
+/* MODAL */
+
+.modal{
+ display:none;
+ position:fixed;
+ inset:0;
+ z-index:100;
+ padding:20px;
+ align-items:center;
+ justify-content:center;
+ background:rgba(0,0,0,.72);
+ backdrop-filter:blur(7px);
+}
+
+.modal.open{
+ display:flex;
+}
+
+.modal-card{
+ width:min(680px,100%);
+ max-height:90vh;
+ overflow:auto;
+ border:1px solid rgba(56,189,248,.2);
+ border-radius:18px;
+ background:linear-gradient(145deg,#0b1426,#050b18);
+ box-shadow:0 25px 80px rgba(0,0,0,.5);
+}
+
+.modal-head{
+ padding:20px 21px;
+ border-bottom:1px solid var(--border);
+}
+
+.modal-title{
+ font-size:1rem;
+ font-weight:800;
+}
+
+.modal-subtitle{
+ margin-top:6px;
+ color:var(--muted);
+ font-size:.7rem;
+ line-height:1.5;
+}
+
+.modal-body{
+ padding:21px;
+}
+
+.modal-actions{
+ margin-top:20px;
+ display:flex;
+ justify-content:flex-end;
+ gap:8px;
+}
+
+.secret-box{
+ display:flex;
+ gap:8px;
+}
+
+.secret-box input{
+ min-width:0;
+ flex:1;
+ height:45px;
+ padding:0 12px;
+ border:1px solid rgba(56,189,248,.2);
+ border-radius:9px;
+ outline:none;
+ background:#030914;
+ color:#dbeafe;
+ font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+ font-size:.64rem;
+}
+
+.copy{
+ width:80px;
+ border:1px solid rgba(56,189,248,.18);
+ border-radius:9px;
+ background:rgba(37,99,235,.1);
+ color:#bae6fd;
+ font-size:.65rem;
+ font-weight:750;
+}
+
+.warning{
+ margin-bottom:16px;
+ padding:13px;
+ border:1px solid rgba(250,204,21,.15);
+ border-radius:10px;
+ background:rgba(250,204,21,.05);
+ color:#fde68a;
+ font-size:.67rem;
+ line-height:1.5;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1000px){
+
+ .delivery-meta{
+  grid-template-columns:repeat(2,1fr);
+ }
+}
+
+@media(max-width:800px){
+
+ .sidebar{
+  transform:translateX(-100%);
+ }
+
+ .sidebar.open{
+  transform:translateX(0);
+  box-shadow:20px 0 50px rgba(0,0,0,.45);
+ }
+
+ .main{
+  width:100%;
+  margin-left:0;
+ }
+
+ .mobile-menu{
+  display:block;
+ }
+
+ .topbar{
+  padding:0 18px;
+ }
+
+ .content{
+  padding:22px 17px 40px;
+ }
+
+ .heading{
+  align-items:stretch;
+  flex-direction:column;
+ }
+
+ .heading .primary{
+  width:100%;
+ }
+}
+
+@media(max-width:620px){
+
+ .form-grid{
+  grid-template-columns:1fr;
+ }
+
+ .field.full{
+  grid-column:auto;
+ }
+
+ .events{
+  grid-template-columns:1fr;
+ }
+
+ .account-info{
+  display:none;
+ }
+
+ .panel-body{
+  padding:17px;
+ }
+
+ .delivery-meta{
+  grid-template-columns:1fr;
+ }
+
+ .secret-box{
+  flex-direction:column;
+ }
+
+ .copy{
+  width:100%;
+  min-height:40px;
+ }
+
+ .modal-actions{
+  flex-direction:column;
+ }
+
+ .modal-actions button{
+  width:100%;
+ }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+
+<a href="dashboard.html" class="logo">
+    <span class="logo-mark">P</span>
+    <span>PrimePay</span>
+    <span class="dev-badge">DEV</span>
+</a>
+
+<div class="nav-label">Developer</div>
+
+<nav class="nav">
+
+<a href="dashboard.html">
+    <span class="nav-icon">⌂</span>
+    Dashboard
+</a>
+
+<a href="api-keys.html">
+    <span class="nav-icon">⌘</span>
+    API Keys
+</a>
+
+<a href="webhooks.html" class="active">
+    <span class="nav-icon">↯</span>
+    Webhooks
+</a>
+
+<a href="sandbox.html">
+    <span class="nav-icon">▷</span>
+    Sandbox
+</a>
+
+<a href="docs.html">
+    <span class="nav-icon">▤</span>
+    Documentation
+</a>
+
+<a href="logs.html">
+    <span class="nav-icon">≡</span>
+    Logs
+</a>
+
+</nav>
+
+<div class="nav-label">Merchant</div>
+
+<nav class="nav">
+
+<a href="../merchant/dashboard.html">
+    <span class="nav-icon">↩</span>
+    Merchant Portal
+</a>
+
+</nav>
+
+<div class="sidebar-bottom">
+
+<button class="logout-btn" id="logoutBtn">
+    <span class="nav-icon">↪</span>
+    Sign out
+</button>
+
+</div>
+
+</aside>
+
+<section class="main">
+
+<header class="topbar">
+
+<div class="topbar-left">
+
+<button class="mobile-menu" id="mobileMenu">☰</button>
+
+<div>
+    <div class="page-title">Webhooks</div>
+    <div class="page-subtitle">Receive PrimePay event notifications</div>
+</div>
+
+</div>
+
+<div class="account">
+
+<div class="account-info">
+    <div class="account-name" id="accountName">Loading...</div>
+    <div class="account-role">Developer</div>
+</div>
+
+<div class="avatar" id="avatar">P</div>
+
+</div>
+
+</header>
+
+<main class="content">
+
+<section class="heading">
+
+<div>
+
+<h1>Webhooks</h1>
+
+<p>
+    Configure secure event endpoints and monitor delivery attempts.
+</p>
+
+</div>
+
+<button class="primary" id="showCreate">
+    + Add webhook
+</button>
+
+</section>
+
+<div class="notice" id="notice"></div>
+
+<!-- CREATE WEBHOOK -->
+
+<div class="panel" id="createPanel" style="display:none">
+
+<div class="panel-head">
+
+<div class="panel-title">
+    Add webhook endpoint
+</div>
+
+<div class="panel-description">
+    PrimePay will send selected events to this HTTPS endpoint.
+</div>
+
+</div>
+
+<div class="panel-body">
+
+<form id="createForm">
+
+<div class="form-grid">
+
+<div class="field">
+
+<label for="webhookName">
+    Endpoint name
+</label>
+
+<input
+    id="webhookName"
+    type="text"
+    maxlength="100"
+    placeholder="e.g. Production events"
+    required
+>
+
+</div>
+
+<div class="field">
+
+<label for="webhookUrl">
+    Endpoint URL
+</label>
+
+<input
+    id="webhookUrl"
+    type="url"
+    placeholder="https://example.com/primepay/webhook"
+    required
+>
+
+<small>
+    HTTPS is required. Localhost and 127.0.0.1 are permitted for development.
+</small>
+
+</div>
+
+<div class="field full">
+
+<label>
+    Events
+</label>
+
+<div class="events">
+
+<div class="event-option">
+<input id="e1" type="checkbox" value="payment.created">
+<label for="e1">payment.created</label>
+</div>
+
+<div class="event-option">
+<input id="e2" type="checkbox" value="payment.pending">
+<label for="e2">payment.pending</label>
+</div>
+
+<div class="event-option">
+<input id="e3" type="checkbox" value="payment.completed">
+<label for="e3">payment.completed</label>
+</div>
+
+<div class="event-option">
+<input id="e4" type="checkbox" value="payment.failed">
+<label for="e4">payment.failed</label>
+</div>
+
+<div class="event-option">
+<input id="e5" type="checkbox" value="payment.cancelled">
+<label for="e5">payment.cancelled</label>
+</div>
+
+<div class="event-option">
+<input id="e6" type="checkbox" value="payment.refunded">
+<label for="e6">payment.refunded</label>
+</div>
+
+<div class="event-option">
+<input id="e7" type="checkbox" value="payout.created">
+<label for="e7">payout.created</label>
+</div>
+
+<div class="event-option">
+<input id="e8" type="checkbox" value="payout.completed">
+<label for="e8">payout.completed</label>
+</div>
+
+<div class="event-option">
+<input id="e9" type="checkbox" value="payout.failed">
+<label for="e9">payout.failed</label>
+</div>
+
+</div>
+
+<small>
+    Select at least one supported event.
+</small>
+
+</div>
+
+</div>
+
+<div class="form-actions">
+
+<button
+    type="button"
+    class="secondary"
+    id="cancelCreate"
+>
+    Cancel
+</button>
+
+<button
+    type="submit"
+    class="primary"
+    id="createBtn"
+    style="margin-left:8px"
+>
+    Create webhook
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+<!-- WEBHOOKS -->
+
+<div class="panel">
+
+<div class="panel-head">
+
+<div class="panel-title">
+    Configured endpoints
+</div>
+
+<div class="panel-description">
+    Webhook secrets are only returned when an endpoint is created.
+</div>
+
+</div>
+
+<div class="table-wrap">
+
+<div id="tableState" class="state">
+    Loading webhooks...
+</div>
+
+<table id="webhooksTable" style="display:none">
+
+<thead>
+
+<tr>
+<th>Endpoint</th>
+<th>Events</th>
+<th>Status</th>
+<th>Created</th>
+<th>Actions</th>
+</tr>
+
+</thead>
+
+<tbody id="webhooksBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- DELIVERY HISTORY -->
+
+<div class="panel delivery-panel" id="deliveryPanel">
+
+<div class="panel-head">
+
+<div class="panel-title" id="deliveryTitle">
+    Delivery history
+</div>
+
+<div class="panel-description">
+    Recent delivery attempts for the selected endpoint.
+</div>
+
+</div>
+
+<div class="panel-body">
+
+<div class="delivery-meta">
+
+<div class="meta-box">
+<div class="meta-label">Endpoint</div>
+<div class="meta-value" id="deliveryEndpoint">—</div>
+</div>
+
+<div class="meta-box">
+<div class="meta-label">Showing</div>
+<div class="meta-value" id="deliveryShowing">—</div>
+</div>
+
+<div class="meta-box">
+<div class="meta-label">Page</div>
+<div class="meta-value" id="deliveryPage">1</div>
+</div>
+
+<div class="meta-box">
+<div class="meta-label">Total</div>
+<div class="meta-value" id="deliveryTotal">—</div>
+</div>
+
+</div>
+
+<div class="table-wrap">
+
+<div id="deliveryState" class="state">
+    Loading delivery history...
+</div>
+
+<table id="deliveryTable" style="display:none">
+
+<thead>
+
+<tr>
+<th>Event</th>
+<th>Status</th>
+<th>Attempts</th>
+<th>Last attempt</th>
+<th>Response</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="deliveryBody"></tbody>
+
+</table>
+
+</div>
+
+<div
+    id="deliveryPagination"
+    style="display:none;margin-top:17px;display:flex;justify-content:flex-end;gap:8px"
+>
+
+<button
+    class="secondary"
+    id="prevDelivery"
+>
+    Previous
+</button>
+
+<button
+    class="secondary"
+    id="nextDelivery"
+>
+    Next
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+</section>
+
+</div>
+
+<!-- SECRET MODAL -->
+
+<div class="modal" id="secretModal">
+
+<div class="modal-card">
+
+<div class="modal-head">
+
+<div class="modal-title" id="secretTitle">
+    Webhook secret
+</div>
+
+<div class="modal-subtitle">
+    Store this secret securely. It is not shown again after this window is closed.
+</div>
+
+</div>
+
+<div class="modal-body">
+
+<div class="warning">
+    Use the webhook secret to verify that incoming PrimePay
+    webhook requests are authentic. Never expose it in browser
+    code or public repositories.
+</div>
+
+<div class="secret-box">
+
+<input
+    id="secretValue"
+    type="text"
+    readonly
+>
+
+<button
+    class="copy"
+    id="copySecret"
+>
+    Copy
+</button>
+
+</div>
+
+<div class="modal-actions">
+
+<button
+    class="secondary"
+    id="closeSecret"
+>
+    I have stored it
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+const API_URL = "http://localhost:5001/api/v1";
+
+const token =
+    localStorage.getItem("primepay_token");
+
+if(!token){
+    window.location.href = "../login.html";
+}
+
+let selectedWebhookId = null;
+let selectedWebhookName = "";
+let deliveryPage = 1;
+const deliveryLimit = 10;
+
+const supportedEvents = [
+    "payment.created",
+    "payment.pending",
+    "payment.completed",
+    "payment.failed",
+    "payment.cancelled",
+    "payment.refunded",
+    "payout.created",
+    "payout.completed",
+    "payout.failed"
+];
+
+function getStoredUser(){
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem(
+                "primepay_user"
+            ) || "null"
+        );
+
+    }catch{
+
+        return null;
+    }
+}
+
+function escapeHtml(value){
+
+    return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+function showNotice(message,type){
+
+    const notice =
+        document.getElementById("notice");
+
+    notice.textContent = message;
+
+    notice.className =
+        `notice show ${type}`;
+}
+
+function clearNotice(){
+
+    document.getElementById(
+        "notice"
+    ).className = "notice";
+}
+
+function loadUser(){
+
+    const user =
+        getStoredUser();
+
+    if(!user){
+        return;
+    }
+
+    const name =
+        user.name || "Developer";
+
+    document.getElementById(
+        "accountName"
+    ).textContent = name;
+
+    const initials =
+        name
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0,2)
+        .map(
+            part =>
+                part.charAt(0).toUpperCase()
+        )
+        .join("");
+
+    document.getElementById(
+        "avatar"
+    ).textContent =
+        initials || "P";
+}
+
+async function apiFetch(
+    path,
+    options = {}
+){
+
+    const controller =
+        new AbortController();
+
+    const timeout =
+        setTimeout(
+            () => controller.abort(),
+            15000
+        );
+
+    try{
+
+        const response =
+            await fetch(
+                `${API_URL}${path}`,
+                {
+                    ...options,
+                    headers:{
+                        "Authorization":
+                            `Bearer ${token}`,
+                        "Accept":
+                            "application/json",
+                        ...(options.headers || {})
+                    },
+                    signal:
+                        controller.signal
+                }
+            );
+
+        let data = {};
+
+        try{
+
+            data =
+                await response.json();
+
+        }catch{
+
+            throw new Error(
+                "PrimePay returned an invalid response."
+            );
+        }
+
+        if(response.status === 401){
+
+            localStorage.removeItem(
+                "primepay_token"
+            );
+
+            localStorage.removeItem(
+                "primepay_user"
+            );
+
+            window.location.href =
+                "../login.html";
+
+            return null;
+        }
+
+        if(!response.ok || data.success === false){
+
+            throw new Error(
+                data.message ||
+                "PrimePay request failed."
+            );
+        }
+
+        return data;
+
+    }finally{
+
+        clearTimeout(timeout);
+    }
+}
+
+function formatDate(value){
+
+    if(!value){
+        return "—";
+    }
+
+    const date =
+        new Date(value);
+
+    if(Number.isNaN(date.getTime())){
+        return "—";
+    }
+
+    return new Intl.DateTimeFormat(
+        undefined,
+        {
+            dateStyle:"medium",
+            timeStyle:"short"
+        }
+    ).format(date);
+}
+
+function getWebhookId(webhook){
+
+    return (
+        webhook.id ||
+        webhook._id ||
+        ""
+    );
+}
+
+function getWebhookEvents(webhook){
+
+    if(Array.isArray(webhook.events)){
+        return webhook.events;
+    }
+
+    if(Array.isArray(webhook.eventTypes)){
+        return webhook.eventTypes;
+    }
+
+    return [];
+}
+
+function webhookStatus(webhook){
+
+    if(
+        webhook.status
+    ){
+        return String(
+            webhook.status
+        ).toLowerCase();
+    }
+
+    if(
+        webhook.active === false ||
+        webhook.enabled === false
+    ){
+        return "inactive";
+    }
+
+    return "active";
+}
+
+function statusBadge(status){
+
+    const normalized =
+        String(status || "")
+        .toLowerCase();
+
+    let cls = "inactive";
+
+    if(
+        normalized === "active" ||
+        normalized === "delivered" ||
+        normalized === "success"
+    ){
+        cls = "active";
+    }
+
+    if(
+        normalized === "failed" ||
+        normalized === "error"
+    ){
+        cls = "failed";
+    }
+
+    return `
+        <span class="status-badge ${cls}">
+            ${escapeHtml(
+                status || "unknown"
+            )}
+        </span>
+    `;
+}
+
+function renderEvents(events){
+
+    if(!events.length){
+        return "—";
+    }
+
+    return `
+        <div class="events-list">
+            ${events.map(
+                event =>
+                    `<span class="event-tag">${escapeHtml(event)}</span>`
+            ).join("")}
+        </div>
+    `;
+}
+
+async function loadWebhooks(){
+
+    const state =
+        document.getElementById(
+            "tableState"
+        );
+
+    const table =
+        document.getElementById(
+            "webhooksTable"
+        );
+
+    const body =
+        document.getElementById(
+            "webhooksBody"
+        );
+
+    state.style.display = "block";
+    state.className = "state";
+    state.textContent =
+        "Loading webhooks...";
+
+    table.style.display = "none";
+
+    try{
+
+        const data =
+            await apiFetch(
+                "/webhooks"
+            );
+
+        if(!data){
+            return;
+        }
+
+        const webhooks =
+            Array.isArray(data.webhooks)
+            ? data.webhooks
+            : Array.isArray(data.data)
+            ? data.data
+            : [];
+
+        body.innerHTML = "";
+
+        if(!webhooks.length){
+
+            state.textContent =
+                "No webhook endpoints have been configured.";
+
+            table.style.display = "none";
+
+            return;
+        }
+
+        webhooks.forEach(webhook => {
+
+            const id =
+                getWebhookId(webhook);
+
+            const events =
+                getWebhookEvents(webhook);
+
+            const status =
+                webhookStatus(webhook);
+
+            const row =
+                document.createElement("tr");
+
+            row.innerHTML = `
+
+                <td>
+
+                    <div class="webhook-name">
+                        ${escapeHtml(
+                            webhook.name ||
+                            "Unnamed endpoint"
+                        )}
+                    </div>
+
+                    <div class="webhook-url">
+                        ${escapeHtml(
+                            webhook.url ||
+                            "—"
+                        )}
+                    </div>
+
+                </td>
+
+                <td>
+                    ${renderEvents(events)}
+                </td>
+
+                <td>
+                    ${statusBadge(status)}
+                </td>
+
+                <td>
+                    ${formatDate(
+                        webhook.createdAt
+                    )}
+                </td>
+
+                <td>
+
+                    <div class="row-actions">
+
+                        <button
+                            class="small-btn"
+                            data-action="deliveries"
+                            data-id="${escapeHtml(id)}"
+                            data-name="${escapeHtml(
+                                webhook.name ||
+                                "Webhook"
+                            )}"
+                            data-url="${escapeHtml(
+                                webhook.url ||
+                                ""
+                            )}"
+                        >
+                            Deliveries
+                        </button>
+
+                        <button
+                            class="small-btn"
+                            data-action="edit"
+                            data-id="${escapeHtml(id)}"
+                            data-name="${escapeHtml(
+                                webhook.name ||
+                                ""
+                            )}"
+                            data-url="${escapeHtml(
+                                webhook.url ||
+                                ""
+                            )}"
+                            data-events="${escapeHtml(
+                                JSON.stringify(events)
+                            )}"
+                        >
+                            Edit
+                        </button>
+
+                        <button
+                            class="small-btn danger"
+                            data-action="delete"
+                            data-id="${escapeHtml(id)}"
+                            data-name="${escapeHtml(
+                                webhook.name ||
+                                "Webhook"
+                            )}"
+                        >
+                            Delete
+                        </button>
+
+                    </div>
+
+                </td>
+            `;
+
+            body.appendChild(row);
+        });
+
+        state.style.display = "none";
+        table.style.display = "table";
+
+    }catch(error){
+
+        state.textContent =
+            error.name === "AbortError"
+            ? "Request timed out. Check that the PrimePay backend is running."
+            : (
+                error.message ||
+                "Unable to load webhooks."
+            );
+    }
+}
+
+function getSelectedEvents(){
+
+    return Array.from(
+        document.querySelectorAll(
+            '.event-option input:checked'
+        )
+    ).map(
+        checkbox =>
+            checkbox.value
+    );
+}
+
+function setSelectedEvents(events){
+
+    document
+        .querySelectorAll(
+            '.event-option input'
+        )
+        .forEach(
+            checkbox => {
+
+                checkbox.checked =
+                    events.includes(
+                        checkbox.value
+                    );
+            }
+        );
+}
+
+function openCreate(){
+
+    document.getElementById(
+        "createPanel"
+    ).style.display = "block";
+
+    document.getElementById(
+        "webhookName"
+    ).focus();
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+function closeCreate(){
+
+    document.getElementById(
+        "createPanel"
+    ).style.display = "none";
+
+    document.getElementById(
+        "createForm"
+    ).reset();
+
+    setSelectedEvents([]);
+
+    document.getElementById(
+        "createForm"
+    ).dataset.editingId = "";
+
+    document.getElementById(
+        "createBtn"
+    ).textContent =
+        "Create webhook";
+
+    clearNotice();
+}
+
+function editWebhook(
+    id,
+    name,
+    url,
+    events
+){
+
+    document.getElementById(
+        "createPanel"
+    ).style.display = "block";
+
+    document.getElementById(
+        "webhookName"
+    ).value = name;
+
+    document.getElementById(
+        "webhookUrl"
+    ).value = url;
+
+    setSelectedEvents(events);
+
+    document.getElementById(
+        "createForm"
+    ).dataset.editingId = id;
+
+    document.getElementById(
+        "createBtn"
+    ).textContent =
+        "Save changes";
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+async function submitWebhook(event){
+
+    event.preventDefault();
+
+    clearNotice();
+
+    const form =
+        document.getElementById(
+            "createForm"
+        );
+
+    const editingId =
+        form.dataset.editingId ||
+        "";
+
+    const name =
+        document.getElementById(
+            "webhookName"
+        ).value.trim();
+
+    const url =
+        document.getElementById(
+            "webhookUrl"
+        ).value.trim();
+
+    const events =
+        getSelectedEvents();
+
+    const button =
+        document.getElementById(
+            "createBtn"
+        );
+
+    if(!name){
+
+        showNotice(
+            "Enter a webhook name.",
+            "error"
+        );
+
+        return;
+    }
+
+    if(!url){
+
+        showNotice(
+            "Enter a webhook URL.",
+            "error"
+        );
+
+        return;
+    }
+
+    if(events.length === 0){
+
+        showNotice(
+            "Select at least one webhook event.",
+            "error"
+        );
+
+        return;
+    }
+
+    button.disabled = true;
+
+    button.textContent =
+        editingId
+        ? "Saving..."
+        : "Creating...";
+
+    try{
+
+        let data;
+
+        if(editingId){
+
+            data =
+                await apiFetch(
+                    `/webhooks/${encodeURIComponent(editingId)}`,
+                    {
+                        method:"PATCH",
+                        headers:{
+                            "Content-Type":
+                                "application/json"
+                        },
+                        body:JSON.stringify({
+                            name,
+                            url,
+                            events
+                        })
+                    }
+                );
+
+        }else{
+
+            data =
+                await apiFetch(
+                    "/webhooks",
+                    {
+                        method:"POST",
+                        headers:{
+                            "Content-Type":
+                                "application/json"
+                        },
+                        body:JSON.stringify({
+                            name,
+                            url,
+                            events
+                        })
+                    }
+                );
+        }
+
+        if(!data){
+            return;
+        }
+
+        const webhook =
+            data.webhook || {};
+
+        if(!editingId && webhook.secret){
+
+            document.getElementById(
+                "secretTitle"
+            ).textContent =
+                `${webhook.name || name} secret`;
+
+            document.getElementById(
+                "secretValue"
+            ).value =
+                webhook.secret;
+
+            document.getElementById(
+                "secretModal"
+            ).classList.add("open");
+        }
+
+        showNotice(
+            data.message ||
+            (
+                editingId
+                ? "Webhook updated successfully."
+                : "Webhook created successfully."
+            ),
+            "success"
+        );
+
+        closeCreate();
+
+        await loadWebhooks();
+
+    }catch(error){
+
+        showNotice(
+            error.name === "AbortError"
+            ? "Request timed out. Check that the PrimePay backend is running."
+            : (
+                error.message ||
+                "Unable to save webhook."
+            ),
+            "error"
+        );
+
+    }finally{
+
+        button.disabled = false;
+
+        if(
+            document.getElementById(
+                "createForm"
+            ).dataset.editingId
+        ){
+
+            button.textContent =
+                "Save changes";
+
+        }else{
+
+            button.textContent =
+                "Create webhook";
+        }
+    }
+}
+
+async function deleteWebhook(
+    id,
+    name
+){
+
+    if(!id){
+        return;
+    }
+
+    const confirmed =
+        window.confirm(
+            `Delete "${name}"?\n\nThe webhook configuration and its delivery history will be removed.`
+        );
+
+    if(!confirmed){
+        return;
+    }
+
+    clearNotice();
+
+    try{
+
+        const data =
+            await apiFetch(
+                `/webhooks/${encodeURIComponent(id)}`,
+                {
+                    method:"DELETE"
+                }
+            );
+
+        if(!data){
+            return;
+        }
+
+        if(
+            selectedWebhookId === id
+        ){
+
+            selectedWebhookId = null;
+
+            document
+                .getElementById(
+                    "deliveryPanel"
+                )
+                .classList.remove("open");
+        }
+
+        showNotice(
+            data.message ||
+            "Webhook deleted successfully.",
+            "success"
+        );
+
+        await loadWebhooks();
+
+    }catch(error){
+
+        showNotice(
+            error.message ||
+            "Unable to delete webhook.",
+            "error"
+        );
+    }
+}
+
+async function loadDeliveries(){
+
+    if(!selectedWebhookId){
+        return;
+    }
+
+    const state =
+        document.getElementById(
+            "deliveryState"
+        );
+
+    const table =
+        document.getElementById(
+            "deliveryTable"
+        );
+
+    const body =
+        document.getElementById(
+            "deliveryBody"
+        );
+
+    const panel =
+        document.getElementById(
+            "deliveryPanel"
+        );
+
+    panel.classList.add("open");
+
+    state.style.display = "block";
+    state.textContent =
+        "Loading delivery history...";
+
+    table.style.display = "none";
+
+    try{
+
+        const data =
+            await apiFetch(
+                `/webhooks/${encodeURIComponent(selectedWebhookId)}/deliveries?page=${deliveryPage}&limit=${deliveryLimit}`
+            );
+
+        if(!data){
+            return;
+        }
+
+        const deliveries =
+            Array.isArray(data.deliveries)
+            ? data.deliveries
+            : Array.isArray(data.data)
+            ? data.data
+            : [];
+
+        const pagination =
+            data.pagination || {};
+
+        body.innerHTML = "";
+
+        document.getElementById(
+            "deliveryPage"
+        ).textContent =
+            pagination.page ||
+            deliveryPage;
+
+        document.getElementById(
+            "deliveryTotal"
+        ).textContent =
+            pagination.total ??
+            deliveries.length;
+
+        document.getElementById(
+            "deliveryShowing"
+        ).textContent =
+            deliveries.length
+            ? `${(
+                (pagination.page || deliveryPage - 1) *
+                (pagination.limit || deliveryLimit)
+            ) + 1}–${
+                (
+                    (pagination.page || deliveryPage - 1) *
+                    (pagination.limit || deliveryLimit)
+                ) + deliveries.length
+            }`
+            : "0";
+
+        if(!deliveries.length){
+
+            state.textContent =
+                "No delivery records found for this endpoint.";
+
+            table.style.display = "none";
+
+            updateDeliveryButtons(
+                pagination,
+                deliveries.length
+            );
+
+            return;
+        }
+
+        deliveries.forEach(
+            delivery => {
+
+                const row =
+                    document.createElement("tr");
+
+                const status =
+                    String(
+                        delivery.status ||
+                        "unknown"
+                    ).toLowerCase();
+
+                const responseCode =
+                    delivery.responseStatusCode ??
+                    delivery.statusCode ??
+                    "—";
+
+                const retryable =
+                    status === "failed" ||
+                    status === "pending";
+
+                row.innerHTML = `
+
+                    <td>
+                        ${escapeHtml(
+                            delivery.event ||
+                            "—"
+                        )}
+                    </td>
+
+                    <td>
+                        ${statusBadge(status)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            delivery.attempts ??
+                            0
+                        )}
+                    </td>
+
+                    <td>
+                        ${formatDate(
+                            delivery.lastAttemptAt ||
+                            delivery.createdAt
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            responseCode
+                        )}
+                    </td>
+
+                    <td>
+
+                        ${
+                            retryable
+                            ? `
+                            <button
+                                class="small-btn"
+                                data-retry-id="${escapeHtml(
+                                    delivery.id ||
+                                    delivery._id ||
+                                    ""
+                                )}"
+                            >
+                                Retry
+                            </button>
+                            `
+                            : "—"
+                        }
+
+                    </td>
+                `;
+
+                body.appendChild(row);
+
+            }
+        );
+
+        state.style.display = "none";
+        table.style.display = "table";
+
+        updateDeliveryButtons(
+            pagination,
+            deliveries.length
+        );
+
+    }catch(error){
+
+        state.textContent =
+            error.name === "AbortError"
+            ? "Request timed out while loading deliveries."
+            : (
+                error.message ||
+                "Unable to load delivery history."
+            );
+    }
+}
+
+function updateDeliveryButtons(
+    pagination,
+    count
+){
+
+    const paginationBox =
+        document.getElementById(
+            "deliveryPagination"
+        );
+
+    const previous =
+        document.getElementById(
+            "prevDelivery"
+        );
+
+    const next =
+        document.getElementById(
+            "nextDelivery"
+        );
+
+    const page =
+        Number(
+            pagination.page ||
+            deliveryPage
+        );
+
+    const pages =
+        Number(
+            pagination.pages ||
+            0
+        );
+
+    const total =
+        Number(
+            pagination.total ||
+            0
+        );
+
+    const hasPrevious =
+        page > 1;
+
+    const hasNext =
+        pages > 0
+        ? page < pages
+        : count === deliveryLimit &&
+          total === 0;
+
+    previous.disabled =
+        !hasPrevious;
+
+    next.disabled =
+        !hasNext;
+
+    paginationBox.style.display =
+        "flex";
+}
+
+async function retryDelivery(
+    deliveryId
+){
+
+    if(!selectedWebhookId || !deliveryId){
+        return;
+    }
+
+    try{
+
+        const data =
+            await apiFetch(
+                `/webhooks/${encodeURIComponent(selectedWebhookId)}/deliveries/${encodeURIComponent(deliveryId)}/retry`,
+                {
+                    method:"POST"
+                }
+            );
+
+        if(!data){
+            return;
+        }
+
+        showNotice(
+            data.message ||
+            "Webhook delivery retry queued.",
+            "success"
+        );
+
+        await loadDeliveries();
+
+    }catch(error){
+
+        showNotice(
+            error.message ||
+            "Unable to retry webhook delivery.",
+            "error"
+        );
+    }
+}
+
+document.getElementById(
+    "webhooksBody"
+).addEventListener(
+    "click",
+    event => {
+
+        const button =
+            event.target.closest(
+                "button"
+            );
+
+        if(!button){
+            return;
+        }
+
+        const action =
+            button.dataset.action;
+
+        if(action === "delete"){
+
+            deleteWebhook(
+                button.dataset.id,
+                button.dataset.name
+            );
+
+        }
+
+        if(action === "edit"){
+
+            let events = [];
+
+            try{
+
+                events =
+                    JSON.parse(
+                        button.dataset.events ||
+                        "[]"
+                    );
+
+            }catch{
+
+                events = [];
+            }
+
+            editWebhook(
+                button.dataset.id,
+                button.dataset.name,
+                button.dataset.url,
+                events
+            );
+        }
+
+        if(action === "deliveries"){
+
+            selectedWebhookId =
+                button.dataset.id;
+
+            selectedWebhookName =
+                button.dataset.name ||
+                "Webhook";
+
+            deliveryPage = 1;
+
+            document.getElementById(
+                "deliveryTitle"
+            ).textContent =
+                `${selectedWebhookName} delivery history`;
+
+            document.getElementById(
+                "deliveryEndpoint"
+            ).textContent =
+                button.dataset.url ||
+                "—";
+
+            loadDeliveries();
+
+            document
+                .getElementById(
+                    "deliveryPanel"
+                )
+                .scrollIntoView({
+                    behavior:"smooth",
+                    block:"start"
+                });
+        }
+    }
+);
+
+document.getElementById(
+    "deliveryBody"
+).addEventListener(
+    "click",
+    event => {
+
+        const button =
+            event.target.closest(
+                "button[data-retry-id]"
+            );
+
+        if(!button){
+            return;
+        }
+
+        retryDelivery(
+            button.dataset.retryId
+        );
+    }
+);
+
+document.getElementById(
+    "showCreate"
+).addEventListener(
+    "click",
+    openCreate
+);
+
+document.getElementById(
+    "cancelCreate"
+).addEventListener(
+    "click",
+    closeCreate
+);
+
+document.getElementById(
+    "createForm"
+).addEventListener(
+    "submit",
+    submitWebhook
+);
+
+document.getElementById(
+    "prevDelivery"
+).addEventListener(
+    "click",
+    () => {
+
+        if(deliveryPage <= 1){
+            return;
+        }
+
+        deliveryPage--;
+        loadDeliveries();
+    }
+);
+
+document.getElementById(
+    "nextDelivery"
+).addEventListener(
+    "click",
+    () => {
+
+        deliveryPage++;
+        loadDeliveries();
+    }
+);
+
+document.getElementById(
+    "copySecret"
+).addEventListener(
+    "click",
+    async () => {
+
+        const input =
+            document.getElementById(
+                "secretValue"
+            );
+
+        try{
+
+            await navigator.clipboard.writeText(
+                input.value
+            );
+
+        }catch{
+
+            input.select();
+            document.execCommand("copy");
+        }
+
+        document.getElementById(
+            "copySecret"
+        ).textContent =
+            "Copied";
+
+        setTimeout(
+            () => {
+
+                document.getElementById(
+                    "copySecret"
+                ).textContent =
+                    "Copy";
+
+            },
+            1500
+        );
+    }
+);
+
+function closeSecretModal(){
+
+    document.getElementById(
+        "secretValue"
+    ).value = "";
+
+    document.getElementById(
+        "secretModal"
+    ).classList.remove("open");
+}
+
+document.getElementById(
+    "closeSecret"
+).addEventListener(
+    "click",
+    closeSecretModal
+);
+
+document.getElementById(
+    "secretModal"
+).addEventListener(
+    "click",
+    event => {
+
+        if(
+            event.target.id ===
+            "secretModal"
+        ){
+
+            closeSecretModal();
+        }
+    }
+);
+
+document.getElementById(
+    "mobileMenu"
+).addEventListener(
+    "click",
+    () => {
+
+        document
+            .getElementById("sidebar")
+            .classList.toggle("open");
+
+    }
+);
+
+document.getElementById(
+    "logoutBtn"
+).addEventListener(
+    "click",
+    () => {
+
+        localStorage.removeItem(
+            "primepay_token"
+        );
+
+        localStorage.removeItem(
+            "primepay_user"
+        );
+
+        window.location.href =
+            "../login.html";
+
+    }
+);
+
+loadUser();
+loadWebhooks();
+</script>
+
+</body>
+</html>

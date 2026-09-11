@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Set up your business on PrimePay">
+<title>PrimePay | Business Setup</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #020617;
+    --panel: #08101f;
+    --panel-2: #0b1629;
+    --border: rgba(148, 163, 184, 0.16);
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --accent: #38bdf8;
+    --accent-2: #2563eb;
+    --success: #4ade80;
+    --danger: #f87171;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, .15), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(14, 165, 233, .08), transparent 30%),
+        var(--bg);
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.topbar {
+    min-height: 78px;
+    padding: 18px 6%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(148, 163, 184, .08);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.logo-mark {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    box-shadow: 0 8px 25px rgba(37, 99, 235, .25);
+    font-weight: 900;
+}
+
+.logout {
+    border: 1px solid var(--border);
+    background: rgba(15, 23, 42, .55);
+    color: var(--muted);
+    padding: 9px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: .82rem;
+}
+
+.logout:hover {
+    color: white;
+    border-color: rgba(148, 163, 184, .3);
+}
+
+main {
+    flex: 1;
+    padding: 48px 20px 70px;
+}
+
+.container {
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+.intro {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.step-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent);
+    font-size: .78rem;
+    font-weight: 750;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 13px;
+}
+
+.step-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.intro h1 {
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    letter-spacing: -1.3px;
+    margin-bottom: 11px;
+}
+
+.intro p {
+    max-width: 620px;
+    margin: auto;
+    color: var(--muted);
+    line-height: 1.65;
+    font-size: .95rem;
+}
+
+.card {
+    background: linear-gradient(
+        145deg,
+        rgba(15, 23, 42, .96),
+        rgba(8, 16, 31, .98)
+    );
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 34px;
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.35),
+        inset 0 1px 0 rgba(255,255,255,.025);
+}
+
+.progress {
+    display: flex;
+    align-items: center;
+    margin-bottom: 34px;
+}
+
+.progress-item {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.progress-item:last-child {
+    flex: 0 0 auto;
+}
+
+.progress-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(148,163,184,.22);
+    background: #07101f;
+    color: var(--muted);
+    font-size: .75rem;
+    font-weight: 750;
+}
+
+.progress-circle.active {
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    border-color: transparent;
+    color: white;
+}
+
+.progress-line {
+    height: 1px;
+    background: rgba(148,163,184,.14);
+    flex: 1;
+    margin: 0 10px;
+}
+
+.section-title {
+    margin-bottom: 22px;
+}
+
+.section-title h2 {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+.section-title p {
+    color: var(--muted);
+    font-size: .82rem;
+    line-height: 1.5;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #e2e8f0;
+    font-size: .86rem;
+    font-weight: 650;
+}
+
+input,
+select {
+    width: 100%;
+    height: 51px;
+    border: 1px solid rgba(148,163,184,.18);
+    border-radius: 12px;
+    background: rgba(2,6,23,.7);
+    color: var(--text);
+    padding: 0 14px;
+    outline: none;
+    font: inherit;
+    font-size: .9rem;
+    transition: .2s ease;
+}
+
+select {
+    cursor: pointer;
+}
+
+select option {
+    background: #08101f;
+    color: white;
+}
+
+input:focus,
+select:focus {
+    border-color: rgba(56,189,248,.65);
+    box-shadow: 0 0 0 4px rgba(56,189,248,.08);
+}
+
+input::placeholder {
+    color: #64748b;
+}
+
+.hint {
+    color: #64748b;
+    font-size: .72rem;
+    margin-top: 7px;
+    line-height: 1.45;
+}
+
+.alert {
+    display: none;
+    border-radius: 12px;
+    padding: 13px 14px;
+    margin-bottom: 22px;
+    font-size: .86rem;
+    line-height: 1.5;
+}
+
+.alert.error {
+    display: block;
+    background: rgba(239,68,68,.09);
+    border: 1px solid rgba(248,113,113,.22);
+    color: #fca5a5;
+}
+
+.alert.success {
+    display: block;
+    background: rgba(34,197,94,.08);
+    border: 1px solid rgba(74,222,128,.2);
+    color: #86efac;
+}
+
+.info-box {
+    margin-top: 8px;
+    padding: 16px;
+    border-radius: 13px;
+    border: 1px solid rgba(56,189,248,.13);
+    background: rgba(14,165,233,.045);
+    display: flex;
+    gap: 12px;
+}
+
+.info-icon {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 auto;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    background: rgba(56,189,248,.1);
+    color: var(--accent);
+    font-weight: 800;
+    font-size: .8rem;
+}
+
+.info-box strong {
+    display: block;
+    font-size: .8rem;
+    margin-bottom: 4px;
+}
+
+.info-box p {
+    color: var(--muted);
+    font-size: .75rem;
+    line-height: 1.5;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(148,163,184,.09);
+}
+
+.submit-btn {
+    min-width: 190px;
+    height: 50px;
+    border: 0;
+    border-radius: 11px;
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    color: white;
+    font-size: .9rem;
+    font-weight: 750;
+    cursor: pointer;
+    box-shadow: 0 12px 28px rgba(37,99,235,.2);
+    transition: .2s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 32px rgba(37,99,235,.28);
+}
+
+.submit-btn:disabled {
+    opacity: .65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #475569;
+    font-size: .74rem;
+}
+
+@media (max-width: 650px) {
+    .topbar {
+        padding: 16px 5%;
+    }
+
+    main {
+        padding: 32px 15px 50px;
+    }
+
+    .card {
+        padding: 24px 19px;
+        border-radius: 18px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .full {
+        grid-column: auto;
+    }
+
+    .actions {
+        justify-content: stretch;
+    }
+
+    .submit-btn {
+        width: 100%;
+    }
+
+    .progress-line {
+        margin: 0 6px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <a href="../index.html" class="logo">
+        <span class="logo-mark">P</span>
+        <span>PrimePay</span>
+    </a>
+
+    <button class="logout" id="logoutBtn">
+        Sign out
+    </button>
+</header>
+
+<main>
+    <div class="container">
+
+        <div class="intro">
+            <div class="step-label">
+                <span class="step-dot"></span>
+                Business setup
+            </div>
+
+            <h1>Set up your business</h1>
+
+            <p>
+                Tell us about your business so PrimePay can create your
+                merchant workspace and connect it to the payment infrastructure.
+            </p>
+        </div>
+
+        <section class="card">
+
+            <div class="progress">
+                <div class="progress-item">
+                    <div class="progress-circle active">1</div>
+                    <div class="progress-line"></div>
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-circle">2</div>
+                    <div class="progress-line"></div>
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-circle">3</div>
+                </div>
+            </div>
+
+            <div id="alert" class="alert"></div>
+
+            <div class="section-title">
+                <h2>Business information</h2>
+                <p>
+                    Use the official details of the business you want to operate
+                    through PrimePay.
+                </p>
+            </div>
+
+            <form id="businessForm" novalidate>
+
+                <div class="form-grid">
+
+                    <div class="form-group full">
+                        <label for="businessName">Business name</label>
+
+                        <input
+                            type="text"
+                            id="businessName"
+                            name="businessName"
+                            placeholder="e.g. PrimeTask Workspace"
+                            maxlength="150"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="businessType">Business type</label>
+
+                        <select id="businessType" name="businessType" required>
+                            <option value="">Select business type</option>
+                            <option value="sole_proprietorship">
+                                Sole proprietorship
+                            </option>
+                            <option value="partnership">
+                                Partnership
+                            </option>
+                            <option value="limited_company">
+                                Limited company
+                            </option>
+                            <option value="organization">
+                                Organization
+                            </option>
+                            <option value="other">
+                                Other
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registrationNumber">
+                            Registration number
+                        </label>
+
+                        <input
+                            type="text"
+                            id="registrationNumber"
+                            name="registrationNumber"
+                            placeholder="Optional"
+                            maxlength="100"
+                        >
+
+                        <div class="hint">
+                            Leave blank if your business does not have one.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="country">Country</label>
+
+                        <select id="country" name="country">
+                            <option value="KE" selected>Kenya</option>
+                            <option value="UG">Uganda</option>
+                            <option value="TZ">Tanzania</option>
+                            <option value="RW">Rwanda</option>
+                            <option value="GH">Ghana</option>
+                            <option value="NG">Nigeria</option>
+                            <option value="ZA">South Africa</option>
+                            <option value="OTHER">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="currency">Primary currency</label>
+
+                        <select id="currency" name="currency">
+                            <option value="KES" selected>
+                                KES - Kenyan Shilling
+                            </option>
+                            <option value="USD">
+                                USD - US Dollar
+                            </option>
+                            <option value="EUR">
+                                EUR - Euro
+                            </option>
+                            <option value="GBP">
+                                GBP - British Pound
+                            </option>
+                        </select>
+
+                        <div class="hint">
+                            This becomes the default currency for your business.
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="info-box">
+                    <div class="info-icon">i</div>
+
+                    <div>
+                        <strong>What happens next?</strong>
+
+                        <p>
+                            PrimePay will create your business profile and
+                            application. Your merchant dashboard will then be
+                            available for managing supported payment operations.
+                            Live API access may require additional approval.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button
+                        type="submit"
+                        class="submit-btn"
+                        id="submitBtn"
+                    >
+                        Create business
+                    </button>
+                </div>
+
+            </form>
+
+        </section>
+
+    </div>
+</main>
+
+<footer>
+    © <span id="year"></span> PrimePay. All rights reserved.
+</footer>
+
+<script>
+const API_URL = "http://localhost:5001/api/v1";
+
+const token = localStorage.getItem("primepay_token");
+
+if (!token) {
+    window.location.href = "../login.html";
+}
+
+const form = document.getElementById("businessForm");
+const businessNameInput = document.getElementById("businessName");
+const businessTypeInput = document.getElementById("businessType");
+const registrationNumberInput =
+    document.getElementById("registrationNumber");
+const countryInput = document.getElementById("country");
+const currencyInput = document.getElementById("currency");
+const submitBtn = document.getElementById("submitBtn");
+const alertBox = document.getElementById("alert");
+
+document.getElementById("year").textContent = new Date().getFullYear();
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("primepay_token");
+    localStorage.removeItem("primepay_user");
+    window.location.href = "../login.html";
+});
+
+function showAlert(message, type = "error") {
+    alertBox.textContent = message;
+    alertBox.className = "alert " + type;
+}
+
+function clearAlert() {
+    alertBox.textContent = "";
+    alertBox.className = "alert";
+}
+
+async function loadExistingBusiness() {
+    try {
+        const response = await fetch(`${API_URL}/businesses/me`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (response.status === 401) {
+            localStorage.removeItem("primepay_token");
+            localStorage.removeItem("primepay_user");
+            window.location.href = "../login.html";
+            return;
+        }
+
+        if (!response.ok) {
+            return;
+        }
+
+        const data = await response.json();
+
+        if (data.success && data.business) {
+            const business = data.business;
+
+            businessNameInput.value = business.businessName || "";
+            businessTypeInput.value = business.businessType || "";
+            registrationNumberInput.value =
+                business.registrationNumber || "";
+            countryInput.value = business.country || "KE";
+            currencyInput.value = business.currency || "KES";
+
+            showAlert(
+                "A business profile already exists for this account. Redirecting to your dashboard.",
+                "success"
+            );
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Business already created";
+
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+            }, 1200);
+        }
+    } catch {
+        // The form remains usable if the optional lookup fails.
+    }
+}
+
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    clearAlert();
+
+    const businessName = businessNameInput.value.trim();
+    const businessType = businessTypeInput.value;
+    const registrationNumber =
+        registrationNumberInput.value.trim();
+    const country = countryInput.value;
+    const currency = currencyInput.value;
+
+    if (!businessName) {
+        showAlert("Please enter your business name.");
+        businessNameInput.focus();
+        return;
+    }
+
+    if (businessName.length < 2) {
+        showAlert("Business name must contain at least 2 characters.");
+        businessNameInput.focus();
+        return;
+    }
+
+    if (!businessType) {
+        showAlert("Please select your business type.");
+        businessTypeInput.focus();
+        return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Creating business...";
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+
+    try {
+        const response = await fetch(`${API_URL}/businesses`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                businessName,
+                businessType,
+                registrationNumber,
+                country,
+                currency
+            }),
+            signal: controller.signal
+        });
+
+        let data = {};
+
+        try {
+            data = await response.json();
+        } catch {
+            throw new Error("The server returned an invalid response.");
+        }
+
+        if (response.status === 401) {
+            localStorage.removeItem("primepay_token");
+            localStorage.removeItem("primepay_user");
+            window.location.href = "../login.html";
+            return;
+        }
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message || "Unable to create the business profile."
+            );
+        }
+
+        showAlert(
+            "Business created successfully. Opening your merchant dashboard...",
+            "success"
+        );
+
+        setTimeout(() => {
+            window.location.href = "dashboard.html";
+        }, 900);
+
+    } catch (error) {
+        if (error.name === "AbortError") {
+            showAlert(
+                "The server took too long to respond. Please try again."
+            );
+        } else if (error instanceof TypeError) {
+            showAlert(
+                "Unable to connect to the PrimePay API. Make sure the backend is running."
+            );
+        } else {
+            showAlert(
+                error.message || "Unable to create the business profile."
+            );
+        }
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Create business";
+
+    } finally {
+        clearTimeout(timeout);
+    }
+});
+
+loadExistingBusiness();
+</script>
+
+</body>
+</html>

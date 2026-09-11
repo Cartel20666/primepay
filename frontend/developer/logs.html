@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PrimePay Developer Logs</title>
+
+<style>
+:root{
+  --bg:#020617;
+  --panel:#08101f;
+  --panel2:#0b1426;
+  --border:rgba(148,163,184,.14);
+  --border2:rgba(59,130,246,.28);
+  --text:#e5edf8;
+  --muted:#8ea0b8;
+  --blue:#3b82f6;
+  --blue2:#2563eb;
+  --green:#22c55e;
+  --yellow:#f59e0b;
+  --red:#ef4444;
+  --shadow:0 18px 50px rgba(0,0,0,.28);
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+button,
+input,
+select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+.app{
+  min-height:100vh;
+  display:flex;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+  width:250px;
+  position:fixed;
+  inset:0 auto 0 0;
+  background:#050b18;
+  border-right:1px solid var(--border);
+  padding:24px 16px;
+  z-index:50;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:0 10px 28px;
+}
+
+.brand-mark{
+  width:38px;
+  height:38px;
+  border-radius:11px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(145deg,#2563eb,#1d4ed8);
+  color:white;
+  font-weight:800;
+  letter-spacing:-1px;
+}
+
+.brand-text strong{
+  display:block;
+  font-size:16px;
+}
+
+.brand-text span{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:2px;
+}
+
+.nav-label{
+  color:#64748b;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1.4px;
+  padding:10px;
+}
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.nav a{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:11px 12px;
+  border-radius:10px;
+  color:#94a3b8;
+  font-size:13px;
+  transition:.2s;
+}
+
+.nav a:hover{
+  background:rgba(59,130,246,.08);
+  color:#dbeafe;
+}
+
+.nav a.active{
+  color:#bfdbfe;
+  background:rgba(59,130,246,.14);
+  border:1px solid rgba(59,130,246,.18);
+}
+
+.nav-icon{
+  width:18px;
+  text-align:center;
+}
+
+.sidebar-bottom{
+  position:absolute;
+  left:16px;
+  right:16px;
+  bottom:20px;
+}
+
+.account-mini{
+  padding:12px;
+  margin-bottom:8px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:rgba(15,23,42,.6);
+}
+
+.account-mini strong{
+  display:block;
+  font-size:12px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.account-mini span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:3px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.signout{
+  width:100%;
+  padding:10px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  background:transparent;
+  color:#94a3b8;
+}
+
+.signout:hover{
+  color:#fff;
+  background:rgba(239,68,68,.08);
+}
+
+/* MAIN */
+
+.main{
+  width:calc(100% - 250px);
+  margin-left:250px;
+}
+
+.topbar{
+  height:72px;
+  padding:0 34px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:0;
+  z-index:30;
+  background:rgba(2,6,23,.9);
+  backdrop-filter:blur(16px);
+}
+
+.top-title{
+  font-size:14px;
+  font-weight:600;
+}
+
+.top-sub{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:3px;
+}
+
+.user-pill{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  color:#cbd5e1;
+  font-size:12px;
+}
+
+.avatar{
+  width:32px;
+  height:32px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#172554;
+  color:#bfdbfe;
+  font-weight:700;
+}
+
+.mobile-menu{
+  display:none;
+  border:1px solid var(--border);
+  background:transparent;
+  color:#cbd5e1;
+  border-radius:8px;
+  padding:7px 9px;
+}
+
+/* CONTENT */
+
+.content{
+  max-width:1320px;
+  margin:auto;
+  padding:34px;
+}
+
+.hero{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:25px;
+  margin-bottom:28px;
+}
+
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid var(--border2);
+  background:rgba(37,99,235,.08);
+  color:#93c5fd;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-bottom:14px;
+}
+
+.dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--green);
+}
+
+h1{
+  font-size:34px;
+  letter-spacing:-1.4px;
+  margin-bottom:9px;
+}
+
+.hero p{
+  max-width:700px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.7;
+}
+
+.refresh{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 14px;
+  border-radius:9px;
+  border:1px solid var(--border2);
+  background:rgba(37,99,235,.1);
+  color:#bfdbfe;
+  font-size:11px;
+  white-space:nowrap;
+}
+
+.refresh:hover{
+  background:rgba(37,99,235,.18);
+}
+
+/* NOTICE */
+
+.notice{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:15px 17px;
+  margin-bottom:20px;
+  border:1px solid rgba(59,130,246,.2);
+  background:rgba(37,99,235,.06);
+  border-radius:12px;
+  color:#bfdbfe;
+  font-size:11px;
+  line-height:1.6;
+}
+
+.notice-icon{
+  width:26px;
+  height:26px;
+  flex:0 0 26px;
+  display:grid;
+  place-items:center;
+  border-radius:8px;
+  background:rgba(59,130,246,.14);
+}
+
+/* STATS */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin-bottom:20px;
+}
+
+.stat{
+  padding:17px;
+  border:1px solid var(--border);
+  border-radius:13px;
+  background:linear-gradient(145deg,rgba(11,20,38,.95),rgba(6,13,27,.95));
+  box-shadow:var(--shadow);
+}
+
+.stat-label{
+  color:#64748b;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+
+.stat-value{
+  font-size:23px;
+  font-weight:700;
+  margin-top:9px;
+  letter-spacing:-.5px;
+}
+
+.stat-sub{
+  color:var(--muted);
+  font-size:10px;
+  margin-top:5px;
+}
+
+/* TOOLBAR */
+
+.toolbar{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:14px;
+}
+
+.search{
+  flex:1;
+  min-width:220px;
+  position:relative;
+}
+
+.search input{
+  width:100%;
+  padding:11px 13px 11px 35px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  outline:none;
+  background:#08101f;
+  color:#e5edf8;
+  font-size:11px;
+}
+
+.search input:focus{
+  border-color:rgba(59,130,246,.45);
+}
+
+.search span{
+  position:absolute;
+  left:13px;
+  top:10px;
+  color:#64748b;
+}
+
+select{
+  min-width:130px;
+  padding:10px 12px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  outline:none;
+  background:#08101f;
+  color:#cbd5e1;
+  font-size:11px;
+}
+
+/* LOG TABLE */
+
+.table-card{
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  background:linear-gradient(145deg,rgba(11,20,38,.95),rgba(6,13,27,.95));
+  box-shadow:var(--shadow);
+}
+
+.table-head{
+  padding:16px 18px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.table-head strong{
+  font-size:13px;
+}
+
+.table-head span{
+  color:#64748b;
+  font-size:10px;
+}
+
+.table-wrap{
+  overflow:auto;
+}
+
+table{
+  width:100%;
+  min-width:850px;
+  border-collapse:collapse;
+}
+
+th,
+td{
+  padding:13px 15px;
+  border-bottom:1px solid var(--border);
+  text-align:left;
+  font-size:11px;
+}
+
+th{
+  color:#64748b;
+  background:rgba(15,23,42,.5);
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.9px;
+  font-weight:600;
+}
+
+td{
+  color:#cbd5e1;
+}
+
+tr:last-child td{
+  border-bottom:none;
+}
+
+tr:hover td{
+  background:rgba(59,130,246,.025);
+}
+
+.method{
+  display:inline-flex;
+  padding:4px 7px;
+  border-radius:5px;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.4px;
+}
+
+.method.get{
+  background:rgba(34,197,94,.1);
+  color:#86efac;
+}
+
+.method.post{
+  background:rgba(59,130,246,.1);
+  color:#93c5fd;
+}
+
+.method.patch{
+  background:rgba(245,158,11,.1);
+  color:#fcd34d;
+}
+
+.method.delete{
+  background:rgba(239,68,68,.1);
+  color:#fca5a5;
+}
+
+.status{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:4px 8px;
+  border-radius:999px;
+  font-size:9px;
+  font-weight:600;
+}
+
+.status.success{
+  color:#86efac;
+  background:rgba(34,197,94,.09);
+}
+
+.status.pending{
+  color:#fcd34d;
+  background:rgba(245,158,11,.09);
+}
+
+.status.failed{
+  color:#fca5a5;
+  background:rgba(239,68,68,.09);
+}
+
+.status-dot{
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:currentColor;
+}
+
+.mono{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:10px;
+  color:#93c5fd;
+}
+
+.muted{
+  color:#64748b;
+}
+
+.empty{
+  padding:55px 20px;
+  text-align:center;
+}
+
+.empty-icon{
+  width:45px;
+  height:45px;
+  display:grid;
+  place-items:center;
+  margin:0 auto 13px;
+  border-radius:13px;
+  background:rgba(59,130,246,.08);
+  color:#60a5fa;
+  font-size:19px;
+}
+
+.empty strong{
+  display:block;
+  font-size:13px;
+  margin-bottom:6px;
+}
+
+.empty span{
+  display:block;
+  max-width:430px;
+  margin:auto;
+  color:#64748b;
+  font-size:11px;
+  line-height:1.6;
+}
+
+/* PAGINATION */
+
+.pagination{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:13px 16px;
+  border-top:1px solid var(--border);
+}
+
+.page-info{
+  color:#64748b;
+  font-size:10px;
+}
+
+.page-buttons{
+  display:flex;
+  gap:7px;
+}
+
+.page-buttons button{
+  padding:7px 11px;
+  border-radius:7px;
+  border:1px solid var(--border);
+  background:#08101f;
+  color:#94a3b8;
+  font-size:10px;
+}
+
+.page-buttons button:hover:not(:disabled){
+  color:#dbeafe;
+  border-color:var(--border2);
+}
+
+.page-buttons button:disabled{
+  opacity:.4;
+  cursor:not-allowed;
+}
+
+/* LOADING */
+
+.loading-row{
+  padding:40px;
+  text-align:center;
+  color:#64748b;
+  font-size:11px;
+}
+
+/* ERROR */
+
+.error{
+  display:none;
+  padding:12px 14px;
+  margin-bottom:15px;
+  border-radius:10px;
+  border:1px solid rgba(239,68,68,.2);
+  background:rgba(239,68,68,.06);
+  color:#fecaca;
+  font-size:11px;
+  line-height:1.5;
+}
+
+.error.show{
+  display:block;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1050px){
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:900px){
+  .sidebar{
+    transform:translateX(-100%);
+    transition:.25s;
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .main{
+    width:100%;
+    margin-left:0;
+  }
+
+  .mobile-menu{
+    display:block;
+  }
+
+  .topbar{
+    padding:0 18px;
+  }
+
+  .content{
+    padding:25px 18px;
+  }
+
+  .hero{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+}
+
+@media(max-width:600px){
+  h1{
+    font-size:27px;
+  }
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  .toolbar{
+    align-items:stretch;
+  }
+
+  .search,
+  select{
+    width:100%;
+  }
+
+  .pagination{
+    align-items:flex-start;
+    gap:10px;
+    flex-direction:column;
+  }
+
+  .user-pill span{
+    display:none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+
+  <div class="brand">
+    <div class="brand-mark">PP</div>
+    <div class="brand-text">
+      <strong>PrimePay</strong>
+      <span>Developer Platform</span>
+    </div>
+  </div>
+
+  <div class="nav-label">Developer</div>
+
+  <nav class="nav">
+
+    <a href="dashboard.html">
+      <span class="nav-icon">⌂</span>
+      Dashboard
+    </a>
+
+    <a href="api-keys.html">
+      <span class="nav-icon">⌘</span>
+      API Keys
+    </a>
+
+    <a href="webhooks.html">
+      <span class="nav-icon">↗</span>
+      Webhooks
+    </a>
+
+    <a href="sandbox.html">
+      <span class="nav-icon">◇</span>
+      Sandbox
+    </a>
+
+    <a href="docs.html">
+      <span class="nav-icon">▤</span>
+      Documentation
+    </a>
+
+    <a href="logs.html" class="active">
+      <span class="nav-icon">≡</span>
+      Logs
+    </a>
+
+    <a href="../merchant/dashboard.html">
+      <span class="nav-icon">◈</span>
+      Merchant Portal
+    </a>
+
+  </nav>
+
+  <div class="sidebar-bottom">
+
+    <div class="account-mini">
+      <strong id="sideName">Developer</strong>
+      <span id="sideEmail">Authenticated account</span>
+    </div>
+
+    <button class="signout" id="signOut">
+      Sign out
+    </button>
+
+  </div>
+
+</aside>
+
+
+<main class="main">
+
+<header class="topbar">
+
+  <div style="display:flex;align-items:center;gap:12px;">
+
+    <button class="mobile-menu" id="mobileMenu">
+      ☰
+    </button>
+
+    <div>
+      <div class="top-title">
+        API Activity
+      </div>
+
+      <div class="top-sub">
+        Developer activity and transaction records
+      </div>
+    </div>
+
+  </div>
+
+  <div class="user-pill">
+    <div class="avatar" id="avatar">D</div>
+    <span id="topName">Developer</span>
+  </div>
+
+</header>
+
+
+<div class="content">
+
+<section class="hero">
+
+  <div>
+    <div class="eyebrow">
+      <span class="dot"></span>
+      Developer activity
+    </div>
+
+    <h1>Logs</h1>
+
+    <p>
+      Review payment and transaction activity associated with your
+      authenticated PrimePay business. The current V1 backend does not
+      expose a centralized request-log endpoint, so this page displays
+      real transaction records rather than fabricated server logs.
+    </p>
+  </div>
+
+  <button class="refresh" id="refreshBtn">
+    ↻ Refresh
+  </button>
+
+</section>
+
+
+<div class="notice">
+
+  <div class="notice-icon">i</div>
+
+  <div>
+    <strong>V1 activity view</strong><br>
+    These records come from the PrimePay transaction API. They are not
+    raw HTTP server logs and do not expose API secrets, passwords or
+    private credentials.
+  </div>
+
+</div>
+
+
+<div class="error" id="errorBox"></div>
+
+
+<section class="stats">
+
+  <div class="stat">
+    <div class="stat-label">Records</div>
+    <div class="stat-value" id="recordCount">0</div>
+    <div class="stat-sub">Current page</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-label">Completed</div>
+    <div class="stat-value" id="completedCount">0</div>
+    <div class="stat-sub">Current page</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-label">Pending</div>
+    <div class="stat-value" id="pendingCount">0</div>
+    <div class="stat-sub">Current page</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-label">Failed</div>
+    <div class="stat-value" id="failedCount">0</div>
+    <div class="stat-sub">Current page</div>
+  </div>
+
+</section>
+
+
+<div class="toolbar">
+
+  <div class="search">
+    <span>⌕</span>
+    <input
+      id="searchInput"
+      type="text"
+      placeholder="Search reference, provider, type..."
+      autocomplete="off"
+    >
+  </div>
+
+  <select id="statusFilter">
+    <option value="">All statuses</option>
+    <option value="pending">Pending</option>
+    <option value="processing">Processing</option>
+    <option value="completed">Completed</option>
+    <option value="failed">Failed</option>
+    <option value="cancelled">Cancelled</option>
+    <option value="refunded">Refunded</option>
+  </select>
+
+  <select id="typeFilter">
+    <option value="">All types</option>
+    <option value="payment">Payment</option>
+    <option value="refund">Refund</option>
+    <option value="payout">Payout</option>
+    <option value="deposit">Deposit</option>
+    <option value="settlement">Settlement</option>
+  </select>
+
+</div>
+
+
+<section class="table-card">
+
+  <div class="table-head">
+
+    <div>
+      <strong>Transaction activity</strong>
+      <span id="resultSummary">Loading...</span>
+    </div>
+
+    <span>Source: /transactions</span>
+
+  </div>
+
+
+  <div class="table-wrap">
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Reference</th>
+          <th>Type</th>
+          <th>Method</th>
+          <th>Provider</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+
+      <tbody id="logBody">
+
+        <tr>
+          <td colspan="7">
+            <div class="loading-row">
+              Loading activity...
+            </div>
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+
+  <div class="pagination">
+
+    <div class="page-info" id="pageInfo">
+      Page 1
+    </div>
+
+    <div class="page-buttons">
+
+      <button id="prevBtn" disabled>
+        Previous
+      </button>
+
+      <button id="nextBtn" disabled>
+        Next
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+</div>
+
+</main>
+
+</div>
+
+
+<script>
+
+const API_URL = "http://localhost:5001/api/v1";
+
+const token = localStorage.getItem("primepay_token");
+const storedUser = localStorage.getItem("primepay_user");
+
+if (!token) {
+  window.location.href = "../login.html";
+}
+
+let user = null;
+
+try {
+  user = storedUser ? JSON.parse(storedUser) : null;
+} catch {
+  user = null;
+}
+
+const displayName =
+  user?.name ||
+  user?.email ||
+  "Developer";
+
+const displayEmail =
+  user?.email ||
+  "Authenticated account";
+
+document.getElementById("topName").textContent = displayName;
+document.getElementById("sideName").textContent = displayName;
+document.getElementById("sideEmail").textContent = displayEmail;
+
+document.getElementById("avatar").textContent =
+  displayName.trim().charAt(0).toUpperCase() || "D";
+
+
+const logBody =
+  document.getElementById("logBody");
+
+const errorBox =
+  document.getElementById("errorBox");
+
+const searchInput =
+  document.getElementById("searchInput");
+
+const statusFilter =
+  document.getElementById("statusFilter");
+
+const typeFilter =
+  document.getElementById("typeFilter");
+
+const prevBtn =
+  document.getElementById("prevBtn");
+
+const nextBtn =
+  document.getElementById("nextBtn");
+
+const pageInfo =
+  document.getElementById("pageInfo");
+
+const resultSummary =
+  document.getElementById("resultSummary");
+
+const recordCount =
+  document.getElementById("recordCount");
+
+const completedCount =
+  document.getElementById("completedCount");
+
+const pendingCount =
+  document.getElementById("pendingCount");
+
+const failedCount =
+  document.getElementById("failedCount");
+
+
+let page = 1;
+const limit = 20;
+let totalPages = 0;
+let totalRecords = 0;
+let currentTransactions = [];
+let searchTimer = null;
+
+
+function escapeHTML(value) {
+
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+function formatDate(value) {
+
+  if (!value) {
+    return "—";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "—";
+  }
+
+  return new Intl.DateTimeFormat(
+    undefined,
+    {
+      dateStyle: "medium",
+      timeStyle: "short"
+    }
+  ).format(date);
+
+}
+
+
+function formatAmount(amount, currency) {
+
+  const numeric = Number(amount);
+
+  if (!Number.isFinite(numeric)) {
+    return "—";
+  }
+
+  try {
+
+    return new Intl.NumberFormat(
+      undefined,
+      {
+        style: "currency",
+        currency: currency || "KES",
+        maximumFractionDigits: 2
+      }
+    ).format(numeric);
+
+  } catch {
+
+    return `${currency || ""} ${numeric.toFixed(2)}`.trim();
+
+  }
+
+}
+
+
+function methodLabel(type) {
+
+  const value = String(type || "").toLowerCase();
+
+  if (value === "payment") {
+    return "Payment";
+  }
+
+  if (value === "refund") {
+    return "Refund";
+  }
+
+  if (value === "payout") {
+    return "Payout";
+  }
+
+  if (value === "deposit") {
+    return "Deposit";
+  }
+
+  if (value === "settlement") {
+    return "Settlement";
+  }
+
+  return type || "—";
+
+}
+
+
+function statusClass(status) {
+
+  const value = String(status || "").toLowerCase();
+
+  if (value === "completed") {
+    return "success";
+  }
+
+  if (
+    value === "pending" ||
+    value === "processing"
+  ) {
+    return "pending";
+  }
+
+  if (
+    value === "failed" ||
+    value === "cancelled"
+  ) {
+    return "failed";
+  }
+
+  if (value === "refunded") {
+    return "pending";
+  }
+
+  return "pending";
+
+}
+
+
+function showError(message) {
+
+  errorBox.textContent = message || "Unable to load activity.";
+  errorBox.classList.add("show");
+
+}
+
+
+function hideError() {
+
+  errorBox.textContent = "";
+  errorBox.classList.remove("show");
+
+}
+
+
+function renderLoading() {
+
+  logBody.innerHTML = `
+    <tr>
+      <td colspan="7">
+        <div class="loading-row">
+          Loading activity...
+        </div>
+      </td>
+    </tr>
+  `;
+
+}
+
+
+function renderEmpty(message = "No transaction activity found.") {
+
+  logBody.innerHTML = `
+    <tr>
+      <td colspan="7">
+        <div class="empty">
+
+          <div class="empty-icon">≡</div>
+
+          <strong>No activity</strong>
+
+          <span>
+            ${escapeHTML(message)}
+          </span>
+
+        </div>
+      </td>
+    </tr>
+  `;
+
+}
+
+
+function updateStats(transactions) {
+
+  const list = Array.isArray(transactions)
+    ? transactions
+    : [];
+
+  recordCount.textContent = list.length;
+
+  completedCount.textContent =
+    list.filter(
+      item =>
+        String(item.status || "").toLowerCase() === "completed"
+    ).length;
+
+  pendingCount.textContent =
+    list.filter(
+      item =>
+        ["pending", "processing"].includes(
+          String(item.status || "").toLowerCase()
+        )
+    ).length;
+
+  failedCount.textContent =
+    list.filter(
+      item =>
+        ["failed", "cancelled"].includes(
+          String(item.status || "").toLowerCase()
+        )
+    ).length;
+
+}
+
+
+function renderTransactions(transactions) {
+
+  const list = Array.isArray(transactions)
+    ? transactions
+    : [];
+
+  currentTransactions = list;
+
+  updateStats(list);
+
+  if (!list.length) {
+    renderEmpty(
+      "No transactions match the selected filters."
+    );
+    return;
+  }
+
+  logBody.innerHTML = list.map(transaction => {
+
+    const status =
+      String(transaction.status || "unknown").toLowerCase();
+
+    const type =
+      String(transaction.type || "").toLowerCase();
+
+    const provider =
+      transaction.provider || "—";
+
+    const paymentMethod =
+      transaction.paymentMethod || "—";
+
+    const reference =
+      transaction.reference || "—";
+
+    const amount =
+      formatAmount(
+        transaction.amount,
+        transaction.currency
+      );
+
+    return `
+      <tr>
+
+        <td>
+          <span class="mono">
+            ${escapeHTML(reference)}
+          </span>
+        </td>
+
+        <td>
+          ${escapeHTML(methodLabel(type))}
+        </td>
+
+        <td>
+          ${escapeHTML(paymentMethod)}
+        </td>
+
+        <td>
+          ${escapeHTML(provider)}
+        </td>
+
+        <td>
+          ${escapeHTML(amount)}
+        </td>
+
+        <td>
+          <span class="status ${statusClass(status)}">
+            <span class="status-dot"></span>
+            ${escapeHTML(status)}
+          </span>
+        </td>
+
+        <td class="muted">
+          ${escapeHTML(formatDate(transaction.createdAt))}
+        </td>
+
+      </tr>
+    `;
+
+  }).join("");
+
+}
+
+
+function applyClientSearch(transactions) {
+
+  const query =
+    searchInput.value.trim().toLowerCase();
+
+  if (!query) {
+    return transactions;
+  }
+
+  return transactions.filter(item => {
+
+    const values = [
+      item.reference,
+      item.provider,
+      item.type,
+      item.paymentMethod,
+      item.status,
+      item.currency,
+      item.providerReference,
+      item.providerTransactionId
+    ];
+
+    return values.some(value =>
+      String(value || "")
+        .toLowerCase()
+        .includes(query)
+    );
+
+  });
+
+}
+
+
+async function fetchTransactions() {
+
+  hideError();
+  renderLoading();
+
+  const params = new URLSearchParams();
+
+  params.set("page", String(page));
+  params.set("limit", String(limit));
+
+  const status =
+    statusFilter.value;
+
+  const type =
+    typeFilter.value;
+
+  if (status) {
+    params.set("status", status);
+  }
+
+  if (type) {
+    params.set("type", type);
+  }
+
+  const controller =
+    new AbortController();
+
+  const timeout =
+    setTimeout(
+      () => controller.abort(),
+      15000
+    );
+
+  try {
+
+    const response =
+      await fetch(
+        `${API_URL}/transactions?${params.toString()}`,
+        {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          },
+          signal: controller.signal
+        }
+      );
+
+    clearTimeout(timeout);
+
+    let data = null;
+
+    try {
+      data = await response.json();
+    } catch {
+      data = null;
+    }
+
+    if (response.status === 401) {
+
+      localStorage.removeItem("primepay_token");
+      localStorage.removeItem("primepay_user");
+
+      window.location.href = "../login.html";
+      return;
+
+    }
+
+    if (!response.ok || !data?.success) {
+
+      throw new Error(
+        data?.message ||
+        `Request failed with status ${response.status}.`
+      );
+
+    }
+
+    const transactions =
+      Array.isArray(data.transactions)
+        ? data.transactions
+        : [];
+
+    const filtered =
+      applyClientSearch(transactions);
+
+    totalRecords =
+      Number(data.pagination?.total ?? transactions.length);
+
+    totalPages =
+      Number(data.pagination?.pages ?? 0);
+
+    if (!Number.isFinite(totalPages)) {
+      totalPages = 0;
+    }
+
+    if (!Number.isFinite(totalRecords)) {
+      totalRecords = transactions.length;
+    }
+
+    renderTransactions(filtered);
+
+    const backendPage =
+      Number(data.pagination?.page ?? page);
+
+    const backendLimit =
+      Number(data.pagination?.limit ?? limit);
+
+    page =
+      Number.isFinite(backendPage)
+        ? backendPage
+        : page;
+
+    const effectiveLimit =
+      Number.isFinite(backendLimit) && backendLimit > 0
+        ? backendLimit
+        : limit;
+
+    pageInfo.textContent =
+      totalPages > 0
+        ? `Page ${page} of ${totalPages}`
+        : `Page ${page}`;
+
+    resultSummary.textContent =
+      totalRecords > 0
+        ? `${totalRecords.toLocaleString()} total record${totalRecords === 1 ? "" : "s"}`
+        : "No records";
+
+    prevBtn.disabled =
+      page <= 1;
+
+    nextBtn.disabled =
+      totalPages > 0
+        ? page >= totalPages
+        : transactions.length < effectiveLimit;
+
+  } catch (error) {
+
+    clearTimeout(timeout);
+
+    console.error(error);
+
+    if (error.name === "AbortError") {
+
+      showError(
+        "The PrimePay API did not respond within 15 seconds."
+      );
+
+    } else {
+
+      showError(
+        error.message ||
+        "Unable to load transaction activity."
+      );
+
+    }
+
+    renderEmpty(
+      "Activity could not be loaded from the PrimePay API."
+    );
+
+    recordCount.textContent = "0";
+    completedCount.textContent = "0";
+    pendingCount.textContent = "0";
+    failedCount.textContent = "0";
+
+    resultSummary.textContent =
+      "Unable to load records";
+
+  }
+
+}
+
+
+function scheduleSearch() {
+
+  clearTimeout(searchTimer);
+
+  searchTimer =
+    setTimeout(
+      () => {
+
+        page = 1;
+
+        fetchTransactions();
+
+      },
+      350
+    );
+
+}
+
+
+searchInput.addEventListener(
+  "input",
+  scheduleSearch
+);
+
+statusFilter.addEventListener(
+  "change",
+  () => {
+
+    page = 1;
+
+    fetchTransactions();
+
+  }
+);
+
+typeFilter.addEventListener(
+  "change",
+  () => {
+
+    page = 1;
+
+    fetchTransactions();
+
+  }
+);
+
+
+prevBtn.addEventListener(
+  "click",
+  () => {
+
+    if (page <= 1) {
+      return;
+    }
+
+    page -= 1;
+
+    fetchTransactions();
+
+  }
+);
+
+
+nextBtn.addEventListener(
+  "click",
+  () => {
+
+    if (
+      totalPages > 0 &&
+      page >= totalPages
+    ) {
+      return;
+    }
+
+    page += 1;
+
+    fetchTransactions();
+
+  }
+);
+
+
+document.getElementById("refreshBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      fetchTransactions();
+
+    }
+  );
+
+
+document.getElementById("signOut")
+  .addEventListener(
+    "click",
+    () => {
+
+      localStorage.removeItem("primepay_token");
+      localStorage.removeItem("primepay_user");
+
+      window.location.href = "../login.html";
+
+    }
+  );
+
+
+document.getElementById("mobileMenu")
+  .addEventListener(
+    "click",
+    () => {
+
+      document
+        .getElementById("sidebar")
+        .classList.toggle("open");
+
+    }
+  );
+
+
+document.querySelectorAll(".nav a")
+  .forEach(link => {
+
+    link.addEventListener(
+      "click",
+      () => {
+
+        document
+          .getElementById("sidebar")
+          .classList.remove("open");
+
+      }
+    );
+
+  });
+
+
+fetchTransactions();
+
+</script>
+
+</body>
+</html>

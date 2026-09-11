@@ -1,0 +1,2158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PrimePay Admin | Risk</title>
+
+<style>
+:root{
+    --bg:#050914;
+    --bg2:#08101f;
+    --panel:rgba(12,22,40,.84);
+    --panel2:rgba(16,29,51,.94);
+    --border:rgba(148,163,184,.14);
+    --text:#f8fafc;
+    --muted:#94a3b8;
+    --soft:#cbd5e1;
+    --accent:#38bdf8;
+    --accent2:#818cf8;
+    --success:#22c55e;
+    --warning:#f59e0b;
+    --danger:#ef4444;
+    --shadow:0 20px 60px rgba(0,0,0,.28);
+    --radius:20px;
+}
+
+*{box-sizing:border-box}
+
+html,body{
+    margin:0;
+    min-height:100%;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+body.light{
+    --bg:#eef3f9;
+    --bg2:#f8fafc;
+    --panel:rgba(255,255,255,.92);
+    --panel2:#fff;
+    --border:rgba(15,23,42,.11);
+    --text:#0f172a;
+    --muted:#64748b;
+    --soft:#334155;
+    --shadow:0 18px 45px rgba(15,23,42,.10);
+}
+
+button,input,select{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+a{
+    color:inherit;
+    text-decoration:none;
+}
+
+.app{
+    min-height:100vh;
+    display:flex;
+}
+
+.sidebar{
+    width:270px;
+    min-width:270px;
+    position:fixed;
+    inset:0 auto 0 0;
+    background:rgba(4,10,20,.97);
+    border-right:1px solid var(--border);
+    padding:22px 16px;
+    z-index:50;
+    transition:.25s ease;
+    overflow-y:auto;
+}
+
+body.light .sidebar{
+    background:#0b1424;
+}
+
+.sidebar.collapsed{
+    width:82px;
+    min-width:82px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:6px 8px 24px;
+}
+
+.brand-mark{
+    width:42px;
+    height:42px;
+    border-radius:13px;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:#020617;
+    font-weight:900;
+}
+
+.brand strong{
+    display:block;
+    font-size:16px;
+}
+
+.brand span{
+    display:block;
+    color:#64748b;
+    font-size:11px;
+    margin-top:2px;
+}
+
+.sidebar.collapsed .brand-copy,
+.sidebar.collapsed .nav-label,
+.sidebar.collapsed .nav-section,
+.sidebar.collapsed .sidebar-footer{
+    display:none;
+}
+
+.nav-section{
+    color:#64748b;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    padding:15px 11px 8px;
+}
+
+.nav-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 12px;
+    border-radius:12px;
+    color:#94a3b8;
+    margin:3px 0;
+    transition:.2s;
+}
+
+.nav-item:hover{
+    background:rgba(148,163,184,.08);
+    color:#fff;
+}
+
+.nav-item.active{
+    color:#fff;
+    background:linear-gradient(90deg,rgba(56,189,248,.16),rgba(129,140,248,.08));
+    border:1px solid rgba(56,189,248,.14);
+}
+
+.nav-icon{
+    width:22px;
+    text-align:center;
+    flex:none;
+}
+
+.sidebar-footer{
+    margin-top:25px;
+    padding:14px;
+    border:1px solid var(--border);
+    border-radius:15px;
+    color:#64748b;
+    font-size:11px;
+    line-height:1.55;
+}
+
+.main{
+    margin-left:270px;
+    width:calc(100% - 270px);
+    min-width:0;
+    transition:.25s ease;
+}
+
+.sidebar.collapsed + .main{
+    margin-left:82px;
+    width:calc(100% - 82px);
+}
+
+.topbar{
+    height:72px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 28px;
+    border-bottom:1px solid var(--border);
+    background:rgba(5,9,20,.74);
+    backdrop-filter:blur(18px);
+    position:sticky;
+    top:0;
+    z-index:30;
+}
+
+body.light .topbar{
+    background:rgba(248,250,252,.86);
+}
+
+.top-left,.top-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.icon-btn{
+    width:40px;
+    height:40px;
+    border-radius:11px;
+    border:1px solid var(--border);
+    background:var(--panel);
+    color:var(--soft);
+}
+
+.icon-btn:hover{
+    border-color:rgba(56,189,248,.35);
+}
+
+.user-pill{
+    padding:8px 12px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    color:var(--soft);
+    font-size:13px;
+}
+
+.content{
+    padding:30px;
+    max-width:1700px;
+    margin:auto;
+}
+
+.hero{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    align-items:flex-start;
+    margin-bottom:24px;
+}
+
+.eyebrow{
+    color:var(--accent);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.15em;
+    font-weight:800;
+    margin-bottom:9px;
+}
+
+h1{
+    margin:0;
+    font-size:clamp(27px,3vw,43px);
+    line-height:1.05;
+}
+
+.hero p{
+    color:var(--muted);
+    max-width:790px;
+    line-height:1.65;
+    margin:12px 0 0;
+}
+
+.hero-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    border:1px solid var(--border);
+    background:var(--panel);
+    color:var(--text);
+    padding:10px 14px;
+    border-radius:11px;
+    font-weight:700;
+}
+
+.btn:hover{
+    border-color:rgba(56,189,248,.35);
+}
+
+.btn.primary{
+    border:0;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:#020617;
+}
+
+.notice{
+    border:1px solid rgba(245,158,11,.22);
+    background:rgba(245,158,11,.07);
+    padding:17px 19px;
+    border-radius:16px;
+    margin-bottom:22px;
+}
+
+.notice strong{
+    display:block;
+    color:#fbbf24;
+    margin-bottom:5px;
+}
+
+.notice span{
+    color:var(--muted);
+    line-height:1.55;
+    font-size:13px;
+}
+
+.grid{
+    display:grid;
+    gap:16px;
+}
+
+.stats{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    margin-bottom:22px;
+}
+
+.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+}
+
+.stat{
+    padding:20px;
+}
+
+.stat-label{
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:10px;
+}
+
+.stat-value{
+    font-size:25px;
+    font-weight:850;
+    letter-spacing:-.03em;
+}
+
+.stat-note{
+    color:#64748b;
+    font-size:11px;
+    margin-top:7px;
+}
+
+.two{
+    grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr);
+    margin-bottom:22px;
+}
+
+.three{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    margin-bottom:22px;
+}
+
+.section{
+    padding:22px;
+}
+
+.section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:15px;
+    margin-bottom:18px;
+}
+
+.section-title{
+    font-size:16px;
+    font-weight:800;
+}
+
+.section-subtitle{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.5;
+    margin-top:5px;
+}
+
+.badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 9px;
+    border-radius:999px;
+    font-size:10px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+}
+
+.badge.green{
+    color:#86efac;
+    background:rgba(34,197,94,.1);
+}
+
+.badge.amber{
+    color:#fcd34d;
+    background:rgba(245,158,11,.1);
+}
+
+.badge.red{
+    color:#fca5a5;
+    background:rgba(239,68,68,.1);
+}
+
+.badge.blue{
+    color:#7dd3fc;
+    background:rgba(56,189,248,.1);
+}
+
+.kv{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:12px;
+    padding:12px 0;
+    border-bottom:1px solid var(--border);
+}
+
+.kv:last-child{
+    border-bottom:0;
+}
+
+.kv span:first-child{
+    color:var(--muted);
+    font-size:12px;
+}
+
+.kv span:last-child{
+    font-weight:700;
+    font-size:12px;
+    text-align:right;
+}
+
+.control-card{
+    padding:19px;
+}
+
+.control-icon{
+    width:40px;
+    height:40px;
+    display:grid;
+    place-items:center;
+    border-radius:12px;
+    margin-bottom:13px;
+    background:rgba(56,189,248,.09);
+    color:var(--accent);
+    font-weight:900;
+}
+
+.control-card h3{
+    margin:0 0 7px;
+    font-size:14px;
+}
+
+.control-card p{
+    margin:0;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.6;
+}
+
+.bar{
+    height:8px;
+    background:rgba(148,163,184,.1);
+    border-radius:999px;
+    overflow:hidden;
+    margin-top:12px;
+}
+
+.bar-fill{
+    height:100%;
+    width:0;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    border-radius:inherit;
+    transition:.4s;
+}
+
+.risk-row{
+    display:grid;
+    grid-template-columns:190px 1fr 100px;
+    align-items:center;
+    gap:15px;
+    padding:14px 0;
+    border-bottom:1px solid var(--border);
+}
+
+.risk-row:last-child{
+    border-bottom:0;
+}
+
+.risk-label{
+    font-weight:750;
+    font-size:12px;
+}
+
+.risk-description{
+    color:var(--muted);
+    font-size:11px;
+    margin-top:3px;
+}
+
+.progress{
+    height:8px;
+    background:rgba(148,163,184,.1);
+    border-radius:999px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    border-radius:inherit;
+    transition:.5s;
+}
+
+.progress-fill.good{
+    width:100%;
+    background:var(--success);
+}
+
+.progress-fill.partial{
+    width:65%;
+    background:var(--warning);
+}
+
+.progress-fill.none{
+    width:25%;
+    background:var(--danger);
+}
+
+.score-label{
+    text-align:right;
+    font-size:11px;
+    font-weight:800;
+}
+
+.table-wrap{
+    overflow:auto;
+    border:1px solid var(--border);
+    border-radius:15px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:900px;
+}
+
+th,td{
+    text-align:left;
+    padding:13px 14px;
+    border-bottom:1px solid var(--border);
+    white-space:nowrap;
+}
+
+th{
+    color:#64748b;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    background:rgba(148,163,184,.035);
+}
+
+td{
+    font-size:12px;
+    color:var(--soft);
+}
+
+tr:last-child td{
+    border-bottom:0;
+}
+
+.ref{
+    color:var(--text);
+    font-weight:800;
+}
+
+.controls{
+    display:flex;
+    gap:9px;
+    flex-wrap:wrap;
+    margin-bottom:17px;
+}
+
+.input,.select{
+    background:var(--bg2);
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:10px 12px;
+    min-height:40px;
+    outline:none;
+}
+
+.input:focus,.select:focus{
+    border-color:rgba(56,189,248,.5);
+}
+
+.search{
+    min-width:250px;
+    flex:1;
+}
+
+.empty{
+    padding:35px;
+    text-align:center;
+    color:var(--muted);
+}
+
+.pagination{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-top:14px;
+    color:var(--muted);
+    font-size:12px;
+}
+
+.pagination-actions{
+    display:flex;
+    gap:8px;
+}
+
+.detail{
+    margin-top:17px;
+    padding:17px;
+    border:1px solid var(--border);
+    border-radius:15px;
+    background:rgba(148,163,184,.035);
+    display:none;
+}
+
+.detail.open{
+    display:block;
+}
+
+.detail-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:10px;
+    margin-top:14px;
+}
+
+.detail-item{
+    padding:12px;
+    border:1px solid var(--border);
+    border-radius:11px;
+}
+
+.detail-item small{
+    color:#64748b;
+    display:block;
+    margin-bottom:5px;
+}
+
+.detail-item strong{
+    word-break:break-word;
+    font-size:12px;
+}
+
+.capability{
+    padding:19px;
+}
+
+.capability h3{
+    margin:0 0 8px;
+    font-size:14px;
+}
+
+.capability p{
+    margin:0;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.6;
+}
+
+.toggle-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.toggle{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:10px 12px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    color:var(--soft);
+    font-size:12px;
+    background:var(--panel);
+}
+
+.toggle input{
+    accent-color:var(--accent);
+}
+
+.hidden-panel{
+    display:none!important;
+}
+
+.loading{
+    opacity:.6;
+    pointer-events:none;
+}
+
+.toast{
+    position:fixed;
+    right:22px;
+    bottom:22px;
+    z-index:100;
+    padding:13px 16px;
+    background:#0f172a;
+    border:1px solid rgba(148,163,184,.2);
+    color:#fff;
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    transform:translateY(20px);
+    opacity:0;
+    pointer-events:none;
+    transition:.2s;
+    max-width:360px;
+    font-size:12px;
+}
+
+.toast.show{
+    transform:translateY(0);
+    opacity:1;
+}
+
+body.compact td,
+body.compact th{
+    padding-top:8px;
+    padding-bottom:8px;
+}
+
+.mobile-overlay{
+    display:none;
+}
+
+@media(max-width:1150px){
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .two{
+        grid-template-columns:1fr;
+    }
+
+    .three{
+        grid-template-columns:1fr;
+    }
+
+    .detail-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:850px){
+    .sidebar{
+        transform:translateX(-100%);
+    }
+
+    .sidebar.open{
+        transform:translateX(0);
+    }
+
+    .main,
+    .sidebar.collapsed + .main{
+        margin-left:0;
+        width:100%;
+    }
+
+    .mobile-overlay{
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.55);
+        z-index:40;
+    }
+
+    .mobile-overlay.show{
+        display:block;
+    }
+
+    .content{
+        padding:20px 15px;
+    }
+
+    .topbar{
+        padding:0 15px;
+    }
+
+    .hero{
+        flex-direction:column;
+    }
+
+    .risk-row{
+        grid-template-columns:1fr;
+        gap:8px;
+    }
+
+    .score-label{
+        text-align:left;
+    }
+}
+
+@media(max-width:600px){
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .detail-grid{
+        grid-template-columns:1fr;
+    }
+
+    .user-pill{
+        display:none;
+    }
+
+    h1{
+        font-size:29px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+        <div class="brand-mark">P</div>
+        <div class="brand-copy">
+            <strong>PrimePay</strong>
+            <span>Administration</span>
+        </div>
+    </div>
+
+    <div class="nav-section">Operations</div>
+
+    <a class="nav-item" href="dashboard.html">
+        <span class="nav-icon">⌂</span>
+        <span class="nav-label">Dashboard</span>
+    </a>
+
+    <a class="nav-item" href="merchants.html">
+        <span class="nav-icon">◉</span>
+        <span class="nav-label">Merchants</span>
+    </a>
+
+    <a class="nav-item" href="applications.html">
+        <span class="nav-icon">▣</span>
+        <span class="nav-label">Applications</span>
+    </a>
+
+    <a class="nav-item" href="transactions.html">
+        <span class="nav-icon">↔</span>
+        <span class="nav-label">Transactions</span>
+    </a>
+
+    <a class="nav-item" href="providers.html">
+        <span class="nav-icon">◇</span>
+        <span class="nav-label">Providers</span>
+    </a>
+
+    <div class="nav-section">Controls</div>
+
+    <a class="nav-item" href="api-access.html">
+        <span class="nav-icon">⌘</span>
+        <span class="nav-label">API Access</span>
+    </a>
+
+    <a class="nav-item" href="fees.html">
+        <span class="nav-icon">%</span>
+        <span class="nav-label">Fees</span>
+    </a>
+
+    <a class="nav-item" href="settlements.html">
+        <span class="nav-icon">⇄</span>
+        <span class="nav-label">Settlements</span>
+    </a>
+
+    <a class="nav-item active" href="risk.html">
+        <span class="nav-icon">△</span>
+        <span class="nav-label">Risk</span>
+    </a>
+
+    <a class="nav-item" href="audit-logs.html">
+        <span class="nav-icon">☷</span>
+        <span class="nav-label">Audit Logs</span>
+    </a>
+
+    <div class="sidebar-footer">
+        Risk controls shown here represent actual PrimePay V1 security and payment safeguards.
+        No invented fraud scores or fictional risk events.
+    </div>
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+    <div class="top-left">
+        <button class="icon-btn" id="menuBtn">☰</button>
+        <button class="icon-btn" id="collapseBtn">⇤</button>
+    </div>
+
+    <div class="top-actions">
+        <button class="icon-btn" id="themeBtn">☼</button>
+        <div class="user-pill" id="adminUser">Administrator</div>
+    </div>
+</header>
+
+<section class="content">
+
+<div class="hero">
+    <div>
+        <div class="eyebrow">Security &amp; Risk Operations</div>
+        <h1>Risk Command Center</h1>
+        <p>
+            Monitor the controls that currently protect PrimePay payments and platform access:
+            provider validation, account suspension, API credential lifecycle, idempotency,
+            payment state protection and webhook integrity.
+        </p>
+    </div>
+
+    <div class="hero-actions">
+        <button class="btn" id="refreshBtn">↻ Refresh</button>
+        <button class="btn primary" id="resetBtn">Reset View</button>
+    </div>
+</div>
+
+<div class="notice">
+    <strong>Important V1 boundary</strong>
+    <span>
+        PrimePay V1 does not currently expose a dedicated fraud-detection engine, configurable
+        risk rules, machine-learning risk scores, transaction velocity rules, device intelligence
+        or automated fraud decisions. This console therefore reports implemented security controls
+        and actual transaction states instead of fabricating a numerical risk score.
+    </span>
+</div>
+
+<div class="grid stats">
+
+    <div class="card stat">
+        <div class="stat-label">Loaded transactions</div>
+        <div class="stat-value" id="statTransactions">0</div>
+        <div class="stat-note">Current backend result set</div>
+    </div>
+
+    <div class="card stat">
+        <div class="stat-label">Failed / cancelled</div>
+        <div class="stat-value" id="statFailed">0</div>
+        <div class="stat-note">Current loaded records</div>
+    </div>
+
+    <div class="card stat">
+        <div class="stat-label">Processing / pending</div>
+        <div class="stat-value" id="statPending">0</div>
+        <div class="stat-note">Requires lifecycle completion</div>
+    </div>
+
+    <div class="card stat">
+        <div class="stat-label">Security controls</div>
+        <div class="stat-value" id="statControls">0/6</div>
+        <div class="stat-note">Verified by this console</div>
+    </div>
+
+</div>
+
+<div class="grid two">
+
+<section class="card section">
+
+    <div class="section-head">
+        <div>
+            <div class="section-title">Control Coverage</div>
+            <div class="section-subtitle">
+                Coverage is based on backend capabilities, not a synthetic risk score.
+            </div>
+        </div>
+
+        <span class="badge blue">CONTROL MODEL</span>
+    </div>
+
+    <div class="risk-row">
+        <div>
+            <div class="risk-label">Authentication</div>
+            <div class="risk-description">JWT-protected administrative routes</div>
+        </div>
+        <div class="progress">
+            <div class="progress-fill good"></div>
+        </div>
+        <div class="score-label">Implemented</div>
+    </div>
+
+    <div class="risk-row">
+        <div>
+            <div class="risk-label">API credentials</div>
+            <div class="risk-description">Hashing, rotation and revocation</div>
+        </div>
+        <div class="progress">
+            <div class="progress-fill good"></div>
+        </div>
+        <div class="score-label">Implemented</div>
+    </div>
+
+    <div class="risk-row">
+        <div>
+            <div class="risk-label">Idempotency</div>
+            <div class="risk-description">Duplicate payment protection</div>
+        </div>
+        <div class="progress">
+            <div class="progress-fill good"></div>
+        </div>
+        <div class="score-label">Implemented</div>
+    </div>
+
+    <div class="risk-row">
+        <div>
+            <div class="risk-label">Webhook integrity</div>
+            <div class="risk-description">Signature and duplicate-event protection</div>
+        </div>
+        <div class="progress">
+            <div class="progress-fill good"></div>
+        </div>
+        <div class="score-label">Implemented</div>
+    </div>
+
+    <div class="risk-row">
+        <div>
+            <div class="risk-label">Payment state machine</div>
+            <div class="risk-description">Illegal lifecycle transitions rejected</div>
+        </div>
+        <div class="progress">
+            <div class="progress-fill good"></div>
+        </div>
+        <div class="score-label">Implemented</div>
+    </div>
+
+    <div class="risk-row">
+        <div>
+            <div class="risk-label">Fraud engine</div>
+            <div class="risk-description">Automated scoring and rules</div>
+        </div>
+        <div class="progress">
+            <div class="progress-fill none"></div>
+        </div>
+        <div class="score-label">Not exposed</div>
+    </div>
+
+</section>
+
+<section class="card section">
+
+    <div class="section-head">
+        <div>
+            <div class="section-title">Administrative Posture</div>
+            <div class="section-subtitle">
+                Live checks against protected backend surfaces.
+            </div>
+        </div>
+    </div>
+
+    <div class="kv">
+        <span>Admin authentication</span>
+        <span id="authStatus">Checking...</span>
+    </div>
+
+    <div class="kv">
+        <span>Provider controls</span>
+        <span id="providerStatus">Checking...</span>
+    </div>
+
+    <div class="kv">
+        <span>API endpoint</span>
+        <span id="apiStatus">Checking...</span>
+    </div>
+
+    <div class="kv">
+        <span>Risk engine</span>
+        <span class="badge amber">Not exposed</span>
+    </div>
+
+    <div class="kv">
+        <span>Manual risk override</span>
+        <span class="badge amber">Not exposed</span>
+    </div>
+
+</section>
+
+</div>
+
+<div class="grid three" id="controlsPanel">
+
+<section class="card control-card">
+    <div class="control-icon">⌁</div>
+    <h3>Idempotency Protection</h3>
+    <p>
+        Payment creation requires an idempotency key, with conflicting reuse rejected
+        and concurrent duplicate creation protected.
+    </p>
+</section>
+
+<section class="card control-card">
+    <div class="control-icon">◆</div>
+    <h3>Credential Lifecycle</h3>
+    <p>
+        API secrets are hashed, hidden after issuance, rotatable and revocable.
+        Environment mismatches are rejected.
+    </p>
+</section>
+
+<section class="card control-card">
+    <div class="control-icon">✓</div>
+    <h3>Webhook Integrity</h3>
+    <p>
+        Provider events and outbound webhook deliveries use integrity controls,
+        duplicate protection and retry safeguards.
+    </p>
+</section>
+
+<section class="card control-card">
+    <div class="control-icon">↔</div>
+    <h3>Payment State Safety</h3>
+    <p>
+        Illegal status downgrades and invalid payment lifecycle transitions are
+        rejected by the backend.
+    </p>
+</section>
+
+<section class="card control-card">
+    <div class="control-icon">□</div>
+    <h3>Provider Validation</h3>
+    <p>
+        Providers can be activated or deactivated and validated through protected
+        administrative endpoints.
+    </p>
+</section>
+
+<section class="card control-card">
+    <div class="control-icon">!</div>
+    <h3>Account Suspension</h3>
+    <p>
+        Suspended businesses and inactive users are blocked from protected payment
+        operations by backend authorization checks.
+    </p>
+</section>
+
+</div>
+
+<section class="card section">
+
+    <div class="section-head">
+        <div>
+            <div class="section-title">Transaction Risk Monitor</div>
+            <div class="section-subtitle">
+                Operational review of actual transaction states. This is not a fraud-scoring system.
+            </div>
+        </div>
+
+        <span class="badge green">LIVE DATA</span>
+    </div>
+
+    <div class="controls">
+
+        <input
+            class="input search"
+            id="searchInput"
+            placeholder="Search reference, provider, type..."
+            autocomplete="off"
+        >
+
+        <select class="select" id="statusFilter">
+            <option value="">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="processing">Processing</option>
+            <option value="completed">Completed</option>
+            <option value="failed">Failed</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="refunded">Refunded</option>
+        </select>
+
+        <select class="select" id="typeFilter">
+            <option value="">All types</option>
+            <option value="payment">Payment</option>
+            <option value="refund">Refund</option>
+            <option value="payout">Payout</option>
+            <option value="deposit">Deposit</option>
+            <option value="settlement">Settlement</option>
+        </select>
+
+        <select class="select" id="limitSelect">
+            <option value="10">10 rows</option>
+            <option value="20" selected>20 rows</option>
+            <option value="50">50 rows</option>
+            <option value="100">100 rows</option>
+        </select>
+
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Reference</th>
+                    <th>Status</th>
+                    <th>Type</th>
+                    <th>Provider</th>
+                    <th>Amount</th>
+                    <th>Customer</th>
+                    <th>Created</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="transactionBody">
+                <tr>
+                    <td colspan="8" class="empty">Loading transaction data...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        <div id="paginationText">Loading...</div>
+
+        <div class="pagination-actions">
+            <button class="btn" id="prevBtn">Previous</button>
+            <button class="btn" id="nextBtn">Next</button>
+        </div>
+    </div>
+
+    <div class="detail" id="detailPanel">
+        <div class="section-title">Transaction Review</div>
+        <div class="detail-grid" id="detailGrid"></div>
+    </div>
+
+</section>
+
+<section class="card section" id="boundariesPanel" style="margin-top:22px">
+
+    <div class="section-head">
+        <div>
+            <div class="section-title">Risk Capability Boundary</div>
+            <div class="section-subtitle">
+                What is protected today and what requires a future risk engine.
+            </div>
+        </div>
+    </div>
+
+    <div class="grid three" style="margin:0">
+
+        <div class="capability">
+            <span class="badge green">Available</span>
+            <h3 style="margin-top:12px">Security enforcement</h3>
+            <p>
+                Authentication, API-key lifecycle, idempotency, webhook integrity,
+                provider controls and payment state protection are implemented.
+            </p>
+        </div>
+
+        <div class="capability">
+            <span class="badge blue">Monitorable</span>
+            <h3 style="margin-top:12px">Transaction activity</h3>
+            <p>
+                Administrators can inspect actual transaction status, provider,
+                customer metadata, amount and lifecycle information.
+            </p>
+        </div>
+
+        <div class="capability">
+            <span class="badge amber">Future</span>
+            <h3 style="margin-top:12px">Fraud intelligence</h3>
+            <p>
+                Risk scores, configurable rules, velocity detection, device signals,
+                automated holds and fraud-review queues require additional backend systems.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+<section class="card section" id="workspacePanel" style="margin-top:22px">
+
+    <div class="section-head">
+        <div>
+            <div class="section-title">Workspace Controls</div>
+            <div class="section-subtitle">
+                Presentation preferences only. These controls never alter risk or financial data.
+            </div>
+        </div>
+    </div>
+
+    <div class="toggle-row">
+
+        <label class="toggle">
+            <input type="checkbox" id="compactSwitch">
+            Compact tables
+        </label>
+
+        <label class="toggle">
+            <input type="checkbox" id="controlsSwitch" checked>
+            Show control cards
+        </label>
+
+        <label class="toggle">
+            <input type="checkbox" id="boundariesSwitch" checked>
+            Show capability boundary
+        </label>
+
+    </div>
+
+</section>
+
+</section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API_URL = "http://localhost:5001/api/v1";
+
+const token = localStorage.getItem("primepay_token");
+const storedUser = localStorage.getItem("primepay_user");
+
+if (!token) {
+    window.location.href = "../login.html";
+}
+
+let adminUser = null;
+
+try {
+    adminUser = storedUser ? JSON.parse(storedUser) : null;
+} catch {
+    adminUser = null;
+}
+
+if (adminUser && adminUser.role && adminUser.role !== "admin") {
+    window.location.href = "../merchant/dashboard.html";
+}
+
+document.getElementById("adminUser").textContent =
+    adminUser?.name || adminUser?.email || "Administrator";
+
+const sidebar = document.getElementById("sidebar");
+const mobileOverlay = document.getElementById("mobileOverlay");
+const toast = document.getElementById("toast");
+
+const transactionBody = document.getElementById("transactionBody");
+const paginationText = document.getElementById("paginationText");
+
+const searchInput = document.getElementById("searchInput");
+const statusFilter = document.getElementById("statusFilter");
+const typeFilter = document.getElementById("typeFilter");
+const limitSelect = document.getElementById("limitSelect");
+
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+
+const detailPanel = document.getElementById("detailPanel");
+const detailGrid = document.getElementById("detailGrid");
+
+let page = 1;
+let totalPages = 1;
+let totalRecords = 0;
+let transactions = [];
+let requestController = null;
+
+function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    clearTimeout(showToast.timer);
+
+    showToast.timer = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3200);
+}
+
+function escapeHTML(value) {
+    return String(value ?? "—")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function valueFrom(object, ...keys) {
+    for (const key of keys) {
+        if (
+            object &&
+            object[key] !== undefined &&
+            object[key] !== null &&
+            object[key] !== ""
+        ) {
+            return object[key];
+        }
+    }
+
+    return null;
+}
+
+function formatDate(value) {
+    if (!value) return "—";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) return "—";
+
+    return new Intl.DateTimeFormat(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short"
+    }).format(date);
+}
+
+function formatMoney(value, currency = "") {
+    const number = Number(value);
+
+    if (!Number.isFinite(number)) return "—";
+
+    const code = String(currency || "").toUpperCase();
+
+    try {
+        return new Intl.NumberFormat(undefined, {
+            style: "currency",
+            currency: code || "USD",
+            maximumFractionDigits: 2
+        }).format(number);
+    } catch {
+        return `${code ? code + " " : ""}${number.toLocaleString()}`;
+    }
+}
+
+function statusClass(status) {
+    const normalized = String(status || "").toLowerCase();
+
+    if (normalized === "completed") return "green";
+    if (normalized === "failed" || normalized === "cancelled") return "red";
+    if (normalized === "pending" || normalized === "processing") return "amber";
+
+    return "blue";
+}
+
+function statusBadge(status) {
+    const normalized = String(status || "unknown").toLowerCase();
+
+    return `
+        <span class="badge ${statusClass(normalized)}">
+            ${escapeHTML(normalized)}
+        </span>
+    `;
+}
+
+async function apiFetch(path, options = {}) {
+    if (requestController) {
+        requestController.abort();
+    }
+
+    requestController = new AbortController();
+
+    const timeout = setTimeout(() => {
+        requestController.abort();
+    }, 15000);
+
+    try {
+        const response = await fetch(`${API_URL}${path}`, {
+            ...options,
+            signal: requestController.signal,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+                ...(options.headers || {})
+            }
+        });
+
+        const text = await response.text();
+
+        let data = {};
+
+        try {
+            data = text ? JSON.parse(text) : {};
+        } catch {
+            data = {
+                success: false,
+                message: text || "Invalid server response."
+            };
+        }
+
+        if (response.status === 401) {
+            localStorage.removeItem("primepay_token");
+            localStorage.removeItem("primepay_user");
+            window.location.href = "../login.html";
+            throw new Error("Session expired.");
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                data.message ||
+                data.error ||
+                `Request failed with HTTP ${response.status}.`
+            );
+        }
+
+        return data;
+    } finally {
+        clearTimeout(timeout);
+        requestController = null;
+    }
+}
+
+async function checkSecuritySurfaces() {
+    document.getElementById("authStatus").innerHTML =
+        `<span class="badge green">Authenticated</span>`;
+
+    try {
+        await apiFetch("/admin/providers");
+
+        document.getElementById("providerStatus").innerHTML =
+            `<span class="badge green">Protected</span>`;
+    } catch {
+        document.getElementById("providerStatus").innerHTML =
+            `<span class="badge red">Unavailable</span>`;
+    }
+
+    try {
+        await apiFetch("/health");
+
+        document.getElementById("apiStatus").innerHTML =
+            `<span class="badge green">Reachable</span>`;
+    } catch {
+        document.getElementById("apiStatus").innerHTML =
+            `<span class="badge red">Unavailable</span>`;
+    }
+}
+
+async function loadTransactions() {
+    document.body.classList.add("loading");
+
+    transactionBody.innerHTML = `
+        <tr>
+            <td colspan="8" class="empty">Loading transaction data...</td>
+        </tr>
+    `;
+
+    try {
+        const params = new URLSearchParams();
+
+        params.set("page", page);
+        params.set("limit", limitSelect.value);
+
+        if (statusFilter.value) {
+            params.set("status", statusFilter.value);
+        }
+
+        if (typeFilter.value) {
+            params.set("type", typeFilter.value);
+        }
+
+        const data = await apiFetch(`/transactions?${params.toString()}`);
+
+        transactions = Array.isArray(data.transactions)
+            ? data.transactions
+            : [];
+
+        const pagination = data.pagination || {};
+
+        totalRecords = Number(
+            pagination.total || transactions.length || 0
+        );
+
+        totalPages = Math.max(
+            1,
+            Number(pagination.pages || 1)
+        );
+
+        if (page > totalPages) {
+            page = totalPages;
+        }
+
+        renderTransactions();
+        updateStats();
+
+    } catch (error) {
+
+        if (error.name === "AbortError") {
+            transactionBody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="empty">
+                        Request timed out. Check the PrimePay backend.
+                    </td>
+                </tr>
+            `;
+        } else {
+            transactionBody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="empty">
+                        ${escapeHTML(
+                            error.message ||
+                            "Unable to load transaction data."
+                        )}
+                    </td>
+                </tr>
+            `;
+        }
+
+        showToast(error.message || "Unable to load transactions.");
+
+    } finally {
+        document.body.classList.remove("loading");
+    }
+}
+
+function getVisibleTransactions() {
+    const query = searchInput.value.trim().toLowerCase();
+
+    if (!query) {
+        return transactions;
+    }
+
+    return transactions.filter(tx => {
+
+        const values = [
+            tx.reference,
+            tx.provider,
+            tx.type,
+            tx.status,
+            tx.currency,
+            tx.customerName,
+            tx.customerEmail,
+            tx.customerPhone,
+            tx.providerReference,
+            tx.providerTransactionId
+        ];
+
+        return values.some(value =>
+            String(value ?? "")
+                .toLowerCase()
+                .includes(query)
+        );
+    });
+}
+
+function renderTransactions() {
+
+    const visible = getVisibleTransactions();
+
+    if (!visible.length) {
+        transactionBody.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty">
+                    No transaction records match this review.
+                </td>
+            </tr>
+        `;
+    } else {
+
+        transactionBody.innerHTML = visible.map((tx, index) => {
+
+            const reference =
+                valueFrom(
+                    tx,
+                    "reference",
+                    "transactionReference"
+                ) || "—";
+
+            const status =
+                valueFrom(tx, "status") || "unknown";
+
+            const type =
+                valueFrom(tx, "type") || "—";
+
+            const provider =
+                valueFrom(tx, "provider") || "—";
+
+            const amount =
+                valueFrom(tx, "amount", "grossAmount");
+
+            const currency =
+                String(
+                    valueFrom(tx, "currency") || ""
+                ).toUpperCase();
+
+            const customer =
+                valueFrom(
+                    tx,
+                    "customerName",
+                    "customerEmail",
+                    "customerPhone"
+                ) || "—";
+
+            const created =
+                valueFrom(
+                    tx,
+                    "createdAt",
+                    "created"
+                );
+
+            return `
+                <tr>
+                    <td>
+                        <span class="ref">
+                            ${escapeHTML(reference)}
+                        </span>
+                    </td>
+
+                    <td>
+                        ${statusBadge(status)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(type)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(provider)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            formatMoney(amount, currency)
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(customer)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(formatDate(created))}
+                    </td>
+
+                    <td>
+                        <button
+                            class="btn"
+                            data-detail-index="${index}"
+                            type="button"
+                        >
+                            Inspect
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    transactionBody
+        .querySelectorAll("[data-detail-index]")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                const index =
+                    Number(button.dataset.detailIndex);
+
+                const visible =
+                    getVisibleTransactions();
+
+                showDetail(visible[index]);
+            });
+        });
+
+    const first = transactions.length
+        ? ((page - 1) * Number(limitSelect.value)) + 1
+        : 0;
+
+    const last = first
+        ? first + transactions.length - 1
+        : 0;
+
+    paginationText.textContent =
+        `Showing ${first}-${last} of ${totalRecords} records · Page ${page} of ${totalPages}`;
+
+    prevBtn.disabled = page <= 1;
+    nextBtn.disabled = page >= totalPages;
+}
+
+function showDetail(tx) {
+
+    if (!tx) return;
+
+    const fields = [
+        [
+            "Reference",
+            valueFrom(
+                tx,
+                "reference",
+                "transactionReference"
+            )
+        ],
+        ["Status", valueFrom(tx, "status")],
+        ["Type", valueFrom(tx, "type")],
+        ["Provider", valueFrom(tx, "provider")],
+        [
+            "Amount",
+            formatMoney(
+                valueFrom(tx, "amount", "grossAmount"),
+                valueFrom(tx, "currency")
+            )
+        ],
+        ["Currency", valueFrom(tx, "currency")],
+        ["Payment method", valueFrom(tx, "paymentMethod")],
+        ["Country", valueFrom(tx, "country")],
+        ["Customer name", valueFrom(tx, "customerName")],
+        ["Customer email", valueFrom(tx, "customerEmail")],
+        ["Customer phone", valueFrom(tx, "customerPhone")],
+        [
+            "Provider transaction ID",
+            valueFrom(tx, "providerTransactionId")
+        ],
+        [
+            "Provider reference",
+            valueFrom(tx, "providerReference")
+        ],
+        [
+            "Created",
+            formatDate(
+                valueFrom(tx, "createdAt", "created")
+            )
+        ],
+        [
+            "Updated",
+            formatDate(
+                valueFrom(tx, "updatedAt", "updated")
+            )
+        ]
+    ];
+
+    detailGrid.innerHTML = fields.map(([label, value]) => `
+        <div class="detail-item">
+            <small>${escapeHTML(label)}</small>
+            <strong>${escapeHTML(value ?? "—")}</strong>
+        </div>
+    `).join("");
+
+    detailPanel.classList.add("open");
+
+    detailPanel.scrollIntoView({
+        behavior:"smooth",
+        block:"nearest"
+    });
+}
+
+function updateStats() {
+
+    document.getElementById("statTransactions").textContent =
+        transactions.length.toLocaleString();
+
+    const failed = transactions.filter(tx =>
+        ["failed","cancelled"]
+            .includes(
+                String(tx.status || "").toLowerCase()
+            )
+    ).length;
+
+    const pending = transactions.filter(tx =>
+        ["pending","processing"]
+            .includes(
+                String(tx.status || "").toLowerCase()
+            )
+    ).length;
+
+    document.getElementById("statFailed").textContent =
+        failed.toLocaleString();
+
+    document.getElementById("statPending").textContent =
+        pending.toLocaleString();
+
+    document.getElementById("statControls").textContent =
+        "5/6";
+}
+
+function applyPreferences() {
+
+    const compact =
+        localStorage.getItem(
+            "primepay_admin_risk_compact"
+        ) === "true";
+
+    const showControls =
+        localStorage.getItem(
+            "primepay_admin_risk_controls"
+        ) !== "false";
+
+    const showBoundaries =
+        localStorage.getItem(
+            "primepay_admin_risk_boundaries"
+        ) !== "false";
+
+    document.getElementById("compactSwitch").checked =
+        compact;
+
+    document.getElementById("controlsSwitch").checked =
+        showControls;
+
+    document.getElementById("boundariesSwitch").checked =
+        showBoundaries;
+
+    document.body.classList.toggle(
+        "compact",
+        compact
+    );
+
+    document
+        .getElementById("controlsPanel")
+        .classList.toggle(
+            "hidden-panel",
+            !showControls
+        );
+
+    document
+        .getElementById("boundariesPanel")
+        .classList.toggle(
+            "hidden-panel",
+            !showBoundaries
+        );
+}
+
+function loadTheme() {
+
+    const theme =
+        localStorage.getItem(
+            "primepay_admin_theme"
+        ) || "dark";
+
+    document.body.classList.toggle(
+        "light",
+        theme === "light"
+    );
+
+    document.getElementById("themeBtn").textContent =
+        theme === "light" ? "☾" : "☼";
+}
+
+function toggleTheme() {
+
+    const light =
+        document.body.classList.toggle("light");
+
+    localStorage.setItem(
+        "primepay_admin_theme",
+        light ? "light" : "dark"
+    );
+
+    document.getElementById("themeBtn").textContent =
+        light ? "☾" : "☼";
+}
+
+function toggleMobileSidebar(open) {
+
+    sidebar.classList.toggle("open", open);
+
+    mobileOverlay.classList.toggle(
+        "show",
+        open
+    );
+}
+
+document
+    .getElementById("menuBtn")
+    .addEventListener("click", () => {
+
+        if (window.innerWidth <= 850) {
+            toggleMobileSidebar(true);
+            return;
+        }
+
+        sidebar.classList.toggle("collapsed");
+
+        localStorage.setItem(
+            "primepay_admin_sidebar_collapsed",
+            sidebar.classList.contains("collapsed")
+        );
+    });
+
+document
+    .getElementById("collapseBtn")
+    .addEventListener("click", () => {
+
+        if (window.innerWidth <= 850) {
+            toggleMobileSidebar(false);
+            return;
+        }
+
+        sidebar.classList.toggle("collapsed");
+
+        localStorage.setItem(
+            "primepay_admin_sidebar_collapsed",
+            sidebar.classList.contains("collapsed")
+        );
+    });
+
+mobileOverlay.addEventListener(
+    "click",
+    () => toggleMobileSidebar(false)
+);
+
+document
+    .getElementById("themeBtn")
+    .addEventListener("click", toggleTheme);
+
+document
+    .getElementById("compactSwitch")
+    .addEventListener("change", event => {
+
+        document.body.classList.toggle(
+            "compact",
+            event.target.checked
+        );
+
+        localStorage.setItem(
+            "primepay_admin_risk_compact",
+            event.target.checked
+        );
+    });
+
+document
+    .getElementById("controlsSwitch")
+    .addEventListener("change", event => {
+
+        document
+            .getElementById("controlsPanel")
+            .classList.toggle(
+                "hidden-panel",
+                !event.target.checked
+            );
+
+        localStorage.setItem(
+            "primepay_admin_risk_controls",
+            event.target.checked
+        );
+    });
+
+document
+    .getElementById("boundariesSwitch")
+    .addEventListener("change", event => {
+
+        document
+            .getElementById("boundariesPanel")
+            .classList.toggle(
+                "hidden-panel",
+                !event.target.checked
+            );
+
+        localStorage.setItem(
+            "primepay_admin_risk_boundaries",
+            event.target.checked
+        );
+    });
+
+searchInput.addEventListener(
+    "input",
+    renderTransactions
+);
+
+statusFilter.addEventListener(
+    "change",
+    () => {
+        page = 1;
+        loadTransactions();
+    }
+);
+
+typeFilter.addEventListener(
+    "change",
+    () => {
+        page = 1;
+        loadTransactions();
+    }
+);
+
+limitSelect.addEventListener(
+    "change",
+    () => {
+        page = 1;
+        loadTransactions();
+    }
+);
+
+prevBtn.addEventListener(
+    "click",
+    () => {
+        if (page <= 1) return;
+
+        page--;
+        loadTransactions();
+    }
+);
+
+nextBtn.addEventListener(
+    "click",
+    () => {
+        if (page >= totalPages) return;
+
+        page++;
+        loadTransactions();
+    }
+);
+
+document
+    .getElementById("refreshBtn")
+    .addEventListener("click", () => {
+
+        loadTransactions();
+        checkSecuritySurfaces();
+
+        showToast(
+            "Risk controls and transaction data refreshed."
+        );
+    });
+
+document
+    .getElementById("resetBtn")
+    .addEventListener("click", () => {
+
+        searchInput.value = "";
+        statusFilter.value = "";
+        typeFilter.value = "";
+        limitSelect.value = "20";
+
+        page = 1;
+
+        detailPanel.classList.remove("open");
+
+        loadTransactions();
+        checkSecuritySurfaces();
+
+        showToast("Risk view reset.");
+    });
+
+const savedSidebar =
+    localStorage.getItem(
+        "primepay_admin_sidebar_collapsed"
+    ) === "true";
+
+if (
+    savedSidebar &&
+    window.innerWidth > 850
+) {
+    sidebar.classList.add("collapsed");
+}
+
+loadTheme();
+applyPreferences();
+checkSecuritySurfaces();
+loadTransactions();
+</script>
+
+</body>
+</html>

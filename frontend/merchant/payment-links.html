@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Payment Links | PrimePay</title>
+<meta name="description" content="PrimePay payment links">
+<style>
+:root{
+  --bg:#020617;
+  --panel:rgba(15,23,42,.88);
+  --panel2:#07101f;
+  --border:rgba(148,163,184,.13);
+  --border2:rgba(96,165,250,.28);
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --muted2:#64748b;
+  --blue:#60a5fa;
+  --blue2:#2563eb;
+  --green:#34d399;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 80% -10%,rgba(37,99,235,.14),transparent 35%),
+    var(--bg);
+}
+button{font:inherit;cursor:pointer}
+a{text-decoration:none;color:inherit}
+
+.app{display:flex;min-height:100vh}
+
+.sidebar{
+  width:255px;
+  position:fixed;
+  inset:0 auto 0 0;
+  z-index:40;
+  padding:22px 15px;
+  background:rgba(2,6,23,.95);
+  border-right:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:4px 9px 24px;
+}
+.brand-mark{
+  width:38px;height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  font-weight:900;
+  background:linear-gradient(145deg,#2563eb,#0f172a);
+  border:1px solid rgba(96,165,250,.35);
+}
+.brand strong{font-size:16px}
+.brand span{
+  display:block;
+  color:var(--muted2);
+  font-size:11px;
+  margin-top:2px;
+}
+
+.nav-label{
+  color:#475569;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  padding:0 10px 8px;
+}
+.nav{display:grid;gap:5px}
+.nav a{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:11px 12px;
+  border:1px solid transparent;
+  border-radius:12px;
+  color:#94a3b8;
+  font-size:13px;
+}
+.nav a:hover{
+  background:rgba(30,41,59,.5);
+  color:#e2e8f0;
+}
+.nav a.active{
+  color:#eff6ff;
+  background:rgba(37,99,235,.15);
+  border-color:rgba(96,165,250,.18);
+}
+.nav-icon{
+  width:19px;
+  text-align:center;
+}
+
+.sidebar-bottom{
+  margin-top:auto;
+  border-top:1px solid var(--border);
+  padding-top:15px;
+}
+.user-mini{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  padding:9px 8px 12px;
+}
+.avatar{
+  width:34px;height:34px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:linear-gradient(145deg,#1d4ed8,#0f172a);
+  border:1px solid rgba(96,165,250,.3);
+  font-size:12px;
+  font-weight:800;
+}
+.user-mini strong{
+  display:block;
+  max-width:155px;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  font-size:12px;
+}
+.user-mini span{
+  display:block;
+  color:var(--muted2);
+  font-size:10px;
+  margin-top:2px;
+}
+.signout{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#64748b;
+  text-align:left;
+  padding:10px;
+  border-radius:10px;
+  font-size:12px;
+}
+.signout:hover{
+  background:rgba(127,29,29,.12);
+  color:#fda4af;
+}
+
+.main{
+  width:calc(100% - 255px);
+  margin-left:255px;
+  min-width:0;
+}
+.topbar{
+  height:72px;
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 30px;
+  background:rgba(2,6,23,.72);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(18px);
+}
+.mobile-menu{
+  display:none;
+  width:40px;height:40px;
+  border-radius:11px;
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:#cbd5e1;
+}
+.top-title small{
+  display:block;
+  color:var(--muted2);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  margin-bottom:3px;
+}
+.top-title strong{font-size:14px}
+.account{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  color:#94a3b8;
+  font-size:11px;
+}
+.dot{
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--green);
+}
+
+.content{
+  max-width:1120px;
+  margin:auto;
+  padding:30px;
+}
+
+.hero{
+  padding:34px;
+  border-radius:24px;
+  border:1px solid var(--border2);
+  background:
+    radial-gradient(circle at 90% 20%,rgba(37,99,235,.17),transparent 35%),
+    linear-gradient(145deg,rgba(15,23,42,.94),rgba(7,16,31,.82));
+  box-shadow:0 25px 80px rgba(0,0,0,.3);
+}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 10px;
+  border-radius:999px;
+  color:#93c5fd;
+  background:rgba(37,99,235,.1);
+  border:1px solid rgba(96,165,250,.18);
+  font-size:9px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.09em;
+}
+.badge-dot{
+  width:6px;height:6px;
+  border-radius:50%;
+  background:var(--blue);
+}
+h1{
+  margin:18px 0 0;
+  font-size:39px;
+  letter-spacing:-.045em;
+}
+.hero p{
+  max-width:690px;
+  margin:11px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.75;
+}
+.hero-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:22px;
+}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:11px 15px;
+  color:#cbd5e1;
+  background:rgba(15,23,42,.7);
+  font-size:11px;
+  font-weight:700;
+}
+.btn:hover{
+  border-color:var(--border2);
+  color:#fff;
+}
+.btn.primary{
+  border-color:rgba(96,165,250,.3);
+  background:linear-gradient(135deg,#2563eb,#1d4ed8);
+  color:#fff;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin-top:16px;
+}
+.card{
+  padding:20px;
+  border-radius:18px;
+  border:1px solid var(--border);
+  background:linear-gradient(145deg,rgba(15,23,42,.86),rgba(8,18,34,.7));
+}
+.icon{
+  width:38px;height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:rgba(37,99,235,.11);
+  border:1px solid rgba(96,165,250,.12);
+  color:#93c5fd;
+  font-size:15px;
+}
+.card h2{
+  margin:15px 0 6px;
+  font-size:14px;
+}
+.card p{
+  margin:0;
+  color:#64748b;
+  font-size:10px;
+  line-height:1.65;
+}
+
+.flow{
+  margin-top:16px;
+  padding:21px;
+}
+.flow h2{
+  margin:0;
+  font-size:15px;
+}
+.flow-sub{
+  margin:5px 0 18px;
+  color:#64748b;
+  font-size:10px;
+}
+.steps{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+.step{
+  padding:15px;
+  border:1px solid var(--border);
+  border-radius:13px;
+  background:#07101f;
+}
+.number{
+  width:25px;height:25px;
+  display:grid;
+  place-items:center;
+  border-radius:8px;
+  background:rgba(37,99,235,.12);
+  color:#93c5fd;
+  font-size:10px;
+  font-weight:800;
+}
+.step strong{
+  display:block;
+  margin-top:10px;
+  font-size:10px;
+}
+.step span{
+  display:block;
+  margin-top:4px;
+  color:#64748b;
+  font-size:9px;
+  line-height:1.5;
+}
+
+.notice{
+  margin-top:16px;
+  padding:16px 18px;
+  border-radius:15px;
+  border:1px solid rgba(251,191,36,.15);
+  background:rgba(120,53,15,.09);
+  color:#fde68a;
+  font-size:10px;
+  line-height:1.65;
+}
+.notice strong{display:block;margin-bottom:4px;font-size:11px}
+
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr}
+}
+@media(max-width:800px){
+  .sidebar{
+    transform:translateX(-100%);
+    transition:.25s ease;
+  }
+  .sidebar.open{transform:translateX(0)}
+  .main{
+    width:100%;
+    margin-left:0;
+  }
+  .mobile-menu{display:block}
+  .topbar{padding:0 16px}
+  .account{display:none}
+  .content{padding:20px 15px 30px}
+  .hero{padding:25px 20px}
+}
+@media(max-width:550px){
+  h1{font-size:31px}
+  .steps{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+
+  <div class="brand">
+    <div class="brand-mark">P</div>
+    <div>
+      <strong>PrimePay</strong>
+      <span>Merchant Portal</span>
+    </div>
+  </div>
+
+  <div class="nav-label">Workspace</div>
+
+  <nav class="nav">
+
+    <a href="dashboard.html">
+      <span class="nav-icon">⌂</span>
+      Dashboard
+    </a>
+
+    <a href="payments.html">
+      <span class="nav-icon">＋</span>
+      Payments
+    </a>
+
+    <a href="transactions.html">
+      <span class="nav-icon">≡</span>
+      Transactions
+    </a>
+
+    <a href="customers.html">
+      <span class="nav-icon">♙</span>
+      Customers
+    </a>
+
+    <a href="wallet.html">
+      <span class="nav-icon">▣</span>
+      Wallet
+    </a>
+
+    <a href="settings.html">
+      <span class="nav-icon">⚙</span>
+      Settings
+    </a>
+
+  </nav>
+
+  <div class="sidebar-bottom">
+
+    <div class="user-mini">
+      <div class="avatar" id="avatar">PP</div>
+      <div>
+        <strong id="userName">Merchant</strong>
+        <span id="userEmail">Loading...</span>
+      </div>
+    </div>
+
+    <button class="signout" id="signOut">
+      ↪ Sign out
+    </button>
+
+  </div>
+
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+
+  <div style="display:flex;align-items:center;gap:11px">
+
+    <button class="mobile-menu" id="mobileMenu">
+      ☰
+    </button>
+
+    <div class="top-title">
+      <small>PrimePay</small>
+      <strong>Payment Links</strong>
+    </div>
+
+  </div>
+
+  <div class="account">
+    <span class="dot"></span>
+    <span>Merchant account connected</span>
+  </div>
+
+</header>
+
+<section class="content">
+
+  <section class="hero">
+
+    <span class="badge">
+      <span class="badge-dot"></span>
+      Coming soon
+    </span>
+
+    <h1>Payment Links</h1>
+
+    <p>
+      Give customers a simple way to pay without requiring a custom checkout
+      integration. PrimePay payment links are planned as a shareable payment
+      experience for websites, social channels, messages and direct customer
+      requests.
+    </p>
+
+    <div class="hero-actions">
+
+      <a class="btn primary" href="payments.html">
+        Create a payment now
+      </a>
+
+      <a class="btn" href="transactions.html">
+        View transactions
+      </a>
+
+    </div>
+
+  </section>
+
+  <section class="grid">
+
+    <article class="card">
+      <div class="icon">↗</div>
+      <h2>Shareable checkout</h2>
+      <p>
+        A future payment link will provide a customer-facing payment
+        destination that can be shared through supported channels.
+      </p>
+    </article>
+
+    <article class="card">
+      <div class="icon">◇</div>
+      <h2>Payment control</h2>
+      <p>
+        Planned controls include the payment amount, currency, description
+        and customer-facing information.
+      </p>
+    </article>
+
+    <article class="card">
+      <div class="icon">✓</div>
+      <h2>Transaction tracking</h2>
+      <p>
+        Link-based payments will be tied to PrimePay payment and transaction
+        records so their lifecycle can be tracked consistently.
+      </p>
+    </article>
+
+  </section>
+
+  <section class="card flow">
+
+    <h2>Planned payment-link flow</h2>
+
+    <p class="flow-sub">
+      The experience below describes the intended product flow, not an active
+      V1 backend capability.
+    </p>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="number">01</div>
+        <strong>Create</strong>
+        <span>
+          Configure the amount, currency and customer-facing payment details.
+        </span>
+      </div>
+
+      <div class="step">
+        <div class="number">02</div>
+        <strong>Share</strong>
+        <span>
+          Send the generated payment destination to your customer.
+        </span>
+      </div>
+
+      <div class="step">
+        <div class="number">03</div>
+        <strong>Pay</strong>
+        <span>
+          The customer completes payment through the supported payment flow.
+        </span>
+      </div>
+
+      <div class="step">
+        <div class="number">04</div>
+        <strong>Track</strong>
+        <span>
+          Monitor the resulting payment and transaction status in PrimePay.
+        </span>
+      </div>
+
+    </div>
+
+  </section>
+
+  <div class="notice">
+    <strong>V1 capability notice</strong>
+    Payment-link creation, retrieval, activation, expiration and public
+    checkout endpoints are not currently exposed by the PrimePay V1 backend.
+    This page therefore does not create or display fictional links.
+    The currently supported payment creation workflow is available through
+    the Payments page.
+  </div>
+
+</section>
+
+</main>
+</div>
+
+<script>
+const token = localStorage.getItem("primepay_token");
+
+if(!token){
+  window.location.href="../login.html";
+}
+
+function initials(name){
+  if(!name) return "PP";
+
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0,2)
+    .map(x=>x[0])
+    .join("")
+    .toUpperCase();
+}
+
+let user=null;
+
+try{
+  user=JSON.parse(
+    localStorage.getItem("primepay_user") || "null"
+  );
+}catch{}
+
+document.getElementById("userName").textContent =
+  user?.name || "Merchant";
+
+document.getElementById("userEmail").textContent =
+  user?.email || "Authenticated account";
+
+document.getElementById("avatar").textContent =
+  initials(user?.name);
+
+document.getElementById("signOut").addEventListener("click",()=>{
+  localStorage.removeItem("primepay_token");
+  localStorage.removeItem("primepay_user");
+  window.location.href="../login.html";
+});
+
+document.getElementById("mobileMenu").addEventListener("click",()=>{
+  document.getElementById("sidebar").classList.toggle("open");
+});
+
+document.addEventListener("click",event=>{
+
+  const sidebar=document.getElementById("sidebar");
+  const menu=document.getElementById("mobileMenu");
+
+  if(
+    window.innerWidth<=800 &&
+    sidebar.classList.contains("open") &&
+    !sidebar.contains(event.target) &&
+    event.target!==menu
+  ){
+    sidebar.classList.remove("open");
+  }
+
+});
+</script>
+
+</body>
+</html>

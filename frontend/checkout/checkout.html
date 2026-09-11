@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PrimePay Checkout</title>
+<meta name="description" content="Secure checkout powered by PrimePay">
+<style>
+:root{
+  --bg:#020617;
+  --panel:#0b1324;
+  --panel2:#0f172a;
+  --border:rgba(148,163,184,.14);
+  --border2:rgba(96,165,250,.25);
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --muted2:#64748b;
+  --blue:#60a5fa;
+  --blue2:#2563eb;
+  --green:#34d399;
+  --yellow:#fbbf24;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 50% -15%,rgba(37,99,235,.16),transparent 38%),
+    var(--bg);
+}
+button,input,select{font:inherit}
+a{text-decoration:none;color:inherit}
+
+.page{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+.header{
+  height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 28px;
+  border-bottom:1px solid var(--border);
+  background:rgba(2,6,23,.78);
+  backdrop-filter:blur(18px);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.brand-mark{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:linear-gradient(145deg,#2563eb,#0f172a);
+  border:1px solid rgba(96,165,250,.35);
+  font-size:16px;
+  font-weight:900;
+}
+
+.brand-name{
+  font-size:15px;
+  font-weight:800;
+  letter-spacing:-.02em;
+}
+
+.secure{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  color:var(--muted);
+  font-size:10px;
+}
+
+.secure-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--green);
+}
+
+.main{
+  width:100%;
+  max-width:1080px;
+  margin:auto;
+  padding:45px 22px 60px;
+}
+
+.layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 370px;
+  gap:20px;
+  align-items:start;
+}
+
+.card{
+  border:1px solid var(--border);
+  border-radius:22px;
+  background:
+    linear-gradient(145deg,rgba(15,23,42,.9),rgba(7,16,31,.82));
+  box-shadow:0 25px 80px rgba(0,0,0,.25);
+}
+
+.checkout-card{
+  padding:30px;
+}
+
+.merchant-card{
+  padding:25px;
+  position:sticky;
+  top:22px;
+}
+
+.eyebrow{
+  color:#60a5fa;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+
+h1{
+  margin:10px 0 8px;
+  font-size:31px;
+  line-height:1.1;
+  letter-spacing:-.04em;
+}
+
+.intro{
+  margin:0;
+  max-width:600px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.7;
+}
+
+.notice{
+  display:flex;
+  gap:12px;
+  margin-top:25px;
+  padding:16px;
+  border:1px solid rgba(251,191,36,.18);
+  border-radius:15px;
+  background:rgba(120,53,15,.09);
+}
+
+.notice-icon{
+  width:34px;
+  height:34px;
+  flex:0 0 34px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:rgba(251,191,36,.1);
+  color:#fcd34d;
+  font-weight:900;
+}
+
+.notice strong{
+  display:block;
+  margin-bottom:4px;
+  color:#fde68a;
+  font-size:11px;
+}
+
+.notice span{
+  display:block;
+  color:#a8a29e;
+  font-size:10px;
+  line-height:1.6;
+}
+
+.section{
+  margin-top:25px;
+  padding-top:23px;
+  border-top:1px solid var(--border);
+}
+
+.section-title{
+  margin:0 0 14px;
+  font-size:13px;
+}
+
+.field-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.field{
+  display:grid;
+  gap:6px;
+}
+
+.field.full{
+  grid-column:1/-1;
+}
+
+.field label{
+  color:#94a3b8;
+  font-size:9px;
+  font-weight:700;
+}
+
+.field input,
+.field select{
+  width:100%;
+  height:42px;
+  padding:0 12px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  outline:none;
+  color:#cbd5e1;
+  background:#07101f;
+  font-size:11px;
+}
+
+.field input:focus,
+.field select:focus{
+  border-color:rgba(96,165,250,.45);
+}
+
+.field input::placeholder{
+  color:#475569;
+}
+
+.disabled{
+  opacity:.55;
+  pointer-events:none;
+}
+
+.methods{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:9px;
+}
+
+.method{
+  padding:13px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:rgba(15,23,42,.55);
+}
+
+.method strong{
+  display:block;
+  font-size:10px;
+}
+
+.method span{
+  display:block;
+  margin-top:4px;
+  color:#64748b;
+  font-size:9px;
+}
+
+.summary-title{
+  margin:0;
+  color:#94a3b8;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+
+.merchant-name{
+  margin:9px 0 0;
+  font-size:18px;
+  font-weight:800;
+}
+
+.merchant-sub{
+  margin:4px 0 22px;
+  color:#64748b;
+  font-size:10px;
+}
+
+.amount-box{
+  padding:20px;
+  border:1px solid rgba(96,165,250,.16);
+  border-radius:16px;
+  background:rgba(37,99,235,.07);
+}
+
+.amount-label{
+  color:#64748b;
+  font-size:9px;
+}
+
+.amount{
+  display:flex;
+  align-items:baseline;
+  gap:6px;
+  margin-top:5px;
+}
+
+.amount strong{
+  font-size:32px;
+  letter-spacing:-.04em;
+}
+
+.amount span{
+  color:#94a3b8;
+  font-size:11px;
+  font-weight:700;
+}
+
+.summary{
+  margin-top:20px;
+}
+
+.summary-row{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  padding:11px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.summary-row:last-child{
+  border-bottom:0;
+}
+
+.summary-row span{
+  color:#64748b;
+  font-size:10px;
+}
+
+.summary-row strong{
+  color:#cbd5e1;
+  font-size:10px;
+  text-align:right;
+}
+
+.unavailable{
+  margin-top:20px;
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:13px;
+  background:#07101f;
+}
+
+.unavailable strong{
+  display:block;
+  margin-bottom:5px;
+  font-size:10px;
+}
+
+.unavailable span{
+  color:#64748b;
+  font-size:9px;
+  line-height:1.6;
+}
+
+.footer{
+  margin-top:auto;
+  padding:20px 22px;
+  border-top:1px solid var(--border);
+  text-align:center;
+  color:#475569;
+  font-size:9px;
+}
+
+.status{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 9px;
+  border:1px solid rgba(251,191,36,.15);
+  border-radius:999px;
+  background:rgba(120,53,15,.08);
+  color:#fcd34d;
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+}
+
+@media(max-width:850px){
+  .layout{
+    grid-template-columns:1fr;
+  }
+
+  .merchant-card{
+    position:static;
+  }
+}
+
+@media(max-width:550px){
+  .header{
+    padding:0 15px;
+  }
+
+  .secure{
+    display:none;
+  }
+
+  .main{
+    padding:25px 14px 40px;
+  }
+
+  .checkout-card,
+  .merchant-card{
+    padding:21px;
+  }
+
+  h1{
+    font-size:27px;
+  }
+
+  .field-grid{
+    grid-template-columns:1fr;
+  }
+
+  .field.full{
+    grid-column:auto;
+  }
+
+  .methods{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+<header class="header">
+
+  <a href="../index.html" class="brand">
+    <div class="brand-mark">P</div>
+    <div class="brand-name">PrimePay</div>
+  </a>
+
+  <div class="secure">
+    <span class="secure-dot"></span>
+    Secure payment infrastructure
+  </div>
+
+</header>
+
+<main class="main">
+
+  <div class="layout">
+
+    <section class="card checkout-card">
+
+      <div class="eyebrow">PrimePay Checkout</div>
+
+      <h1>Complete your payment</h1>
+
+      <p class="intro">
+        This is the customer-facing checkout surface for PrimePay.
+        Public checkout processing is being prepared for a future release.
+      </p>
+
+      <div class="notice">
+
+        <div class="notice-icon">!</div>
+
+        <div>
+          <strong>Checkout is not currently active</strong>
+
+          <span>
+            The current PrimePay V1 backend does not expose a public checkout
+            endpoint. No payment will be submitted from this page, and no
+            financial transaction is being simulated.
+          </span>
+        </div>
+
+      </div>
+
+      <div class="section">
+
+        <h2 class="section-title">Customer information</h2>
+
+        <div class="field-grid disabled">
+
+          <div class="field">
+            <label>Full name</label>
+            <input type="text" placeholder="Customer name">
+          </div>
+
+          <div class="field">
+            <label>Email address</label>
+            <input type="email" placeholder="customer@example.com">
+          </div>
+
+          <div class="field full">
+            <label>Phone number</label>
+            <input type="tel" placeholder="+254 7XX XXX XXX">
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="section">
+
+        <h2 class="section-title">Payment method</h2>
+
+        <div class="methods">
+
+          <div class="method">
+            <strong>M-Pesa</strong>
+            <span>Mobile money</span>
+          </div>
+
+          <div class="method">
+            <strong>Card</strong>
+            <span>Card payment</span>
+          </div>
+
+          <div class="method">
+            <strong>PayPal</strong>
+            <span>PayPal checkout</span>
+          </div>
+
+          <div class="method">
+            <strong>Bank transfer</strong>
+            <span>Supported provider flow</span>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="section">
+
+        <h2 class="section-title">Payment details</h2>
+
+        <div class="field-grid disabled">
+
+          <div class="field">
+            <label>Currency</label>
+            <select>
+              <option>KES</option>
+              <option>USD</option>
+              <option>EUR</option>
+              <option>GBP</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Payment reference</label>
+            <input type="text" placeholder="Generated by PrimePay">
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <aside class="card merchant-card">
+
+      <div class="summary-title">Payment summary</div>
+
+      <div class="merchant-name">
+        PrimePay Checkout
+      </div>
+
+      <div class="merchant-sub">
+        Secure payment experience
+      </div>
+
+      <div class="amount-box">
+
+        <div class="amount-label">
+          Amount due
+        </div>
+
+        <div class="amount">
+          <strong>—</strong>
+          <span>—</span>
+        </div>
+
+      </div>
+
+      <div class="summary">
+
+        <div class="summary-row">
+          <span>Payment status</span>
+          <strong>
+            <span class="status">Not initiated</span>
+          </strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Provider</span>
+          <strong>Not selected</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Reference</span>
+          <strong>Not available</strong>
+        </div>
+
+      </div>
+
+      <div class="unavailable">
+
+        <strong>Public checkout unavailable</strong>
+
+        <span>
+          A real checkout will require a public payment-session or
+          checkout endpoint before this interface can safely accept
+          customer payments.
+        </span>
+
+      </div>
+
+    </aside>
+
+  </div>
+
+</main>
+
+<footer class="footer">
+  PrimePay · Payment infrastructure by PrimeTask Workspace
+</footer>
+
+</div>
+
+</body>
+</html>

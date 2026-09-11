@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Developer Dashboard | PrimePay</title>
+<meta name="description" content="PrimePay developer dashboard">
+<style>
+:root{
+  --bg:#020617;
+  --bg2:#07101f;
+  --card:rgba(15,23,42,.78);
+  --card2:rgba(17,29,52,.72);
+  --border:rgba(148,163,184,.13);
+  --border2:rgba(96,165,250,.22);
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --muted2:#64748b;
+  --blue:#60a5fa;
+  --blue2:#3b82f6;
+  --green:#34d399;
+  --yellow:#fbbf24;
+  --red:#fb7185;
+  --cyan:#22d3ee;
+  --shadow:0 20px 60px rgba(0,0,0,.28);
+  --radius:20px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 80% -10%,rgba(37,99,235,.14),transparent 34%),
+    radial-gradient(circle at 10% 20%,rgba(14,165,233,.06),transparent 28%),
+    var(--bg);
+}
+button,input{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+
+.app{display:flex;min-height:100vh}
+
+.sidebar{
+  width:255px;
+  flex-shrink:0;
+  position:fixed;
+  inset:0 auto 0 0;
+  background:rgba(2,6,23,.92);
+  border-right:1px solid var(--border);
+  padding:22px 15px;
+  z-index:30;
+  display:flex;
+  flex-direction:column;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:4px 9px 24px;
+}
+.brand-mark{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  font-weight:900;
+  color:#dbeafe;
+  background:linear-gradient(145deg,#2563eb,#0f172a);
+  border:1px solid rgba(96,165,250,.35);
+  box-shadow:0 10px 30px rgba(37,99,235,.18);
+}
+.brand strong{font-size:16px;letter-spacing:.2px}
+.brand span{display:block;color:var(--muted2);font-size:11px;margin-top:2px}
+
+.nav-label{
+  color:#475569;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  padding:0 10px 8px;
+}
+.nav{display:grid;gap:5px}
+.nav a{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:11px 12px;
+  border:1px solid transparent;
+  border-radius:12px;
+  color:#94a3b8;
+  font-size:13px;
+  transition:.2s ease;
+}
+.nav a:hover{
+  color:#e2e8f0;
+  background:rgba(30,41,59,.52);
+}
+.nav a.active{
+  color:#eff6ff;
+  background:rgba(37,99,235,.15);
+  border-color:rgba(96,165,250,.18);
+}
+.nav-icon{
+  width:19px;
+  text-align:center;
+  font-size:15px;
+}
+.sidebar-bottom{
+  margin-top:auto;
+  border-top:1px solid var(--border);
+  padding-top:15px;
+}
+.user-mini{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:9px 8px 12px;
+}
+.avatar{
+  width:34px;height:34px;border-radius:50%;
+  display:grid;place-items:center;
+  background:linear-gradient(145deg,#1d4ed8,#0f172a);
+  border:1px solid rgba(96,165,250,.3);
+  font-size:12px;font-weight:800;
+}
+.user-mini strong{
+  display:block;
+  max-width:155px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-size:12px;
+}
+.user-mini span{display:block;color:var(--muted2);font-size:10px;margin-top:2px}
+.signout{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#64748b;
+  text-align:left;
+  padding:10px;
+  border-radius:10px;
+  font-size:12px;
+}
+.signout:hover{background:rgba(127,29,29,.12);color:#fda4af}
+
+.main{
+  width:calc(100% - 255px);
+  margin-left:255px;
+  min-width:0;
+}
+.topbar{
+  height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 30px;
+  border-bottom:1px solid var(--border);
+  background:rgba(2,6,23,.68);
+  backdrop-filter:blur(18px);
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+.mobile-menu{
+  display:none;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:#cbd5e1;
+  width:40px;height:40px;border-radius:11px;
+}
+.top-title small{
+  display:block;
+  color:var(--muted2);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  margin-bottom:3px;
+}
+.top-title strong{font-size:14px}
+.top-actions{display:flex;align-items:center;gap:10px}
+.refresh{
+  border:1px solid var(--border);
+  color:#cbd5e1;
+  background:rgba(15,23,42,.8);
+  border-radius:10px;
+  padding:9px 13px;
+  font-size:12px;
+}
+.refresh:hover{border-color:var(--border2);color:#fff}
+.account-pill{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#94a3b8;
+  font-size:12px;
+}
+.dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 0 4px rgba(52,211,153,.08);
+}
+
+.content{padding:30px;max-width:1450px;margin:auto}
+
+.hero{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:25px;
+  margin-bottom:24px;
+}
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  color:#93c5fd;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin-bottom:9px;
+}
+.hero h1{
+  margin:0;
+  font-size:clamp(27px,3vw,38px);
+  line-height:1.08;
+  letter-spacing:-.035em;
+}
+.hero p{
+  color:var(--muted);
+  margin:10px 0 0;
+  max-width:680px;
+  font-size:14px;
+  line-height:1.7;
+}
+.hero-actions{display:flex;gap:9px;flex-wrap:wrap}
+.btn{
+  border:1px solid var(--border);
+  background:rgba(15,23,42,.8);
+  color:#dbeafe;
+  border-radius:11px;
+  padding:10px 14px;
+  font-size:12px;
+  font-weight:700;
+}
+.btn.primary{
+  border-color:rgba(96,165,250,.3);
+  background:linear-gradient(135deg,#2563eb,#1d4ed8);
+  color:#fff;
+}
+.btn:hover{transform:translateY(-1px)}
+
+.grid-4{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+  margin-bottom:16px;
+}
+.card{
+  background:linear-gradient(145deg,rgba(15,23,42,.9),rgba(8,18,34,.72));
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.stat{
+  padding:19px;
+  min-height:142px;
+}
+.stat-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+}
+.stat-label{
+  color:var(--muted);
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.stat-icon{
+  width:32px;height:32px;border-radius:10px;
+  display:grid;place-items:center;
+  color:#93c5fd;
+  background:rgba(37,99,235,.12);
+  border:1px solid rgba(96,165,250,.13);
+}
+.stat-value{
+  font-size:24px;
+  font-weight:800;
+  letter-spacing:-.025em;
+  margin-top:18px;
+}
+.stat-sub{
+  color:var(--muted2);
+  font-size:11px;
+  margin-top:5px;
+}
+.status{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border-radius:999px;
+  padding:5px 8px;
+  font-size:10px;
+  font-weight:800;
+}
+.status.good{color:#6ee7b7;background:rgba(16,185,129,.09);border:1px solid rgba(52,211,153,.13)}
+.status.warn{color:#fcd34d;background:rgba(245,158,11,.08);border:1px solid rgba(251,191,36,.13)}
+.status.bad{color:#fda4af;background:rgba(244,63,94,.08);border:1px solid rgba(251,113,133,.13)}
+.status.neutral{color:#cbd5e1;background:rgba(100,116,139,.1);border:1px solid rgba(148,163,184,.12)}
+
+.two-col{
+  display:grid;
+  grid-template-columns:minmax(0,1.55fr) minmax(310px,.85fr);
+  gap:16px;
+}
+.panel{padding:20px}
+.panel-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:15px;
+  margin-bottom:18px;
+}
+.panel-head h2{
+  margin:0;
+  font-size:16px;
+  letter-spacing:-.01em;
+}
+.panel-head p{
+  color:var(--muted2);
+  margin:5px 0 0;
+  font-size:11px;
+  line-height:1.5;
+}
+.panel-link{
+  color:#93c5fd;
+  font-size:11px;
+  font-weight:700;
+  white-space:nowrap;
+}
+.panel-link:hover{text-decoration:underline}
+
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th{
+  text-align:left;
+  color:#64748b;
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.09em;
+  padding:0 10px 11px;
+  font-weight:800;
+  border-bottom:1px solid var(--border);
+}
+td{
+  padding:13px 10px;
+  border-bottom:1px solid rgba(148,163,184,.07);
+  font-size:11px;
+  color:#cbd5e1;
+}
+tbody tr:hover{background:rgba(30,41,59,.25)}
+.reference{
+  color:#e2e8f0;
+  font-weight:700;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:10px;
+}
+.amount{font-weight:800;color:#f8fafc}
+.muted{color:#64748b}
+.empty{
+  padding:34px 15px;
+  text-align:center;
+  color:#64748b;
+  font-size:12px;
+}
+.loading{
+  padding:25px 15px;
+  text-align:center;
+  color:#64748b;
+  font-size:12px;
+}
+
+.stack{display:grid;gap:10px}
+.info-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid rgba(148,163,184,.07);
+}
+.info-row:last-child{border-bottom:0}
+.info-row span:first-child{color:#64748b;font-size:11px}
+.info-row span:last-child{text-align:right;color:#dbeafe;font-size:11px;font-weight:700}
+
+.readiness{
+  padding:15px;
+  border-radius:15px;
+  background:rgba(15,23,42,.5);
+  border:1px solid var(--border);
+}
+.readiness-title{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  margin-bottom:13px;
+}
+.readiness-title strong{font-size:12px}
+.check{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:9px 0;
+}
+.check-icon{
+  width:18px;height:18px;border-radius:50%;
+  display:grid;place-items:center;
+  flex-shrink:0;
+  font-size:9px;font-weight:900;
+}
+.check-icon.yes{background:rgba(16,185,129,.12);color:#6ee7b7}
+.check-icon.no{background:rgba(100,116,139,.1);color:#64748b}
+.check strong{display:block;font-size:11px}
+.check span{display:block;color:#64748b;font-size:10px;line-height:1.5;margin-top:2px}
+
+.key-list{display:grid;gap:9px}
+.key{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px;
+  border:1px solid rgba(148,163,184,.09);
+  border-radius:13px;
+  background:rgba(2,6,23,.28);
+}
+.key-left{min-width:0}
+.key-name{
+  color:#e2e8f0;
+  font-size:11px;
+  font-weight:700;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.key-id{
+  color:#64748b;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:9px;
+  margin-top:4px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.key-right{text-align:right;flex-shrink:0}
+
+.actions{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-top:16px;
+}
+.action{
+  display:block;
+  padding:16px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:rgba(15,23,42,.55);
+  transition:.2s ease;
+}
+.action:hover{
+  border-color:var(--border2);
+  transform:translateY(-2px);
+  background:rgba(17,29,52,.72);
+}
+.action-icon{
+  width:34px;height:34px;border-radius:10px;
+  display:grid;place-items:center;
+  background:rgba(37,99,235,.11);
+  color:#93c5fd;
+  margin-bottom:12px;
+}
+.action strong{font-size:12px;display:block}
+.action span{color:#64748b;font-size:10px;line-height:1.5;display:block;margin-top:5px}
+
+.notice{
+  display:none;
+  margin-bottom:16px;
+  padding:13px 15px;
+  border:1px solid rgba(251,191,36,.15);
+  background:rgba(120,53,15,.09);
+  color:#fcd34d;
+  border-radius:14px;
+  font-size:11px;
+  line-height:1.55;
+}
+.notice.show{display:block}
+
+@media(max-width:1100px){
+  .grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .two-col{grid-template-columns:1fr}
+  .actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:800px){
+  .sidebar{
+    transform:translateX(-100%);
+    transition:.25s ease;
+    box-shadow:30px 0 70px rgba(0,0,0,.4);
+  }
+  .sidebar.open{transform:translateX(0)}
+  .main{width:100%;margin-left:0}
+  .mobile-menu{display:block}
+  .topbar{padding:0 17px}
+  .account-pill{display:none}
+  .content{padding:20px 15px 30px}
+  .hero{display:block}
+  .hero-actions{margin-top:17px}
+}
+@media(max-width:560px){
+  .grid-4{grid-template-columns:1fr}
+  .actions{grid-template-columns:1fr}
+  .stat{min-height:125px}
+  .panel{padding:16px}
+  .hero h1{font-size:29px}
+  .refresh{padding:9px}
+  .refresh span{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">P</div>
+      <div>
+        <strong>PrimePay</strong>
+        <span>Developer Platform</span>
+      </div>
+    </div>
+
+    <div class="nav-label">Developer</div>
+    <nav class="nav">
+      <a href="dashboard.html" class="active"><span class="nav-icon">⌂</span>Dashboard</a>
+      <a href="api-keys.html"><span class="nav-icon">⌘</span>API Keys</a>
+      <a href="webhooks.html"><span class="nav-icon">↗</span>Webhooks</a>
+      <a href="sandbox.html"><span class="nav-icon">◇</span>Sandbox</a>
+      <a href="docs.html"><span class="nav-icon">▤</span>Documentation</a>
+      <a href="logs.html"><span class="nav-icon">≡</span>Activity</a>
+    </nav>
+
+    <div class="nav-label" style="margin-top:22px">Portal</div>
+    <nav class="nav">
+      <a href="../merchant/dashboard.html"><span class="nav-icon">▣</span>Merchant Portal</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="user-mini">
+        <div class="avatar" id="sideAvatar">PP</div>
+        <div>
+          <strong id="sideName">Developer</strong>
+          <span id="sideEmail">Loading...</span>
+        </div>
+      </div>
+      <button class="signout" id="signOut">↪ Sign out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:11px">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Open menu">☰</button>
+        <div class="top-title">
+          <small>PrimePay</small>
+          <strong>Developer Console</strong>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button class="refresh" id="refreshBtn">↻ <span>Refresh</span></button>
+        <div class="account-pill">
+          <span class="dot"></span>
+          <span id="accountStatus">Authenticated</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="content">
+
+      <div class="notice" id="notice"></div>
+
+      <div class="hero">
+        <div>
+          <div class="eyebrow">Developer workspace</div>
+          <h1>Build with PrimePay.</h1>
+          <p>
+            Manage API access, sandbox credentials, webhooks and payment activity
+            from one developer workspace. Everything below is loaded from the
+            PrimePay V1 API, because imaginary transaction counts belong in marketing departments.
+          </p>
+        </div>
+
+        <div class="hero-actions">
+          <a class="btn primary" href="sandbox.html">Open Sandbox</a>
+          <a class="btn" href="docs.html">Read Documentation</a>
+        </div>
+      </div>
+
+      <div class="grid-4">
+
+        <div class="card stat">
+          <div class="stat-top">
+            <div class="stat-label">Business verification</div>
+            <div class="stat-icon">✓</div>
+          </div>
+          <div class="stat-value" id="verificationValue">—</div>
+          <div class="stat-sub" id="verificationSub">Loading business status...</div>
+        </div>
+
+        <div class="card stat">
+          <div class="stat-top">
+            <div class="stat-label">Sandbox keys</div>
+            <div class="stat-icon">◇</div>
+          </div>
+          <div class="stat-value" id="sandboxKeys">—</div>
+          <div class="stat-sub">Credentials available for testing</div>
+        </div>
+
+        <div class="card stat">
+          <div class="stat-top">
+            <div class="stat-label">Live API</div>
+            <div class="stat-icon">↗</div>
+          </div>
+          <div class="stat-value" id="liveApiValue">—</div>
+          <div class="stat-sub" id="liveApiSub">Checking account readiness...</div>
+        </div>
+
+        <div class="card stat">
+          <div class="stat-top">
+            <div class="stat-label">Webhooks</div>
+            <div class="stat-icon">⌁</div>
+          </div>
+          <div class="stat-value" id="webhookCount">—</div>
+          <div class="stat-sub">Configured webhook endpoints</div>
+        </div>
+
+      </div>
+
+      <div class="two-col">
+
+        <section class="card panel">
+          <div class="panel-head">
+            <div>
+              <h2>Recent payment activity</h2>
+              <p>Latest transactions returned by the PrimePay transaction API.</p>
+            </div>
+            <a class="panel-link" href="../merchant/transactions.html">View all</a>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Reference</th>
+                  <th>Type</th>
+                  <th>Provider</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="transactionBody">
+                <tr>
+                  <td colspan="6"><div class="loading">Loading transaction activity...</div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card panel">
+          <div class="panel-head">
+            <div>
+              <h2>Integration readiness</h2>
+              <p>Current account and developer access state.</p>
+            </div>
+          </div>
+
+          <div class="readiness">
+            <div class="readiness-title">
+              <strong id="readinessTitle">Checking readiness</strong>
+              <span class="status neutral" id="readinessBadge">Checking</span>
+            </div>
+
+            <div class="check">
+              <div class="check-icon no" id="businessCheck">•</div>
+              <div>
+                <strong>Business profile</strong>
+                <span id="businessCheckText">Checking your business profile.</span>
+              </div>
+            </div>
+
+            <div class="check">
+              <div class="check-icon no" id="sandboxCheck">•</div>
+              <div>
+                <strong>Sandbox access</strong>
+                <span id="sandboxCheckText">Checking sandbox API credentials.</span>
+              </div>
+            </div>
+
+            <div class="check">
+              <div class="check-icon no" id="webhookCheck">•</div>
+              <div>
+                <strong>Webhook configuration</strong>
+                <span id="webhookCheckText">Checking webhook endpoints.</span>
+              </div>
+            </div>
+
+            <div class="check">
+              <div class="check-icon no" id="liveCheck">•</div>
+              <div>
+                <strong>Live API access</strong>
+                <span id="liveCheckText">Checking live API approval.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <div class="two-col" style="margin-top:16px">
+
+        <section class="card panel">
+          <div class="panel-head">
+            <div>
+              <h2>API access</h2>
+              <p>Existing API credentials. Secrets are never displayed here.</p>
+            </div>
+            <a class="panel-link" href="api-keys.html">Manage keys</a>
+          </div>
+
+          <div class="key-list" id="keyList">
+            <div class="loading">Loading API keys...</div>
+          </div>
+        </section>
+
+        <section class="card panel">
+          <div class="panel-head">
+            <div>
+              <h2>Business account</h2>
+              <p>Current merchant profile used by PrimePay.</p>
+            </div>
+            <a class="panel-link" href="../merchant/settings.html">Settings</a>
+          </div>
+
+          <div class="stack">
+            <div class="info-row">
+              <span>Business</span>
+              <span id="businessName">—</span>
+            </div>
+            <div class="info-row">
+              <span>Business ID</span>
+              <span id="businessId">—</span>
+            </div>
+            <div class="info-row">
+              <span>Currency</span>
+              <span id="businessCurrency">—</span>
+            </div>
+            <div class="info-row">
+              <span>Balance</span>
+              <span id="businessBalance">—</span>
+            </div>
+            <div class="info-row">
+              <span>Verification</span>
+              <span id="businessVerification">—</span>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <section class="actions">
+
+        <a class="action" href="api-keys.html">
+          <div class="action-icon">⌘</div>
+          <strong>Manage API keys</strong>
+          <span>Create, rotate and revoke sandbox or live credentials.</span>
+        </a>
+
+        <a class="action" href="webhooks.html">
+          <div class="action-icon">↗</div>
+          <strong>Configure webhooks</strong>
+          <span>Connect payment events to your application securely.</span>
+        </a>
+
+        <a class="action" href="sandbox.html">
+          <div class="action-icon">◇</div>
+          <strong>Test payments</strong>
+          <span>Send real sandbox requests through the developer API.</span>
+        </a>
+
+        <a class="action" href="docs.html">
+          <div class="action-icon">▤</div>
+          <strong>Integration docs</strong>
+          <span>Authentication, payments, idempotency and webhook signing.</span>
+        </a>
+
+      </section>
+
+    </section>
+  </main>
+</div>
+
+<script>
+const API_URL = "http://localhost:5001/api/v1";
+
+const token = localStorage.getItem("primepay_token");
+const storedUser = (() => {
+  try {
+    return JSON.parse(localStorage.getItem("primepay_user") || "null");
+  } catch {
+    return null;
+  }
+})();
+
+if (!token) {
+  window.location.href = "../login.html";
+}
+
+const $ = id => document.getElementById(id);
+
+function initials(name) {
+  if (!name) return "PP";
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(x => x[0])
+    .join("")
+    .toUpperCase();
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function formatMoney(amount, currency = "KES") {
+  const numeric = Number(amount);
+  if (!Number.isFinite(numeric)) return "—";
+
+  try {
+    return new Intl.NumberFormat(undefined, {
+      style: "currency",
+      currency: currency || "KES",
+      maximumFractionDigits: 2
+    }).format(numeric);
+  } catch {
+    return `${currency || "KES"} ${numeric.toFixed(2)}`;
+  }
+}
+
+function formatDate(value) {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short"
+  }).format(date);
+}
+
+function normalizeStatus(status) {
+  return String(status || "unknown").toLowerCase();
+}
+
+function statusClass(status) {
+  const s = normalizeStatus(status);
+
+  if (["completed", "delivered", "approved", "active", "enabled"].includes(s)) {
+    return "good";
+  }
+
+  if (["pending", "processing", "verification_pending"].includes(s)) {
+    return "warn";
+  }
+
+  if (["failed", "cancelled", "refunded", "rejected", "suspended", "disabled"].includes(s)) {
+    return "bad";
+  }
+
+  return "neutral";
+}
+
+function prettyStatus(value) {
+  if (!value) return "Unknown";
+  return String(value)
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+
+async function api(path, options = {}) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+
+  try {
+    const response = await fetch(`${API_URL}${path}`, {
+      ...options,
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+        ...(options.headers || {})
+      }
+    });
+
+    let data = null;
+
+    try {
+      data = await response.json();
+    } catch {
+      data = null;
+    }
+
+    if (response.status === 401) {
+      localStorage.removeItem("primepay_token");
+      localStorage.removeItem("primepay_user");
+      window.location.href = "../login.html";
+      throw new Error("Your session has expired.");
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        data?.message ||
+        data?.error ||
+        `Request failed with status ${response.status}.`
+      );
+    }
+
+    return data;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function showNotice(message) {
+  const el = $("notice");
+  el.textContent = message;
+  el.classList.add("show");
+}
+
+function clearNotice() {
+  $("notice").classList.remove("show");
+}
+
+function setCheck(iconId, textId, yes, message) {
+  const icon = $(iconId);
+  const text = $(textId);
+
+  icon.className = `check-icon ${yes ? "yes" : "no"}`;
+  icon.textContent = yes ? "✓" : "•";
+  text.textContent = message;
+}
+
+function setReadiness(ready, label) {
+  const badge = $("readinessBadge");
+  badge.textContent = label;
+  badge.className = `status ${ready ? "good" : "warn"}`;
+  $("readinessTitle").textContent = ready
+    ? "Integration is ready"
+    : "Integration setup in progress";
+}
+
+function updateUser() {
+  const name = storedUser?.name || "Developer";
+  const email = storedUser?.email || "Authenticated account";
+
+  $("sideName").textContent = name;
+  $("sideEmail").textContent = email;
+  $("sideAvatar").textContent = initials(name);
+}
+
+async function loadBusiness() {
+  const result = await api("/businesses/me");
+  const business = result?.business;
+
+  if (!business) {
+    $("businessName").textContent = "No business";
+    $("businessVerification").textContent = "Not configured";
+    $("verificationValue").textContent = "Not set";
+    $("verificationSub").textContent = "Complete business onboarding.";
+    $("liveApiValue").textContent = "Locked";
+    $("liveApiSub").textContent = "A verified business is required.";
+
+    setCheck(
+      "businessCheck",
+      "businessCheckText",
+      false,
+      "Create your business profile before integrating."
+    );
+
+    setCheck(
+      "liveCheck",
+      "liveCheckText",
+      false,
+      "Live API access requires approval."
+    );
+
+    return null;
+  }
+
+  const verification = normalizeStatus(business.verificationStatus);
+  const liveEnabled = business.liveApiEnabled === true;
+
+  $("businessName").textContent = business.businessName || "—";
+  $("businessId").textContent = business._id || business.id || "—";
+  $("businessCurrency").textContent = business.currency || "KES";
+  $("businessVerification").textContent = prettyStatus(verification);
+
+  $("verificationValue").textContent = prettyStatus(verification);
+  $("verificationSub").textContent =
+    verification === "approved"
+      ? "Business verification approved."
+      : "Business verification is not yet approved.";
+
+  if (verification === "approved") {
+    $("verificationValue").className = "stat-value";
+    setCheck(
+      "businessCheck",
+      "businessCheckText",
+      true,
+      "Business profile is present and verified."
+    );
+  } else {
+    setCheck(
+      "businessCheck",
+      "businessCheckText",
+      true,
+      "Business profile is present. Verification is not approved yet."
+    );
+  }
+
+  if (verification === "approved" && liveEnabled) {
+    $("liveApiValue").textContent = "Enabled";
+    $("liveApiSub").textContent = "Live API access is enabled.";
+    setCheck(
+      "liveCheck",
+      "liveCheckText",
+      true,
+      "Your business is approved and live API access is enabled."
+    );
+  } else if (verification === "approved") {
+    $("liveApiValue").textContent = "Disabled";
+    $("liveApiSub").textContent = "Approval exists, but live API is disabled.";
+    setCheck(
+      "liveCheck",
+      "liveCheckText",
+      false,
+      "Business is approved, but live API access is currently disabled."
+    );
+  } else {
+    $("liveApiValue").textContent = "Locked";
+    $("liveApiSub").textContent = "Business approval is required.";
+    setCheck(
+      "liveCheck",
+      "liveCheckText",
+      false,
+      "Live API access requires business approval and live access to be enabled."
+    );
+  }
+
+  return business;
+}
+
+async function loadBalance(business) {
+  try {
+    const result = await api("/businesses/balance");
+    const balance = result?.balance;
+
+    const currency =
+      business?.currency ||
+      result?.currency ||
+      "KES";
+
+    $("businessBalance").textContent = formatMoney(balance, currency);
+  } catch {
+    $("businessBalance").textContent = "Unavailable";
+  }
+}
+
+async function loadKeys() {
+  const result = await api("/api-keys");
+  const keys = Array.isArray(result?.apiKeys)
+    ? result.apiKeys
+    : Array.isArray(result?.keys)
+      ? result.keys
+      : [];
+
+  const sandbox = keys.filter(k =>
+    String(k.environment || "").toLowerCase() === "sandbox"
+  );
+
+  $("sandboxKeys").textContent = sandbox.length;
+
+  setCheck(
+    "sandboxCheck",
+    "sandboxCheckText",
+    sandbox.length > 0,
+    sandbox.length > 0
+      ? `${sandbox.length} sandbox API key${sandbox.length === 1 ? "" : "s"} available.`
+      : "Create a sandbox API key to send developer test requests."
+  );
+
+  const list = $("keyList");
+
+  if (!keys.length) {
+    list.innerHTML = `
+      <div class="empty">
+        No API keys have been created yet.
+        <br><br>
+        <a class="panel-link" href="api-keys.html">Create your first key</a>
+      </div>
+    `;
+    return;
+  }
+
+  const sorted = [...keys]
+    .sort((a, b) =>
+      new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+    )
+    .slice(0, 6);
+
+  list.innerHTML = sorted.map(key => {
+    const environment = String(key.environment || "unknown").toLowerCase();
+    const status = key.status || (key.revoked ? "revoked" : "active");
+
+    return `
+      <div class="key">
+        <div class="key-left">
+          <div class="key-name">${escapeHtml(key.name || "Unnamed key")}</div>
+          <div class="key-id">${escapeHtml(key.keyId || key._id || "—")}</div>
+        </div>
+        <div class="key-right">
+          <div>
+            <span class="status ${environment === "live" ? "warn" : "good"}">
+              ${escapeHtml(prettyStatus(environment))}
+            </span>
+          </div>
+          <div style="margin-top:5px">
+            <span class="status ${statusClass(status)}">
+              ${escapeHtml(prettyStatus(status))}
+            </span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+async function loadWebhooks() {
+  const result = await api("/webhooks");
+
+  const webhooks = Array.isArray(result?.webhooks)
+    ? result.webhooks
+    : Array.isArray(result?.data)
+      ? result.data
+      : [];
+
+  $("webhookCount").textContent = webhooks.length;
+
+  setCheck(
+    "webhookCheck",
+    "webhookCheckText",
+    webhooks.length > 0,
+    webhooks.length > 0
+      ? `${webhooks.length} webhook endpoint${webhooks.length === 1 ? "" : "s"} configured.`
+      : "No webhook endpoints configured. Add one when your integration needs event delivery."
+  );
+
+  return webhooks;
+}
+
+async function loadTransactions() {
+  const result = await api("/transactions?page=1&limit=6");
+
+  const transactions = Array.isArray(result?.transactions)
+    ? result.transactions
+    : [];
+
+  const body = $("transactionBody");
+
+  if (!transactions.length) {
+    body.innerHTML = `
+      <tr>
+        <td colspan="6">
+          <div class="empty">
+            No transaction activity has been recorded yet.
+          </div>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  body.innerHTML = transactions.map(tx => {
+    const status = tx.status || "unknown";
+    const currency = tx.currency || "KES";
+
+    return `
+      <tr>
+        <td>
+          <div class="reference">${escapeHtml(tx.reference || "—")}</div>
+        </td>
+        <td>${escapeHtml(prettyStatus(tx.type))}</td>
+        <td>${escapeHtml(prettyStatus(tx.provider))}</td>
+        <td class="amount">${escapeHtml(formatMoney(tx.amount, currency))}</td>
+        <td>
+          <span class="status ${statusClass(status)}">
+            ${escapeHtml(prettyStatus(status))}
+          </span>
+        </td>
+        <td class="muted">${escapeHtml(formatDate(tx.createdAt))}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+async function refreshDashboard() {
+  clearNotice();
+  $("refreshBtn").disabled = true;
+
+  try {
+    const results = await Promise.allSettled([
+      loadBusiness(),
+      loadKeys(),
+      loadWebhooks(),
+      loadTransactions()
+    ]);
+
+    const businessResult = results[0];
+
+    if (businessResult.status === "fulfilled" && businessResult.value) {
+      await loadBalance(businessResult.value);
+    } else if (businessResult.status === "rejected") {
+      showNotice(`Business information could not be loaded: ${businessResult.reason.message}`);
+    }
+
+    const failures = results.filter(r => r.status === "rejected");
+
+    if (failures.length > 0 && !document.getElementById("notice").classList.contains("show")) {
+      showNotice("Some dashboard sections could not be refreshed. The available sections remain based on the data returned by the API.");
+    }
+
+    const business = businessResult.status === "fulfilled"
+      ? businessResult.value
+      : null;
+
+    const businessReady = !!business;
+    const sandboxReady = Number($("sandboxKeys").textContent) > 0;
+    const webhookReady = Number($("webhookCount").textContent) > 0;
+    const liveReady = business?.verificationStatus === "approved" &&
+                      business?.liveApiEnabled === true;
+
+    const integrationReady = businessReady && sandboxReady;
+
+    setReadiness(
+      integrationReady,
+      integrationReady ? "Ready" : "Setup needed"
+    );
+
+    $("accountStatus").textContent = "Authenticated";
+  } catch (error) {
+    showNotice(error.message || "Unable to refresh the dashboard.");
+  } finally {
+    $("refreshBtn").disabled = false;
+  }
+}
+
+$("refreshBtn").addEventListener("click", refreshDashboard);
+
+$("signOut").addEventListener("click", () => {
+  localStorage.removeItem("primepay_token");
+  localStorage.removeItem("primepay_user");
+  window.location.href = "../login.html";
+});
+
+$("mobileMenu").addEventListener("click", () => {
+  $("sidebar").classList.toggle("open");
+});
+
+document.addEventListener("click", event => {
+  if (
+    window.innerWidth <= 800 &&
+    $("sidebar").classList.contains("open") &&
+    !$("sidebar").contains(event.target) &&
+    event.target !== $("mobileMenu")
+  ) {
+    $("sidebar").classList.remove("open");
+  }
+});
+
+updateUser();
+refreshDashboard();
+</script>
+
+</body>
+</html>

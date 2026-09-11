@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Payouts | PrimePay</title>
+<meta name="description" content="PrimePay merchant payouts">
+<style>
+:root{
+  --bg:#020617;
+  --panel:#0b1324;
+  --panel2:#0f172a;
+  --border:rgba(148,163,184,.13);
+  --blue:#60a5fa;
+  --blue2:#2563eb;
+  --green:#34d399;
+  --yellow:#fbbf24;
+  --red:#fb7185;
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --muted2:#64748b;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 80% -10%,rgba(37,99,235,.14),transparent 35%),
+    var(--bg);
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+a{text-decoration:none;color:inherit}
+button{font:inherit;cursor:pointer}
+
+.app{display:flex;min-height:100vh}
+
+.sidebar{
+  width:255px;
+  position:fixed;
+  inset:0 auto 0 0;
+  z-index:40;
+  padding:22px 15px;
+  background:rgba(2,6,23,.96);
+  border-right:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:4px 9px 24px;
+}
+
+.brand-mark{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:linear-gradient(145deg,#2563eb,#0f172a);
+  border:1px solid rgba(96,165,250,.35);
+  font-weight:900;
+}
+
+.brand strong{font-size:16px}
+.brand span{
+  display:block;
+  margin-top:2px;
+  color:var(--muted2);
+  font-size:11px;
+}
+
+.nav-label{
+  padding:0 10px 8px;
+  color:#475569;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+
+.nav{display:grid;gap:5px}
+
+.nav a{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:11px 12px;
+  border:1px solid transparent;
+  border-radius:12px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.nav a:hover{
+  color:#e2e8f0;
+  background:rgba(30,41,59,.5);
+}
+
+.nav a.active{
+  color:#eff6ff;
+  background:rgba(37,99,235,.15);
+  border-color:rgba(96,165,250,.18);
+}
+
+.nav-icon{
+  width:19px;
+  text-align:center;
+}
+
+.sidebar-bottom{
+  margin-top:auto;
+  padding-top:15px;
+  border-top:1px solid var(--border);
+}
+
+.user-mini{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:9px 8px 12px;
+}
+
+.avatar{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:linear-gradient(145deg,#1d4ed8,#0f172a);
+  border:1px solid rgba(96,165,250,.3);
+  font-size:12px;
+  font-weight:800;
+}
+
+.user-mini strong{
+  display:block;
+  max-width:155px;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  font-size:12px;
+}
+
+.user-mini span{
+  display:block;
+  margin-top:2px;
+  color:var(--muted2);
+  font-size:10px;
+}
+
+.signout{
+  width:100%;
+  padding:10px;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:var(--muted2);
+  text-align:left;
+  font-size:12px;
+}
+
+.signout:hover{
+  color:#fda4af;
+  background:rgba(127,29,29,.12);
+}
+
+.main{
+  width:calc(100% - 255px);
+  margin-left:255px;
+  min-width:0;
+}
+
+.topbar{
+  height:72px;
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 30px;
+  background:rgba(2,6,23,.72);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(18px);
+}
+
+.mobile-menu{
+  display:none;
+  width:40px;
+  height:40px;
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:var(--panel);
+  color:#cbd5e1;
+}
+
+.top-title small{
+  display:block;
+  margin-bottom:3px;
+  color:var(--muted2);
+  font-size:10px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+
+.top-title strong{font-size:14px}
+
+.account{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  color:var(--muted);
+  font-size:11px;
+}
+
+.dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--green);
+}
+
+.content{
+  max-width:1120px;
+  margin:auto;
+  padding:30px;
+}
+
+.hero{
+  padding:34px;
+  border:1px solid rgba(96,165,250,.27);
+  border-radius:24px;
+  background:
+    radial-gradient(circle at 90% 20%,rgba(37,99,235,.17),transparent 35%),
+    linear-gradient(145deg,rgba(15,23,42,.94),rgba(7,16,31,.82));
+  box-shadow:0 25px 80px rgba(0,0,0,.3);
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 10px;
+  border:1px solid rgba(96,165,250,.18);
+  border-radius:999px;
+  background:rgba(37,99,235,.1);
+  color:#93c5fd;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+}
+
+.badge-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--blue);
+}
+
+h1{
+  margin:18px 0 0;
+  font-size:39px;
+  letter-spacing:-.045em;
+}
+
+.hero p{
+  max-width:710px;
+  margin:11px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.75;
+}
+
+.hero-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:22px;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:11px 15px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:rgba(15,23,42,.7);
+  color:#cbd5e1;
+  font-size:11px;
+  font-weight:700;
+}
+
+.btn:hover{
+  border-color:rgba(96,165,250,.28);
+  color:#fff;
+}
+
+.btn.primary{
+  border-color:rgba(96,165,250,.3);
+  background:linear-gradient(135deg,#2563eb,#1d4ed8);
+  color:#fff;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin-top:16px;
+}
+
+.card{
+  padding:20px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:linear-gradient(145deg,rgba(15,23,42,.86),rgba(8,18,34,.7));
+}
+
+.icon{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(96,165,250,.12);
+  border-radius:11px;
+  background:rgba(37,99,235,.11);
+  color:#93c5fd;
+  font-size:15px;
+}
+
+.card h2{
+  margin:15px 0 6px;
+  font-size:14px;
+}
+
+.card p{
+  margin:0;
+  color:#64748b;
+  font-size:10px;
+  line-height:1.65;
+}
+
+.workspace{
+  margin-top:16px;
+  padding:21px;
+}
+
+.workspace h2{
+  margin:0;
+  font-size:15px;
+}
+
+.workspace-sub{
+  margin:5px 0 18px;
+  color:#64748b;
+  font-size:10px;
+}
+
+.empty{
+  min-height:210px;
+  display:grid;
+  place-items:center;
+  padding:25px;
+  border:1px solid var(--border);
+  border-radius:15px;
+  background:#07101f;
+  text-align:center;
+}
+
+.empty-icon{
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  margin:0 auto 12px;
+  border:1px solid rgba(96,165,250,.12);
+  border-radius:14px;
+  background:rgba(37,99,235,.09);
+  color:#93c5fd;
+  font-size:19px;
+}
+
+.empty strong{
+  display:block;
+  margin-bottom:6px;
+  font-size:12px;
+}
+
+.empty span{
+  display:block;
+  max-width:500px;
+  color:#64748b;
+  font-size:10px;
+  line-height:1.7;
+}
+
+.notice{
+  margin-top:16px;
+  padding:16px 18px;
+  border:1px solid rgba(251,191,36,.15);
+  border-radius:15px;
+  background:rgba(120,53,15,.09);
+  color:#fde68a;
+  font-size:10px;
+  line-height:1.65;
+}
+
+.notice strong{
+  display:block;
+  margin-bottom:4px;
+  font-size:11px;
+}
+
+.flow{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:16px;
+}
+
+.step{
+  padding:15px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:rgba(15,23,42,.55);
+}
+
+.step-number{
+  color:#60a5fa;
+  font-size:10px;
+  font-weight:900;
+}
+
+.step strong{
+  display:block;
+  margin-top:8px;
+  font-size:11px;
+}
+
+.step span{
+  display:block;
+  margin-top:5px;
+  color:#64748b;
+  font-size:9px;
+  line-height:1.5;
+}
+
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}
+  .flow{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:800px){
+  .sidebar{
+    transform:translateX(-100%);
+    transition:.25s ease;
+  }
+
+  .sidebar.open{transform:translateX(0)}
+
+  .main{
+    width:100%;
+    margin-left:0;
+  }
+
+  .mobile-menu{display:block}
+
+  .topbar{padding:0 16px}
+
+  .account{display:none}
+
+  .content{padding:20px 15px 30px}
+
+  .hero{padding:25px 20px}
+}
+
+@media(max-width:550px){
+  h1{font-size:31px}
+  .flow{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+
+  <div class="brand">
+    <div class="brand-mark">P</div>
+    <div>
+      <strong>PrimePay</strong>
+      <span>Merchant Portal</span>
+    </div>
+  </div>
+
+  <div class="nav-label">Workspace</div>
+
+  <nav class="nav">
+
+    <a href="dashboard.html">
+      <span class="nav-icon">⌂</span>
+      Dashboard
+    </a>
+
+    <a href="payments.html">
+      <span class="nav-icon">＋</span>
+      Payments
+    </a>
+
+    <a href="transactions.html">
+      <span class="nav-icon">≡</span>
+      Transactions
+    </a>
+
+    <a href="customers.html">
+      <span class="nav-icon">♙</span>
+      Customers
+    </a>
+
+    <a href="wallet.html">
+      <span class="nav-icon">▣</span>
+      Wallet
+    </a>
+
+    <a href="settings.html">
+      <span class="nav-icon">⚙</span>
+      Settings
+    </a>
+
+  </nav>
+
+  <div class="sidebar-bottom">
+
+    <div class="user-mini">
+      <div class="avatar" id="avatar">PP</div>
+      <div>
+        <strong id="userName">Merchant</strong>
+        <span id="userEmail">Loading...</span>
+      </div>
+    </div>
+
+    <button class="signout" id="signOut">
+      ↪ Sign out
+    </button>
+
+  </div>
+
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+
+  <div style="display:flex;align-items:center;gap:11px">
+
+    <button class="mobile-menu" id="mobileMenu">
+      ☰
+    </button>
+
+    <div class="top-title">
+      <small>PrimePay</small>
+      <strong>Payouts</strong>
+    </div>
+
+  </div>
+
+  <div class="account">
+    <span class="dot"></span>
+    <span>Merchant account connected</span>
+  </div>
+
+</header>
+
+<section class="content">
+
+  <section class="hero">
+
+    <span class="badge">
+      <span class="badge-dot"></span>
+      Coming soon
+    </span>
+
+    <h1>Payouts</h1>
+
+    <p>
+      Manage future merchant disbursements, review payout status and track
+      settlement activity from one workspace. Payout functionality is planned
+      for a future PrimePay backend release.
+    </p>
+
+    <div class="hero-actions">
+
+      <a class="btn primary" href="wallet.html">
+        View wallet
+      </a>
+
+      <a class="btn" href="transactions.html">
+        View transactions
+      </a>
+
+    </div>
+
+  </section>
+
+  <section class="grid">
+
+    <article class="card">
+
+      <div class="icon">↗</div>
+
+      <h2>Payout requests</h2>
+
+      <p>
+        Future versions will allow eligible merchants to initiate supported
+        payout requests from their PrimePay balance.
+      </p>
+
+    </article>
+
+    <article class="card">
+
+      <div class="icon">◷</div>
+
+      <h2>Status tracking</h2>
+
+      <p>
+        Planned payout states will make processing, completion and failure
+        visible without relying on fabricated frontend values.
+      </p>
+
+    </article>
+
+    <article class="card">
+
+      <div class="icon">▤</div>
+
+      <h2>Settlement records</h2>
+
+      <p>
+        Payout and settlement records will eventually connect financial
+        movements to their underlying PrimePay transactions.
+      </p>
+
+    </article>
+
+  </section>
+
+  <section class="card workspace">
+
+    <h2>Payout workspace</h2>
+
+    <p class="workspace-sub">
+      Intended workflow for a future release.
+    </p>
+
+    <div class="empty">
+
+      <div>
+
+        <div class="empty-icon">↗</div>
+
+        <strong>No payout records are available</strong>
+
+        <span>
+          The current PrimePay V1 API does not expose payout creation,
+          retrieval, approval or status endpoints. This screen therefore
+          remains informational until those backend capabilities exist.
+        </span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="flow">
+
+    <div class="step">
+      <div class="step-number">01</div>
+      <strong>Request</strong>
+      <span>Merchant initiates an eligible payout.</span>
+    </div>
+
+    <div class="step">
+      <div class="step-number">02</div>
+      <strong>Review</strong>
+      <span>PrimePay validates the payout request.</span>
+    </div>
+
+    <div class="step">
+      <div class="step-number">03</div>
+      <strong>Processing</strong>
+      <span>The selected payout provider processes the request.</span>
+    </div>
+
+    <div class="step">
+      <div class="step-number">04</div>
+      <strong>Completed</strong>
+      <span>The final payout state is recorded.</span>
+    </div>
+
+  </section>
+
+  <div class="notice">
+
+    <strong>V1 capability notice</strong>
+
+    The current backend does not expose merchant payout endpoints.
+    Specifically, there is no payout creation, payout listing, payout
+    approval or payout status API available to this frontend. No payout
+    balance, transaction or successful withdrawal is being simulated here.
+
+  </div>
+
+</section>
+
+</main>
+</div>
+
+<script>
+const token=localStorage.getItem("primepay_token");
+
+if(!token){
+  window.location.href="../login.html";
+}
+
+let user=null;
+
+try{
+  user=JSON.parse(
+    localStorage.getItem("primepay_user") || "null"
+  );
+}catch{}
+
+function initials(name){
+
+  if(!name) return "PP";
+
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0,2)
+    .map(x=>x[0])
+    .join("")
+    .toUpperCase();
+
+}
+
+document.getElementById("userName").textContent=
+  user?.name || "Merchant";
+
+document.getElementById("userEmail").textContent=
+  user?.email || "Authenticated account";
+
+document.getElementById("avatar").textContent=
+  initials(user?.name);
+
+document.getElementById("signOut").addEventListener("click",()=>{
+
+  localStorage.removeItem("primepay_token");
+  localStorage.removeItem("primepay_user");
+
+  window.location.href="../login.html";
+
+});
+
+document.getElementById("mobileMenu").addEventListener("click",()=>{
+
+  document
+    .getElementById("sidebar")
+    .classList
+    .toggle("open");
+
+});
+
+document.addEventListener("click",event=>{
+
+  const sidebar=document.getElementById("sidebar");
+  const menu=document.getElementById("mobileMenu");
+
+  if(
+    window.innerWidth<=800 &&
+    sidebar.classList.contains("open") &&
+    !sidebar.contains(event.target) &&
+    event.target!==menu
+  ){
+    sidebar.classList.remove("open");
+  }
+
+});
+</script>
+
+</body>
+</html>

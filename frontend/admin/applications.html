@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Applications | PrimePay Admin</title>
+
+<style>
+:root{
+    --bg:#050816;
+    --panel:#0b1224;
+    --panel2:#0f1930;
+    --border:rgba(148,163,184,.14);
+    --text:#f8fafc;
+    --muted:#94a3b8;
+    --accent:#60a5fa;
+    --accent2:#38bdf8;
+    --success:#22c55e;
+    --warning:#f59e0b;
+    --danger:#ef4444;
+    --shadow:0 20px 60px rgba(0,0,0,.28);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+}
+
+body.light{
+    --bg:#f1f5f9;
+    --panel:#ffffff;
+    --panel2:#f8fafc;
+    --border:rgba(15,23,42,.12);
+    --text:#0f172a;
+    --muted:#64748b;
+    --shadow:0 20px 50px rgba(15,23,42,.10);
+}
+
+button,a{font:inherit}
+button{cursor:pointer}
+
+.layout{
+    display:flex;
+    min-height:100vh;
+}
+
+.sidebar{
+    width:260px;
+    position:fixed;
+    inset:0 auto 0 0;
+    background:rgba(5,8,22,.96);
+    border-right:1px solid var(--border);
+    padding:22px 16px;
+    z-index:50;
+}
+
+.light .sidebar{
+    background:#fff;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:8px 10px 28px;
+}
+
+.brand-mark{
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(135deg,#2563eb,#38bdf8);
+    color:#fff;
+    font-weight:900;
+}
+
+.brand strong{
+    display:block;
+    font-size:16px;
+}
+
+.brand span{
+    color:var(--muted);
+    font-size:11px;
+}
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+}
+
+.nav a{
+    text-decoration:none;
+    color:var(--muted);
+    padding:11px 13px;
+    border-radius:10px;
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    transition:.2s;
+}
+
+.nav a:hover{
+    background:rgba(96,165,250,.08);
+    color:var(--text);
+}
+
+.nav a.active{
+    background:rgba(96,165,250,.13);
+    color:#fff;
+    border:1px solid rgba(96,165,250,.16);
+}
+
+.light .nav a.active{
+    color:#0f172a;
+}
+
+.nav-section{
+    color:#64748b;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    margin:22px 12px 8px;
+}
+
+.bottom{
+    position:absolute;
+    bottom:18px;
+    left:16px;
+    right:16px;
+}
+
+.signout{
+    width:100%;
+    border:1px solid var(--border);
+    background:transparent;
+    color:var(--muted);
+    padding:11px;
+    border-radius:10px;
+}
+
+.signout:hover{
+    color:var(--danger);
+    border-color:rgba(239,68,68,.3);
+}
+
+.main{
+    margin-left:260px;
+    width:calc(100% - 260px);
+    padding:24px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:24px;
+}
+
+.topbar small{
+    color:var(--muted);
+}
+
+.controls{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.control{
+    border:1px solid var(--border);
+    background:var(--panel);
+    color:var(--text);
+    border-radius:9px;
+    padding:9px 12px;
+    font-size:12px;
+}
+
+.hero{
+    background:
+        radial-gradient(circle at 90% 10%,rgba(56,189,248,.16),transparent 30%),
+        linear-gradient(135deg,rgba(37,99,235,.16),rgba(15,23,42,.2));
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:30px;
+    box-shadow:var(--shadow);
+    margin-bottom:20px;
+}
+
+.hero h1{
+    font-size:clamp(27px,4vw,42px);
+    letter-spacing:-.04em;
+    margin-bottom:9px;
+}
+
+.hero p{
+    color:var(--muted);
+    max-width:760px;
+    line-height:1.7;
+}
+
+.badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 9px;
+    border-radius:999px;
+    background:rgba(245,158,11,.1);
+    color:#fbbf24;
+    font-size:11px;
+    font-weight:800;
+    margin-bottom:14px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin-bottom:20px;
+}
+
+.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:19px;
+    box-shadow:var(--shadow);
+}
+
+.card.hidden{
+    display:none;
+}
+
+.card-label{
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:10px;
+}
+
+.card-value{
+    font-size:27px;
+    font-weight:800;
+}
+
+.card-note{
+    color:var(--muted);
+    font-size:11px;
+    margin-top:7px;
+}
+
+.section{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:22px;
+    margin-bottom:20px;
+    box-shadow:var(--shadow);
+}
+
+.section-head{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    align-items:flex-start;
+    margin-bottom:20px;
+}
+
+.section h2{
+    font-size:19px;
+}
+
+.section-head p{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:5px;
+}
+
+.notice{
+    border:1px solid rgba(245,158,11,.2);
+    background:rgba(245,158,11,.07);
+    border-radius:14px;
+    padding:17px;
+    display:flex;
+    gap:13px;
+    margin-bottom:20px;
+}
+
+.notice-icon{
+    width:34px;
+    height:34px;
+    flex:none;
+    border-radius:10px;
+    background:rgba(245,158,11,.12);
+    display:grid;
+    place-items:center;
+    color:#fbbf24;
+    font-weight:900;
+}
+
+.notice strong{
+    display:block;
+    margin-bottom:5px;
+}
+
+.notice p{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.6;
+}
+
+.workflow{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+}
+
+.step{
+    position:relative;
+    padding:18px;
+    border:1px solid var(--border);
+    background:var(--panel2);
+    border-radius:14px;
+}
+
+.step-number{
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background:rgba(96,165,250,.12);
+    color:var(--accent);
+    font-size:12px;
+    font-weight:900;
+    margin-bottom:13px;
+}
+
+.step h3{
+    font-size:14px;
+    margin-bottom:7px;
+}
+
+.step p{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.55;
+}
+
+.capabilities{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+}
+
+.capability{
+    padding:19px;
+    border:1px solid var(--border);
+    background:var(--panel2);
+    border-radius:14px;
+}
+
+.capability-icon{
+    width:38px;
+    height:38px;
+    border-radius:11px;
+    background:rgba(96,165,250,.1);
+    color:var(--accent);
+    display:grid;
+    place-items:center;
+    font-weight:900;
+    margin-bottom:14px;
+}
+
+.capability h3{
+    font-size:14px;
+    margin-bottom:7px;
+}
+
+.capability p{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.6;
+}
+
+.boundary{
+    text-align:center;
+    padding:36px 20px;
+    border:1px dashed rgba(148,163,184,.25);
+    border-radius:16px;
+}
+
+.boundary-icon{
+    width:54px;
+    height:54px;
+    margin:0 auto 15px;
+    display:grid;
+    place-items:center;
+    border-radius:16px;
+    background:rgba(96,165,250,.1);
+    color:var(--accent);
+    font-size:22px;
+}
+
+.boundary h3{
+    margin-bottom:8px;
+}
+
+.boundary p{
+    max-width:620px;
+    margin:auto;
+    color:var(--muted);
+    line-height:1.65;
+    font-size:13px;
+}
+
+.actions{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-top:20px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:10px 15px;
+    text-decoration:none;
+    color:var(--text);
+    background:var(--panel2);
+    font-size:12px;
+    font-weight:700;
+}
+
+.btn.primary{
+    background:#2563eb;
+    border-color:#2563eb;
+    color:#fff;
+}
+
+.density-compact .workflow,
+.density-compact .capabilities{
+    gap:8px;
+}
+
+.density-compact .step,
+.density-compact .capability{
+    padding:13px;
+}
+
+.mobile-toggle{
+    display:none;
+}
+
+.overlay{
+    display:none;
+}
+
+@media(max-width:1050px){
+    .cards{grid-template-columns:repeat(2,1fr)}
+    .workflow{grid-template-columns:repeat(2,1fr)}
+    .capabilities{grid-template-columns:1fr}
+}
+
+@media(max-width:800px){
+    .sidebar{
+        transform:translateX(-100%);
+        transition:.25s;
+    }
+
+    .sidebar.open{
+        transform:translateX(0);
+    }
+
+    .overlay.show{
+        display:block;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.55);
+        z-index:40;
+    }
+
+    .main{
+        margin-left:0;
+        width:100%;
+        padding:15px;
+    }
+
+    .mobile-toggle{
+        display:block;
+        border:1px solid var(--border);
+        background:var(--panel);
+        color:var(--text);
+        border-radius:9px;
+        padding:9px 11px;
+    }
+
+    .topbar{
+        align-items:flex-start;
+    }
+
+    .hero{
+        padding:23px;
+    }
+}
+
+@media(max-width:560px){
+    .cards{grid-template-columns:1fr}
+    .workflow{grid-template-columns:1fr}
+    .topbar{
+        flex-direction:column;
+    }
+
+    .controls{
+        width:100%;
+    }
+
+    .control{
+        flex:1;
+    }
+
+    .hero h1{
+        font-size:29px;
+    }
+
+    .section{
+        padding:16px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<aside class="sidebar" id="sidebar">
+    <div class="brand">
+        <div class="brand-mark">P</div>
+        <div>
+            <strong>PrimePay</strong>
+            <span>Administration</span>
+        </div>
+    </div>
+
+    <nav class="nav">
+        <a href="dashboard.html">▦ Dashboard</a>
+        <a class="active" href="applications.html">◉ Applications</a>
+        <a href="merchants.html">▣ Merchants</a>
+        <a href="transactions.html">⇄ Transactions</a>
+        <a href="providers.html">◈ Providers</a>
+        <a href="api-access.html">⌁ API Access</a>
+
+        <div class="nav-section">Operations</div>
+
+        <a href="fees.html">◇ Fees</a>
+        <a href="settlements.html">◫ Settlements</a>
+        <a href="risk.html">△ Risk</a>
+        <a href="audit-logs.html">☷ Audit Logs</a>
+    </nav>
+
+    <div class="bottom">
+        <button class="signout" id="signOut">Sign out</button>
+    </div>
+</aside>
+
+<main class="main">
+
+    <div class="topbar">
+        <div>
+            <button class="mobile-toggle" id="menuBtn">☰ Menu</button>
+            <small id="adminIdentity">PrimePay administrator</small>
+        </div>
+
+        <div class="controls">
+            <button class="control" id="themeBtn">☀ Light</button>
+            <button class="control" id="cardsBtn">◉ Cards</button>
+            <button class="control" id="densityBtn">↔ Compact</button>
+        </div>
+    </div>
+
+    <section class="hero">
+        <div class="badge">V1 CAPABILITY BOUNDARY</div>
+        <h1>Applications</h1>
+        <p>
+            A controlled workspace for merchant onboarding and verification.
+            The current PrimePay V1 backend does not yet expose administrator
+            application-management endpoints, so this page deliberately shows
+            the workflow without inventing applications, approvals, or database
+            records that do not exist.
+        </p>
+    </section>
+
+    <section class="cards" id="statsCards">
+        <div class="card">
+            <div class="card-label">Applications loaded</div>
+            <div class="card-value">—</div>
+            <div class="card-note">No admin application endpoint in V1</div>
+        </div>
+
+        <div class="card">
+            <div class="card-label">Pending review</div>
+            <div class="card-value">—</div>
+            <div class="card-note">Requires application-management API</div>
+        </div>
+
+        <div class="card">
+            <div class="card-label">Approved</div>
+            <div class="card-value">—</div>
+            <div class="card-note">Business verification is stored on Business</div>
+        </div>
+
+        <div class="card">
+            <div class="card-label">Rejected</div>
+            <div class="card-value">—</div>
+            <div class="card-note">No admin listing endpoint available</div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="notice">
+            <div class="notice-icon">!</div>
+            <div>
+                <strong>Why this page does not show a fake application table</strong>
+                <p>
+                    PrimePay V1 currently exposes business creation and the
+                    authenticated merchant's own business information, but it
+                    does not expose an administrator endpoint for listing,
+                    reviewing, approving, or rejecting all merchant
+                    applications. Showing invented rows here would make the
+                    dashboard look impressive while making the software
+                    fundamentally dishonest. Humanity has enough of that
+                    already.
+                </p>
+            </div>
+        </div>
+
+        <div class="section-head">
+            <div>
+                <h2>Merchant verification workflow</h2>
+                <p>The intended operational path supported by the current business model.</p>
+            </div>
+        </div>
+
+        <div class="workflow">
+            <div class="step">
+                <div class="step-number">01</div>
+                <h3>Business registration</h3>
+                <p>
+                    A merchant creates an account and submits their business
+                    profile through the onboarding flow.
+                </p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">02</div>
+                <h3>Verification</h3>
+                <p>
+                    The Business record carries a verification status:
+                    pending, approved, or rejected.
+                </p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">03</div>
+                <h3>Live API review</h3>
+                <p>
+                    Live API access is controlled separately through the
+                    business verification and live API flags.
+                </p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">04</div>
+                <h3>Activation</h3>
+                <p>
+                    Once approved and enabled, the merchant can progress toward
+                    production API access.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-head">
+            <div>
+                <h2>Current V1 capabilities</h2>
+                <p>What the backend actually supports today.</p>
+            </div>
+        </div>
+
+        <div class="capabilities">
+            <div class="capability">
+                <div class="capability-icon">B</div>
+                <h3>Business records</h3>
+                <p>
+                    Merchants can create their business profile and retrieve
+                    their own business information.
+                </p>
+            </div>
+
+            <div class="capability">
+                <div class="capability-icon">✓</div>
+                <h3>Verification state</h3>
+                <p>
+                    Business records contain verification status and live API
+                    eligibility fields.
+                </p>
+            </div>
+
+            <div class="capability">
+                <div class="capability-icon">K</div>
+                <h3>API access control</h3>
+                <p>
+                    Live API key creation is restricted by business approval
+                    and live API enablement.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="boundary">
+            <div class="boundary-icon">⌁</div>
+            <h3>Application management API is not exposed yet</h3>
+            <p>
+                The frontend is ready for this capability, but the backend
+                needs administrator endpoints before real application data,
+                review actions, filters, pagination, approval, rejection, and
+                audit history can be connected safely.
+            </p>
+
+            <div class="actions">
+                <a class="btn primary" href="dashboard.html">Admin Dashboard</a>
+                <a class="btn" href="../merchant/onboarding.html">View Onboarding</a>
+                <a class="btn" href="api-access.html">API Access</a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<script>
+const token = localStorage.getItem("primepay_token");
+const userRaw = localStorage.getItem("primepay_user");
+
+if(!token){
+    window.location.href="../login.html";
+}
+
+let user = null;
+
+try{
+    user = userRaw ? JSON.parse(userRaw) : null;
+}catch{
+    user = null;
+}
+
+if(user && user.role && user.role !== "admin"){
+    window.location.href="../merchant/dashboard.html";
+}
+
+const identity = document.getElementById("adminIdentity");
+
+if(user){
+    identity.textContent =
+        `${user.name || "Administrator"} · ${user.email || "Admin account"}`;
+}
+
+const body = document.body;
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+
+const savedTheme = localStorage.getItem("primepay_admin_theme");
+const savedCards = localStorage.getItem("primepay_admin_cards");
+const savedDensity = localStorage.getItem("primepay_admin_density");
+
+if(savedTheme === "light"){
+    body.classList.add("light");
+}
+
+if(savedDensity === "compact"){
+    body.classList.add("density-compact");
+}
+
+if(savedCards === "hidden"){
+    document.getElementById("statsCards").classList.add("hidden");
+}
+
+function updateControls(){
+    document.getElementById("themeBtn").textContent =
+        body.classList.contains("light") ? "☾ Dark" : "☀ Light";
+
+    document.getElementById("cardsBtn").textContent =
+        document.getElementById("statsCards").classList.contains("hidden")
+        ? "◉ Show cards"
+        : "◉ Hide cards";
+
+    document.getElementById("densityBtn").textContent =
+        body.classList.contains("density-compact")
+        ? "↔ Comfortable"
+        : "↔ Compact";
+}
+
+document.getElementById("themeBtn").onclick = () => {
+    body.classList.toggle("light");
+
+    localStorage.setItem(
+        "primepay_admin_theme",
+        body.classList.contains("light") ? "light" : "dark"
+    );
+
+    updateControls();
+};
+
+document.getElementById("cardsBtn").onclick = () => {
+    const cards = document.getElementById("statsCards");
+
+    cards.classList.toggle("hidden");
+
+    localStorage.setItem(
+        "primepay_admin_cards",
+        cards.classList.contains("hidden") ? "hidden" : "shown"
+    );
+
+    updateControls();
+};
+
+document.getElementById("densityBtn").onclick = () => {
+    body.classList.toggle("density-compact");
+
+    localStorage.setItem(
+        "primepay_admin_density",
+        body.classList.contains("density-compact")
+        ? "compact"
+        : "comfortable"
+    );
+
+    updateControls();
+};
+
+document.getElementById("menuBtn").onclick = () => {
+    sidebar.classList.add("open");
+    overlay.classList.add("show");
+};
+
+overlay.onclick = () => {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+};
+
+document.querySelectorAll(".nav a").forEach(link => {
+    link.addEventListener("click", () => {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
+    });
+});
+
+document.getElementById("signOut").onclick = () => {
+    localStorage.removeItem("primepay_token");
+    localStorage.removeItem("primepay_user");
+    window.location.href="../login.html";
+};
+
+updateControls();
+</script>
+
+</body>
+</html>

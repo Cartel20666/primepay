@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sign in to PrimePay">
+<title>PrimePay | Login</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #020617;
+    --panel: #08101f;
+    --panel-2: #0b1629;
+    --border: rgba(148, 163, 184, 0.16);
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --accent: #38bdf8;
+    --accent-2: #2563eb;
+    --danger: #f87171;
+    --success: #4ade80;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.16), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.10), transparent 30%),
+        var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.topbar {
+    width: 100%;
+    padding: 22px 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.logo-mark {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    color: white;
+    font-weight: 900;
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.25);
+}
+
+.back-link {
+    color: var(--muted);
+    font-size: 0.9rem;
+    transition: 0.2s ease;
+}
+
+.back-link:hover {
+    color: var(--text);
+}
+
+main {
+    flex: 1;
+    display: grid;
+    place-items: center;
+    padding: 40px 20px 70px;
+}
+
+.login-wrapper {
+    width: 100%;
+    max-width: 440px;
+}
+
+.heading {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.heading h1 {
+    font-size: clamp(2rem, 5vw, 2.6rem);
+    letter-spacing: -1.2px;
+    margin-bottom: 10px;
+}
+
+.heading p {
+    color: var(--muted);
+    line-height: 1.6;
+    font-size: 0.96rem;
+}
+
+.card {
+    background: linear-gradient(
+        145deg,
+        rgba(15, 23, 42, 0.96),
+        rgba(8, 16, 31, 0.98)
+    );
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 32px;
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.alert {
+    display: none;
+    border-radius: 12px;
+    padding: 13px 14px;
+    margin-bottom: 20px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+.alert.error {
+    display: block;
+    background: rgba(239, 68, 68, 0.09);
+    border: 1px solid rgba(248, 113, 113, 0.22);
+    color: #fca5a5;
+}
+
+.alert.success {
+    display: block;
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(74, 222, 128, 0.20);
+    color: #86efac;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #e2e8f0;
+    font-size: 0.88rem;
+    font-weight: 650;
+}
+
+.input-wrap {
+    position: relative;
+}
+
+input {
+    width: 100%;
+    height: 52px;
+    padding: 0 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    background: rgba(2, 6, 23, 0.7);
+    color: var(--text);
+    outline: none;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input::placeholder {
+    color: #64748b;
+}
+
+input:focus {
+    border-color: rgba(56, 189, 248, 0.65);
+    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.08);
+}
+
+.password-input {
+    padding-right: 74px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 650;
+    padding: 6px;
+}
+
+.toggle-password:hover {
+    color: white;
+}
+
+.form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2px 0 24px;
+}
+
+.remember {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.82rem;
+    cursor: pointer;
+}
+
+.remember input {
+    width: 15px;
+    height: 15px;
+    accent-color: var(--accent-2);
+}
+
+.forgot {
+    color: var(--accent);
+    font-size: 0.82rem;
+}
+
+.login-btn {
+    width: 100%;
+    height: 52px;
+    border: 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    color: white;
+    font-size: 0.96rem;
+    font-weight: 750;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.20);
+}
+
+.login-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 32px rgba(37, 99, 235, 0.28);
+}
+
+.login-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 25px 0;
+    color: #64748b;
+    font-size: 0.78rem;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.register-text {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.88rem;
+}
+
+.register-text a {
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.register-text a:hover {
+    text-decoration: underline;
+}
+
+.security-note {
+    margin-top: 22px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    color: #64748b;
+    font-size: 0.76rem;
+    line-height: 1.5;
+    text-align: center;
+    justify-content: center;
+}
+
+.security-icon {
+    color: var(--success);
+    font-size: 0.9rem;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #475569;
+    font-size: 0.76rem;
+}
+
+@media (max-width: 520px) {
+    .topbar {
+        padding: 18px 5%;
+    }
+
+    .back-link {
+        display: none;
+    }
+
+    main {
+        padding: 25px 16px 50px;
+    }
+
+    .card {
+        padding: 24px 20px;
+        border-radius: 18px;
+    }
+
+    .heading {
+        margin-bottom: 22px;
+    }
+
+    .heading h1 {
+        font-size: 2rem;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <a href="index.html" class="logo" aria-label="PrimePay home">
+        <span class="logo-mark">P</span>
+        <span>PrimePay</span>
+    </a>
+
+    <a href="index.html" class="back-link">← Back to PrimePay</a>
+</header>
+
+<main>
+    <div class="login-wrapper">
+
+        <div class="heading">
+            <h1>Welcome back</h1>
+            <p>Sign in to your PrimePay account and continue managing your payment infrastructure.</p>
+        </div>
+
+        <section class="card">
+
+            <div id="alert" class="alert"></div>
+
+            <form id="loginForm" novalidate>
+
+                <div class="form-group">
+                    <label for="email">Email address</label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+
+                    <div class="input-wrap">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="password-input"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            id="togglePassword"
+                        >
+                            Show
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-footer">
+                    <label class="remember">
+                        <input type="checkbox" id="remember">
+                        <span>Remember me</span>
+                    </label>
+
+                    <span class="forgot">Password recovery coming soon</span>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">
+                    Sign in
+                </button>
+
+            </form>
+
+            <div class="divider">
+                <span>PrimePay</span>
+            </div>
+
+            <p class="register-text">
+                Don't have an account?
+                <a href="register.html">Create an account</a>
+            </p>
+
+        </section>
+
+        <div class="security-note">
+            <span class="security-icon">●</span>
+            <span>Your session is authenticated through the PrimePay API.</span>
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    © <span id="year"></span> PrimePay. All rights reserved.
+</footer>
+
+<script>
+const API_URL = "http://localhost:5001/api/v1";
+
+const form = document.getElementById("loginForm");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const loginBtn = document.getElementById("loginBtn");
+const alertBox = document.getElementById("alert");
+const togglePassword = document.getElementById("togglePassword");
+
+document.getElementById("year").textContent = new Date().getFullYear();
+
+function showAlert(message, type = "error") {
+    alertBox.textContent = message;
+    alertBox.className = "alert " + type;
+}
+
+function clearAlert() {
+    alertBox.textContent = "";
+    alertBox.className = "alert";
+}
+
+togglePassword.addEventListener("click", () => {
+    const isPassword = passwordInput.type === "password";
+
+    passwordInput.type = isPassword ? "text" : "password";
+    togglePassword.textContent = isPassword ? "Hide" : "Show";
+});
+
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    clearAlert();
+
+    const email = emailInput.value.trim().toLowerCase();
+    const password = passwordInput.value;
+
+    if (!email) {
+        showAlert("Please enter your email address.");
+        emailInput.focus();
+        return;
+    }
+
+    if (!password) {
+        showAlert("Please enter your password.");
+        passwordInput.focus();
+        return;
+    }
+
+    if (!email.includes("@")) {
+        showAlert("Please enter a valid email address.");
+        emailInput.focus();
+        return;
+    }
+
+    loginBtn.disabled = true;
+    loginBtn.textContent = "Signing in...";
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+
+    try {
+        const response = await fetch(`${API_URL}/auth/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email,
+                password
+            }),
+            signal: controller.signal
+        });
+
+        let data = {};
+
+        try {
+            data = await response.json();
+        } catch {
+            throw new Error("The server returned an invalid response.");
+        }
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message || "Unable to sign in. Please check your credentials."
+            );
+        }
+
+        if (!data.token || !data.user) {
+            throw new Error("Login succeeded but the server returned incomplete account data.");
+        }
+
+        localStorage.setItem("primepay_token", data.token);
+        localStorage.setItem("primepay_user", JSON.stringify(data.user));
+
+        showAlert("Login successful. Redirecting...", "success");
+
+        setTimeout(() => {
+            if (data.user.role === "admin") {
+                window.location.href = "admin/dashboard.html";
+            } else {
+                window.location.href = "merchant/dashboard.html";
+            }
+        }, 500);
+
+    } catch (error) {
+        if (error.name === "AbortError") {
+            showAlert("The server took too long to respond. Please try again.");
+        } else if (error instanceof TypeError) {
+            showAlert("Unable to connect to the PrimePay API. Make sure the backend is running.");
+        } else {
+            showAlert(error.message || "Unable to sign in. Please try again.");
+        }
+
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Sign in";
+
+    } finally {
+        clearTimeout(timeout);
+    }
+});
+</script>
+
+</body>
+</html>

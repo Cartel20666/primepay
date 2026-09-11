@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PrimePay merchant customers">
+<title>PrimePay | Customers</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+ --bg:#020617;--sidebar:#050b18;--panel:#08101f;
+ --border:rgba(148,163,184,.14);--text:#f8fafc;
+ --muted:#94a3b8;--accent:#38bdf8;--blue:#2563eb;
+ --green:#4ade80
+}
+body{
+ min-height:100vh;background:var(--bg);color:var(--text);
+ font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit}
+.app{min-height:100vh;display:flex}
+
+.sidebar{
+ width:250px;position:fixed;inset:0 auto 0 0;z-index:50;
+ padding:22px 15px;background:rgba(5,11,24,.97);
+ border-right:1px solid var(--border);overflow-y:auto
+}
+.logo{
+ display:flex;align-items:center;gap:11px;padding:4px 10px 28px;
+ font-size:1.2rem;font-weight:800
+}
+.logo-mark{
+ width:38px;height:38px;display:grid;place-items:center;border-radius:11px;
+ background:linear-gradient(135deg,var(--blue),var(--accent));
+ box-shadow:0 8px 25px rgba(37,99,235,.23);font-weight:900
+}
+.nav-label{
+ padding:0 11px 8px;color:#475569;font-size:.67rem;font-weight:750;
+ text-transform:uppercase;letter-spacing:.1em
+}
+.nav{display:grid;gap:4px;margin-bottom:24px}
+.nav a,.logout-btn{
+ width:100%;display:flex;align-items:center;gap:12px;padding:11px 12px;
+ border:1px solid transparent;border-radius:10px;background:transparent;
+ color:var(--muted);cursor:pointer;text-align:left;font-size:.84rem
+}
+.nav a:hover,.logout-btn:hover{color:white;background:rgba(30,41,59,.5)}
+.nav a.active{
+ color:white;background:rgba(37,99,235,.12);
+ border-color:rgba(56,189,248,.1)
+}
+.nav-icon{width:20px;text-align:center}
+.sidebar-bottom{padding-top:18px;border-top:1px solid var(--border)}
+
+.main{width:calc(100% - 250px);margin-left:250px;min-height:100vh}
+.topbar{
+ height:74px;position:sticky;top:0;z-index:30;padding:0 30px;
+ display:flex;align-items:center;justify-content:space-between;
+ background:rgba(2,6,23,.85);backdrop-filter:blur(14px);
+ border-bottom:1px solid var(--border)
+}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.mobile-menu{
+ display:none;width:40px;height:40px;border:1px solid var(--border);
+ border-radius:10px;background:var(--panel);color:white;cursor:pointer
+}
+.page-title{font-size:.92rem;font-weight:750}
+.page-subtitle{margin-top:2px;color:var(--muted);font-size:.73rem}
+.account{display:flex;align-items:center;gap:10px}
+.account-info{text-align:right}
+.account-name{font-size:.8rem;font-weight:700}
+.account-role{margin-top:2px;color:var(--muted);font-size:.68rem}
+.avatar{
+ width:38px;height:38px;display:grid;place-items:center;border-radius:11px;
+ background:linear-gradient(135deg,#1d4ed8,#0ea5e9);
+ font-size:.78rem;font-weight:800
+}
+
+.content{max-width:1450px;padding:30px}
+.page-heading{margin-bottom:24px}
+.page-heading h1{
+ margin-bottom:7px;font-size:clamp(1.6rem,3vw,2.1rem);letter-spacing:-1px
+}
+.page-heading p{color:var(--muted);font-size:.84rem}
+
+.toolbar{
+ display:flex;align-items:center;justify-content:space-between;
+ gap:12px;margin-bottom:18px
+}
+.search{
+ flex:1;max-width:520px;height:45px;position:relative
+}
+.search input{
+ width:100%;height:100%;padding:0 15px 0 42px;
+ border:1px solid var(--border);border-radius:11px;
+ outline:none;background:var(--panel);color:white;font-size:.78rem
+}
+.search input::placeholder{color:#64748b}
+.search input:focus{
+ border-color:rgba(56,189,248,.5);
+ box-shadow:0 0 0 4px rgba(56,189,248,.06)
+}
+.search-icon{
+ position:absolute;left:15px;top:50%;transform:translateY(-50%);
+ color:#64748b;font-size:.8rem;pointer-events:none
+}
+.refresh{
+ height:45px;padding:0 15px;border:1px solid var(--border);
+ border-radius:10px;background:rgba(15,23,42,.7);
+ color:#cbd5e1;cursor:pointer;font-size:.77rem;font-weight:650
+}
+.refresh:hover{color:white;border-color:rgba(56,189,248,.3)}
+
+.panel{
+ overflow:hidden;border:1px solid var(--border);border-radius:18px;
+ background:linear-gradient(145deg,rgba(15,23,42,.88),rgba(8,16,31,.97))
+}
+.panel-head{
+ padding:18px 21px;display:flex;align-items:center;
+ justify-content:space-between;border-bottom:1px solid var(--border)
+}
+.panel-title{font-size:.9rem;font-weight:750}
+.count{color:var(--muted);font-size:.7rem}
+
+.table-wrap{overflow-x:auto}
+table{width:100%;min-width:760px;border-collapse:collapse}
+th{
+ padding:13px 18px;text-align:left;color:#64748b;font-size:.64rem;
+ text-transform:uppercase;letter-spacing:.07em;font-weight:750;
+ background:rgba(2,6,23,.25);border-bottom:1px solid var(--border)
+}
+td{
+ padding:16px 18px;border-bottom:1px solid rgba(148,163,184,.07);
+ color:#cbd5e1;font-size:.76rem
+}
+tbody tr:hover{background:rgba(30,41,59,.22)}
+tbody tr:last-child td{border-bottom:0}
+
+.customer{
+ display:flex;align-items:center;gap:11px
+}
+.customer-avatar{
+ width:34px;height:34px;display:grid;place-items:center;
+ flex:0 0 auto;border-radius:10px;
+ background:rgba(37,99,235,.13);color:#7dd3fc;
+ font-size:.7rem;font-weight:800
+}
+.customer-name{font-weight:700;color:#e2e8f0}
+.customer-contact{
+ margin-top:3px;color:#64748b;font-size:.64rem
+}
+.number{font-weight:700;color:#e2e8f0}
+.money{font-weight:750;color:white}
+
+.empty{
+ padding:70px 25px;text-align:center;color:var(--muted)
+}
+.empty-icon{
+ width:48px;height:48px;display:grid;place-items:center;margin:0 auto 14px;
+ border-radius:14px;background:rgba(56,189,248,.07);
+ color:var(--accent);font-size:1.05rem
+}
+.empty h3{margin-bottom:6px;color:#e2e8f0;font-size:.86rem}
+.empty p{font-size:.73rem;line-height:1.5}
+
+.loading{
+ padding:60px;text-align:center;color:var(--muted);font-size:.78rem
+}
+.error{
+ display:none;margin-bottom:18px;padding:13px 14px;
+ border:1px solid rgba(248,113,113,.2);border-radius:10px;
+ background:rgba(239,68,68,.07);color:#fca5a5;
+ font-size:.78rem;line-height:1.5
+}
+.error.show{display:block}
+
+@media(max-width:800px){
+ .sidebar{transform:translateX(-100%);transition:transform .25s ease}
+ .sidebar.open{transform:translateX(0);box-shadow:20px 0 50px rgba(0,0,0,.4)}
+ .main{width:100%;margin-left:0}
+ .mobile-menu{display:block}
+ .topbar{padding:0 18px}
+ .content{padding:22px 17px 40px}
+}
+@media(max-width:600px){
+ .toolbar{align-items:stretch;flex-direction:column}
+ .search{max-width:none}
+ .refresh{width:100%}
+ .account-info{display:none}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+
+<a href="dashboard.html" class="logo">
+    <span class="logo-mark">P</span>
+    <span>PrimePay</span>
+</a>
+
+<div class="nav-label">Workspace</div>
+
+<nav class="nav">
+
+<a href="dashboard.html">
+    <span class="nav-icon">⌂</span>
+    Dashboard
+</a>
+
+<a href="payments.html">
+    <span class="nav-icon">↗</span>
+    Payments
+</a>
+
+<a href="transactions.html">
+    <span class="nav-icon">≡</span>
+    Transactions
+</a>
+
+<a href="customers.html" class="active">
+    <span class="nav-icon">◎</span>
+    Customers
+</a>
+
+<a href="wallet.html">
+    <span class="nav-icon">▣</span>
+    Wallet
+</a>
+
+</nav>
+
+<div class="nav-label">Business</div>
+
+<nav class="nav">
+
+<a href="settings.html">
+    <span class="nav-icon">⚙</span>
+    Settings
+</a>
+
+</nav>
+
+<div class="sidebar-bottom">
+
+<button class="logout-btn" id="logoutBtn">
+    <span class="nav-icon">↪</span>
+    Sign out
+</button>
+
+</div>
+
+</aside>
+
+<section class="main">
+
+<header class="topbar">
+
+<div class="topbar-left">
+
+<button class="mobile-menu" id="mobileMenu">☰</button>
+
+<div>
+    <div class="page-title">Customers</div>
+    <div class="page-subtitle">Customer payment activity</div>
+</div>
+
+</div>
+
+<div class="account">
+
+<div class="account-info">
+    <div class="account-name" id="accountName">Loading...</div>
+    <div class="account-role">Merchant</div>
+</div>
+
+<div class="avatar" id="avatar">P</div>
+
+</div>
+
+</header>
+
+<main class="content">
+
+<section class="page-heading">
+
+<h1>Customers</h1>
+
+<p>
+    Search customers associated with your PrimePay payment activity.
+</p>
+
+</section>
+
+<div class="toolbar">
+
+<div class="search">
+    <span class="search-icon">⌕</span>
+    <input
+        type="search"
+        id="searchInput"
+        placeholder="Search by name, email or phone..."
+        autocomplete="off"
+    >
+</div>
+
+<button class="refresh" id="refreshBtn">
+    ↻ Refresh
+</button>
+
+</div>
+
+<div class="error" id="errorBox"></div>
+
+<section class="panel">
+
+<div class="panel-head">
+
+<div class="panel-title">
+    Customer directory
+</div>
+
+<div class="count" id="countLabel">
+    Loading...
+</div>
+
+</div>
+
+<div id="tableContainer">
+
+<div class="loading">
+    Loading customers...
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+</section>
+
+</div>
+
+<script>
+const API_URL = "http://localhost:5001/api/v1";
+const token = localStorage.getItem("primepay_token");
+
+if (!token) {
+    window.location.href = "../login.html";
+}
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const tableContainer =
+    document.getElementById("tableContainer");
+
+const errorBox =
+    document.getElementById("errorBox");
+
+const countLabel =
+    document.getElementById("countLabel");
+
+let searchTimer = null;
+
+function loadUser() {
+
+    try {
+
+        const user = JSON.parse(
+            localStorage.getItem("primepay_user") || "null"
+        );
+
+        if (!user) return;
+
+        const name = user.name || "Merchant";
+
+        document.getElementById(
+            "accountName"
+        ).textContent = name;
+
+        const initials = name
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0,2)
+            .map(
+                part =>
+                    part.charAt(0).toUpperCase()
+            )
+            .join("");
+
+        document.getElementById(
+            "avatar"
+        ).textContent =
+            initials || "P";
+
+    } catch {
+
+        document.getElementById(
+            "accountName"
+        ).textContent =
+            "Merchant";
+    }
+}
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+function formatAmount(amount,currency) {
+
+    const value = Number(amount);
+
+    if (!Number.isFinite(value)) {
+        return "—";
+    }
+
+    try {
+
+        return new Intl.NumberFormat(
+            "en-KE",
+            {
+                style:"currency",
+                currency:currency || "KES",
+                minimumFractionDigits:2
+            }
+        ).format(value);
+
+    } catch {
+
+        return `${currency || "KES"} ${value.toFixed(2)}`;
+    }
+}
+
+function initials(name) {
+
+    const value =
+        String(name || "")
+            .trim();
+
+    if (!value) {
+        return "C";
+    }
+
+    return value
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0,2)
+        .map(
+            part =>
+                part.charAt(0).toUpperCase()
+        )
+        .join("");
+}
+
+function renderCustomers(customers) {
+
+    if (
+        !Array.isArray(customers) ||
+        customers.length === 0
+    ) {
+
+        tableContainer.innerHTML = `
+            <div class="empty">
+
+                <div class="empty-icon">
+                    ◎
+                </div>
+
+                <h3>
+                    No customers found
+                </h3>
+
+                <p>
+                    No customers match your current search.
+                    PrimePay is not displaying placeholder records.
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+    const rows =
+        customers.map(customer => {
+
+            const name =
+                customer.customerName ||
+                "Unnamed customer";
+
+            const email =
+                customer.customerEmail ||
+                "";
+
+            const phone =
+                customer.customerPhone ||
+                "";
+
+            const contact =
+                email ||
+                phone ||
+                "No contact information";
+
+            const count =
+                Number(customer.paymentCount);
+
+            const paymentCount =
+                Number.isFinite(count)
+                    ? count
+                    : 0;
+
+            const total =
+                formatAmount(
+                    customer.totalAmount,
+                    customer.currency
+                );
+
+            return `
+                <tr>
+
+                    <td>
+
+                        <div class="customer">
+
+                            <div class="customer-avatar">
+                                ${escapeHtml(
+                                    initials(name)
+                                )}
+                            </div>
+
+                            <div>
+
+                                <div class="customer-name">
+                                    ${escapeHtml(name)}
+                                </div>
+
+                                <div class="customer-contact">
+                                    ${escapeHtml(contact)}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+                        <span class="number">
+                            ${paymentCount}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="money">
+                            ${escapeHtml(total)}
+                        </span>
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            customer.currency ||
+                            "—"
+                        )}
+                    </td>
+
+                </tr>
+            `;
+
+        }).join("");
+
+    tableContainer.innerHTML = `
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Customer</th>
+                        <th>Payments</th>
+                        <th>Total payment volume</th>
+                        <th>Currency</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    ${rows}
+                </tbody>
+
+            </table>
+
+        </div>
+    `;
+}
+
+async function loadCustomers() {
+
+    errorBox.classList.remove("show");
+
+    tableContainer.innerHTML = `
+        <div class="loading">
+            Loading customers...
+        </div>
+    `;
+
+    countLabel.textContent = "Loading...";
+
+    const search =
+        searchInput.value.trim();
+
+    const query =
+        new URLSearchParams();
+
+    if (search) {
+        query.set("search",search);
+    }
+
+    const controller =
+        new AbortController();
+
+    const timeout =
+        setTimeout(
+            () => controller.abort(),
+            15000
+        );
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/customers${
+                    query.toString()
+                        ? "?" + query.toString()
+                        : ""
+                }`,
+                {
+                    method:"GET",
+                    headers:{
+                        "Authorization":
+                            `Bearer ${token}`
+                    },
+                    signal:controller.signal
+                }
+            );
+
+        let data = {};
+
+        try {
+            data = await response.json();
+        } catch {
+            throw new Error(
+                "PrimePay returned an invalid response."
+            );
+        }
+
+        if (response.status === 401) {
+
+            localStorage.removeItem(
+                "primepay_token"
+            );
+
+            localStorage.removeItem(
+                "primepay_user"
+            );
+
+            window.location.href =
+                "../login.html";
+
+            return;
+        }
+
+        if (!response.ok || !data.success) {
+
+            throw new Error(
+                data.message ||
+                "Unable to load customers."
+            );
+        }
+
+        const customers =
+            Array.isArray(data.customers)
+                ? data.customers
+                : [];
+
+        renderCustomers(customers);
+
+        countLabel.textContent =
+            `${customers.length} customer${
+                customers.length === 1
+                    ? ""
+                    : "s"
+            }`;
+
+    } catch(error) {
+
+        if (error.name === "AbortError") {
+
+            errorBox.textContent =
+                "The customer request timed out. Check the PrimePay backend and try again.";
+
+        } else if (error instanceof TypeError) {
+
+            errorBox.textContent =
+                "Unable to connect to the PrimePay API.";
+
+        } else {
+
+            errorBox.textContent =
+                error.message ||
+                "Unable to load customers.";
+        }
+
+        errorBox.classList.add("show");
+
+        tableContainer.innerHTML = `
+            <div class="empty">
+
+                <div class="empty-icon">
+                    !
+                </div>
+
+                <h3>
+                    Customers unavailable
+                </h3>
+
+                <p>
+                    The customer directory could not be loaded.
+                </p>
+
+            </div>
+        `;
+
+        countLabel.textContent =
+            "Unavailable";
+
+    } finally {
+
+        clearTimeout(timeout);
+    }
+}
+
+searchInput.addEventListener(
+    "input",
+    () => {
+
+        clearTimeout(searchTimer);
+
+        searchTimer =
+            setTimeout(
+                loadCustomers,
+                350
+            );
+    }
+);
+
+document.getElementById(
+    "refreshBtn"
+).addEventListener(
+    "click",
+    loadCustomers
+);
+
+document.getElementById(
+    "mobileMenu"
+).addEventListener(
+    "click",
+    () => {
+
+        document
+            .getElementById("sidebar")
+            .classList.toggle("open");
+    }
+);
+
+document.getElementById(
+    "logoutBtn"
+).addEventListener(
+    "click",
+    () => {
+
+        localStorage.removeItem(
+            "primepay_token"
+        );
+
+        localStorage.removeItem(
+            "primepay_user"
+        );
+
+        window.location.href =
+            "../login.html";
+    }
+);
+
+loadUser();
+loadCustomers();
+</script>
+
+</body>
+</html>

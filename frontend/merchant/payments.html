@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Create and monitor PrimePay payments">
+<title>PrimePay | Payments</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #020617;
+    --sidebar: #050b18;
+    --panel: #08101f;
+    --panel2: #0b1629;
+    --border: rgba(148,163,184,.14);
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --accent: #38bdf8;
+    --accent2: #2563eb;
+    --green: #4ade80;
+    --yellow: #facc15;
+    --red: #f87171;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter,ui-sans-serif,system-ui,-apple-system,
+        BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+.app {
+    min-height: 100vh;
+    display: flex;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+    width: 250px;
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 50;
+    overflow-y: auto;
+    padding: 22px 15px;
+    background: rgba(5,11,24,.97);
+    border-right: 1px solid var(--border);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 4px 10px 28px;
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.logo-mark {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: linear-gradient(135deg,var(--accent2),var(--accent));
+    box-shadow: 0 8px 25px rgba(37,99,235,.23);
+    font-weight: 900;
+}
+
+.nav-label {
+    padding: 0 11px 8px;
+    color: #475569;
+    font-size: .67rem;
+    font-weight: 750;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+}
+
+.nav {
+    display: grid;
+    gap: 4px;
+    margin-bottom: 24px;
+}
+
+.nav a,
+.logout-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 12px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    text-align: left;
+    font-size: .84rem;
+    transition: .2s ease;
+}
+
+.nav a:hover,
+.logout-btn:hover {
+    color: white;
+    background: rgba(30,41,59,.5);
+}
+
+.nav a.active {
+    color: white;
+    background: rgba(37,99,235,.12);
+    border-color: rgba(56,189,248,.1);
+}
+
+.nav-icon {
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar-bottom {
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+}
+
+/* MAIN */
+
+.main {
+    width: calc(100% - 250px);
+    margin-left: 250px;
+    min-height: 100vh;
+}
+
+.topbar {
+    height: 74px;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(2,6,23,.85);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mobile-menu {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--panel);
+    color: white;
+    cursor: pointer;
+}
+
+.page-title {
+    font-size: .92rem;
+    font-weight: 750;
+}
+
+.page-subtitle {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: .73rem;
+}
+
+.account {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.account-info {
+    text-align: right;
+}
+
+.account-name {
+    font-size: .8rem;
+    font-weight: 700;
+}
+
+.account-role {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: .68rem;
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: linear-gradient(135deg,#1d4ed8,#0ea5e9);
+    font-size: .78rem;
+    font-weight: 800;
+}
+
+/* CONTENT */
+
+.content {
+    max-width: 1450px;
+    padding: 30px;
+}
+
+.page-heading {
+    margin-bottom: 25px;
+}
+
+.page-heading h1 {
+    margin-bottom: 7px;
+    font-size: clamp(1.6rem,3vw,2.1rem);
+    letter-spacing: -1px;
+}
+
+.page-heading p {
+    color: var(--muted);
+    font-size: .84rem;
+}
+
+/* LAYOUT */
+
+.payment-layout {
+    display: grid;
+    grid-template-columns: minmax(0,1.4fr) minmax(300px,.7fr);
+    gap: 20px;
+}
+
+.panel {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: linear-gradient(
+        145deg,
+        rgba(15,23,42,.88),
+        rgba(8,16,31,.97)
+    );
+}
+
+.panel-header {
+    padding: 19px 22px;
+    border-bottom: 1px solid var(--border);
+}
+
+.panel-title {
+    font-size: .92rem;
+    font-weight: 750;
+}
+
+.panel-description {
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: .72rem;
+    line-height: 1.5;
+}
+
+.panel-body {
+    padding: 22px;
+}
+
+/* FORM */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #e2e8f0;
+    font-size: .82rem;
+    font-weight: 650;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    border: 1px solid rgba(148,163,184,.18);
+    border-radius: 11px;
+    outline: none;
+    background: rgba(2,6,23,.72);
+    color: var(--text);
+    transition: .2s ease;
+}
+
+input,
+select {
+    height: 49px;
+    padding: 0 14px;
+}
+
+textarea {
+    min-height: 92px;
+    padding: 13px 14px;
+    resize: vertical;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #64748b;
+}
+
+select option {
+    background: #08101f;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: rgba(56,189,248,.65);
+    box-shadow: 0 0 0 4px rgba(56,189,248,.07);
+}
+
+.hint {
+    margin-top: 6px;
+    color: #64748b;
+    font-size: .68rem;
+    line-height: 1.45;
+}
+
+.currency-row {
+    display: grid;
+    grid-template-columns: 1fr 145px;
+    gap: 10px;
+}
+
+.provider-options {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 10px;
+}
+
+.provider-option {
+    position: relative;
+}
+
+.provider-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.provider-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 50px;
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid rgba(148,163,184,.15);
+    border-radius: 11px;
+    background: rgba(2,6,23,.45);
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.provider-label:hover {
+    border-color: rgba(56,189,248,.25);
+}
+
+.provider-option input:checked + .provider-label {
+    border-color: rgba(56,189,248,.55);
+    background: rgba(37,99,235,.1);
+    box-shadow: inset 0 0 0 1px rgba(56,189,248,.12);
+}
+
+.provider-logo {
+    width: 29px;
+    height: 29px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border-radius: 8px;
+    background: rgba(56,189,248,.09);
+    color: var(--accent);
+    font-size: .67rem;
+    font-weight: 800;
+}
+
+.provider-name {
+    font-size: .77rem;
+    font-weight: 700;
+}
+
+.provider-meta {
+    margin-top: 2px;
+    color: #64748b;
+    font-size: .62rem;
+}
+
+.alert {
+    display: none;
+    margin-bottom: 20px;
+    padding: 13px 14px;
+    border-radius: 11px;
+    font-size: .82rem;
+    line-height: 1.5;
+}
+
+.alert.error {
+    display: block;
+    color: #fca5a5;
+    background: rgba(239,68,68,.08);
+    border: 1px solid rgba(248,113,113,.2);
+}
+
+.alert.success {
+    display: block;
+    color: #86efac;
+    background: rgba(34,197,94,.08);
+    border: 1px solid rgba(74,222,128,.18);
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 22px;
+    margin-top: 5px;
+    border-top: 1px solid rgba(148,163,184,.08);
+}
+
+.reset-btn,
+.submit-btn {
+    height: 48px;
+    padding: 0 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: .82rem;
+    font-weight: 700;
+}
+
+.reset-btn {
+    border: 1px solid var(--border);
+    background: rgba(15,23,42,.5);
+    color: var(--muted);
+}
+
+.reset-btn:hover {
+    color: white;
+}
+
+.submit-btn {
+    min-width: 160px;
+    border: 0;
+    background: linear-gradient(135deg,var(--accent2),var(--accent));
+    color: white;
+    box-shadow: 0 10px 24px rgba(37,99,235,.2);
+    transition: .2s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-1px);
+}
+
+.submit-btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* INFO SIDE */
+
+.info-stack {
+    display: grid;
+    gap: 13px;
+}
+
+.info-card {
+    padding: 17px;
+    border: 1px solid rgba(148,163,184,.1);
+    border-radius: 13px;
+    background: rgba(2,6,23,.34);
+}
+
+.info-icon {
+    width: 35px;
+    height: 35px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 12px;
+    border-radius: 9px;
+    background: rgba(37,99,235,.11);
+    color: var(--accent);
+    font-weight: 800;
+}
+
+.info-card h3 {
+    margin-bottom: 5px;
+    font-size: .8rem;
+}
+
+.info-card p {
+    color: var(--muted);
+    font-size: .7rem;
+    line-height: 1.55;
+}
+
+.reference-box {
+    padding: 17px;
+    border-radius: 13px;
+    background:
+        radial-gradient(circle at top right,rgba(56,189,248,.09),transparent 50%),
+        rgba(14,165,233,.035);
+    border: 1px solid rgba(56,189,248,.11);
+}
+
+.reference-label {
+    color: #64748b;
+    font-size: .64rem;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+}
+
+.reference-value {
+    margin-top: 7px;
+    color: #cbd5e1;
+    font-family: ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size: .72rem;
+    word-break: break-all;
+}
+
+/* RESULT */
+
+.result {
+    display: none;
+    margin-top: 20px;
+}
+
+.result.show {
+    display: block;
+}
+
+.result-inner {
+    padding: 17px;
+    border: 1px solid rgba(74,222,128,.16);
+    border-radius: 13px;
+    background: rgba(34,197,94,.045);
+}
+
+.result-title {
+    color: #86efac;
+    font-size: .8rem;
+    font-weight: 750;
+    margin-bottom: 10px;
+}
+
+.result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.result-item {
+    padding: 10px;
+    border-radius: 9px;
+    background: rgba(2,6,23,.3);
+}
+
+.result-label {
+    color: #64748b;
+    font-size: .62rem;
+    margin-bottom: 4px;
+}
+
+.result-value {
+    color: #cbd5e1;
+    font-size: .72rem;
+    font-weight: 650;
+    word-break: break-word;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1050px) {
+    .payment-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 800px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform .25s ease;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 20px 0 50px rgba(0,0,0,.4);
+    }
+
+    .main {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .mobile-menu {
+        display: block;
+    }
+
+    .topbar {
+        padding: 0 18px;
+    }
+
+    .content {
+        padding: 22px 17px 40px;
+    }
+}
+
+@media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .full {
+        grid-column: auto;
+    }
+
+    .currency-row {
+        grid-template-columns: 1fr;
+    }
+
+    .provider-options {
+        grid-template-columns: 1fr;
+    }
+
+    .account-info {
+        display: none;
+    }
+
+    .panel-body {
+        padding: 18px;
+    }
+
+    .actions {
+        flex-direction: column-reverse;
+    }
+
+    .reset-btn,
+    .submit-btn {
+        width: 100%;
+    }
+
+    .result-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+
+    <a href="dashboard.html" class="logo">
+        <span class="logo-mark">P</span>
+        <span>PrimePay</span>
+    </a>
+
+    <div class="nav-label">Workspace</div>
+
+    <nav class="nav">
+
+        <a href="dashboard.html">
+            <span class="nav-icon">⌂</span>
+            Dashboard
+        </a>
+
+        <a href="payments.html" class="active">
+            <span class="nav-icon">↗</span>
+            Payments
+        </a>
+
+        <a href="transactions.html">
+            <span class="nav-icon">≡</span>
+            Transactions
+        </a>
+
+        <a href="customers.html">
+            <span class="nav-icon">◎</span>
+            Customers
+        </a>
+
+        <a href="wallet.html">
+            <span class="nav-icon">▣</span>
+            Wallet
+        </a>
+
+    </nav>
+
+    <div class="nav-label">Business</div>
+
+    <nav class="nav">
+
+        <a href="settings.html">
+            <span class="nav-icon">⚙</span>
+            Settings
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+
+        <button class="logout-btn" id="logoutBtn">
+            <span class="nav-icon">↪</span>
+            Sign out
+        </button>
+
+    </div>
+
+</aside>
+
+<section class="main">
+
+<header class="topbar">
+
+    <div class="topbar-left">
+
+        <button class="mobile-menu" id="mobileMenu">
+            ☰
+        </button>
+
+        <div>
+            <div class="page-title">Payments</div>
+            <div class="page-subtitle">
+                Create a payment through PrimePay
+            </div>
+        </div>
+
+    </div>
+
+    <div class="account">
+
+        <div class="account-info">
+            <div class="account-name" id="accountName">
+                Loading...
+            </div>
+
+            <div class="account-role">
+                Merchant
+            </div>
+        </div>
+
+        <div class="avatar" id="avatar">
+            P
+        </div>
+
+    </div>
+
+</header>
+
+<main class="content">
+
+<section class="page-heading">
+
+    <h1>Create payment</h1>
+
+    <p>
+        Initiate a payment using one of your configured PrimePay providers.
+    </p>
+
+</section>
+
+<section class="payment-layout">
+
+<div>
+
+<div class="panel">
+
+    <div class="panel-header">
+
+        <div class="panel-title">
+            Payment details
+        </div>
+
+        <div class="panel-description">
+            Fields marked by the payment API are validated before processing.
+        </div>
+
+    </div>
+
+    <div class="panel-body">
+
+        <div id="alert" class="alert"></div>
+
+        <form id="paymentForm" novalidate>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label for="amount">
+                        Amount
+                    </label>
+
+                    <input
+                        type="number"
+                        id="amount"
+                        min="1"
+                        step="0.01"
+                        placeholder="0.00"
+                        required
+                    >
+
+                    <div class="hint">
+                        Minimum payment amount is 1 unit of the selected currency.
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="currency">
+                        Currency
+                    </label>
+
+                    <select id="currency">
+                        <option value="KES" selected>
+                            KES - Kenyan Shilling
+                        </option>
+                        <option value="USD">
+                            USD - US Dollar
+                        </option>
+                        <option value="EUR">
+                            EUR - Euro
+                        </option>
+                        <option value="GBP">
+                            GBP - British Pound
+                        </option>
+                    </select>
+
+                </div>
+
+                <div class="form-group full">
+
+                    <label>
+                        Payment provider
+                    </label>
+
+                    <div class="provider-options">
+
+                        <div class="provider-option">
+
+                            <input
+                                type="radio"
+                                id="providerMpesa"
+                                name="provider"
+                                value="mpesa"
+                                checked
+                            >
+
+                            <label
+                                class="provider-label"
+                                for="providerMpesa"
+                            >
+                                <span class="provider-logo">
+                                    MP
+                                </span>
+
+                                <span>
+                                    <span class="provider-name">
+                                        M-Pesa
+                                    </span>
+
+                                    <span class="provider-meta">
+                                        Mobile money
+                                    </span>
+                                </span>
+                            </label>
+
+                        </div>
+
+                        <div class="provider-option">
+
+                            <input
+                                type="radio"
+                                id="providerStripe"
+                                name="provider"
+                                value="stripe"
+                            >
+
+                            <label
+                                class="provider-label"
+                                for="providerStripe"
+                            >
+                                <span class="provider-logo">
+                                    ST
+                                </span>
+
+                                <span>
+                                    <span class="provider-name">
+                                        Stripe
+                                    </span>
+
+                                    <span class="provider-meta">
+                                        Card payments
+                                    </span>
+                                </span>
+                            </label>
+
+                        </div>
+
+                        <div class="provider-option">
+
+                            <input
+                                type="radio"
+                                id="providerPaypal"
+                                name="provider"
+                                value="paypal"
+                            >
+
+                            <label
+                                class="provider-label"
+                                for="providerPaypal"
+                            >
+                                <span class="provider-logo">
+                                    PP
+                                </span>
+
+                                <span>
+                                    <span class="provider-name">
+                                        PayPal
+                                    </span>
+
+                                    <span class="provider-meta">
+                                        Digital payments
+                                    </span>
+                                </span>
+                            </label>
+
+                        </div>
+
+                        <div class="provider-option">
+
+                            <input
+                                type="radio"
+                                id="providerDlocal"
+                                name="provider"
+                                value="dlocal"
+                            >
+
+                            <label
+                                class="provider-label"
+                                for="providerDlocal"
+                            >
+                                <span class="provider-logo">
+                                    DL
+                                </span>
+
+                                <span>
+                                    <span class="provider-name">
+                                        dLocal
+                                    </span>
+
+                                    <span class="provider-meta">
+                                        Global payments
+                                    </span>
+                                </span>
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="paymentMethod">
+                        Payment method
+                    </label>
+
+                    <input
+                        type="text"
+                        id="paymentMethod"
+                        placeholder="e.g. mobile_money"
+                        maxlength="80"
+                    >
+
+                    <div class="hint">
+                        Provider-specific method identifier.
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="country">
+                        Country
+                    </label>
+
+                    <input
+                        type="text"
+                        id="country"
+                        value="KE"
+                        maxlength="2"
+                        placeholder="KE"
+                    >
+
+                    <div class="hint">
+                        Two-letter country code.
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="customerName">
+                        Customer name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="customerName"
+                        placeholder="Customer full name"
+                        maxlength="150"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="customerEmail">
+                        Customer email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="customerEmail"
+                        placeholder="customer@example.com"
+                        maxlength="160"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="customerPhone">
+                        Customer phone
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="customerPhone"
+                        placeholder="+254..."
+                        maxlength="40"
+                    >
+
+                </div>
+
+                <div class="form-group full">
+
+                    <label for="description">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        maxlength="500"
+                        placeholder="What is this payment for?"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+            <div class="actions">
+
+                <button
+                    type="button"
+                    class="reset-btn"
+                    id="resetBtn"
+                >
+                    Clear
+                </button>
+
+                <button
+                    type="submit"
+                    class="submit-btn"
+                    id="submitBtn"
+                >
+                    Create payment
+                </button>
+
+            </div>
+
+        </form>
+
+        <div class="result" id="result">
+
+            <div class="result-inner">
+
+                <div class="result-title">
+                    Payment created
+                </div>
+
+                <div class="result-grid">
+
+                    <div class="result-item">
+                        <div class="result-label">
+                            Reference
+                        </div>
+
+                        <div
+                            class="result-value"
+                            id="resultReference"
+                        >
+                            —
+                        </div>
+                    </div>
+
+                    <div class="result-item">
+                        <div class="result-label">
+                            Status
+                        </div>
+
+                        <div
+                            class="result-value"
+                            id="resultStatus"
+                        >
+                            —
+                        </div>
+                    </div>
+
+                    <div class="result-item">
+                        <div class="result-label">
+                            Amount
+                        </div>
+
+                        <div
+                            class="result-value"
+                            id="resultAmount"
+                        >
+                            —
+                        </div>
+                    </div>
+
+                    <div class="result-item">
+                        <div class="result-label">
+                            Provider
+                        </div>
+
+                        <div
+                            class="result-value"
+                            id="resultProvider"
+                        >
+                            —
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+<aside class="info-stack">
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div class="panel-title">
+                Payment lifecycle
+            </div>
+
+            <div class="panel-description">
+                PrimePay tracks the payment after creation.
+            </div>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="info-stack">
+
+                <div class="info-card">
+
+                    <div class="info-icon">
+                        01
+                    </div>
+
+                    <h3>
+                        Create
+                    </h3>
+
+                    <p>
+                        PrimePay validates the request and creates a unique
+                        payment reference.
+                    </p>
+
+                </div>
+
+                <div class="info-card">
+
+                    <div class="info-icon">
+                        02
+                    </div>
+
+                    <h3>
+                        Process
+                    </h3>
+
+                    <p>
+                        The selected provider receives the payment request
+                        through the provider adapter.
+                    </p>
+
+                </div>
+
+                <div class="info-card">
+
+                    <div class="info-icon">
+                        03
+                    </div>
+
+                    <h3>
+                        Verify
+                    </h3>
+
+                    <p>
+                        Provider verification and webhook processing determine
+                        the authoritative payment state.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="reference-box">
+
+        <div class="reference-label">
+            Idempotency
+        </div>
+
+        <div class="reference-value" id="idempotencyPreview">
+            Generating request key...
+        </div>
+
+    </div>
+
+</aside>
+
+</section>
+
+</main>
+
+</section>
+
+</div>
+
+<script>
+const API_URL = "http://localhost:5001/api/v1";
+
+const token = localStorage.getItem("primepay_token");
+
+if (!token) {
+    window.location.href = "../login.html";
+}
+
+const form = document.getElementById("paymentForm");
+const submitBtn = document.getElementById("submitBtn");
+const resetBtn = document.getElementById("resetBtn");
+const alertBox = document.getElementById("alert");
+const resultBox = document.getElementById("result");
+
+let currentIdempotencyKey = createIdempotencyKey();
+
+document.getElementById("idempotencyPreview").textContent =
+    currentIdempotencyKey;
+
+function createIdempotencyKey() {
+    if (window.crypto && crypto.randomUUID) {
+        return crypto.randomUUID();
+    }
+
+    return "pp_" +
+        Date.now().toString(36) +
+        "_" +
+        Math.random().toString(36).slice(2) +
+        Math.random().toString(36).slice(2);
+}
+
+function showAlert(message, type = "error") {
+    alertBox.textContent = message;
+    alertBox.className = "alert " + type;
+}
+
+function clearAlert() {
+    alertBox.textContent = "";
+    alertBox.className = "alert";
+}
+
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function formatAmount(amount, currency) {
+    const value = Number(amount);
+
+    if (!Number.isFinite(value)) {
+        return "—";
+    }
+
+    try {
+        return new Intl.NumberFormat("en-KE", {
+            style: "currency",
+            currency: currency || "KES",
+            minimumFractionDigits: 2
+        }).format(value);
+    } catch {
+        return `${currency || "KES"} ${value.toFixed(2)}`;
+    }
+}
+
+function loadUser() {
+    try {
+        const user = JSON.parse(
+            localStorage.getItem("primepay_user") || "null"
+        );
+
+        if (!user) {
+            return;
+        }
+
+        const name = user.name || "Merchant";
+
+        document.getElementById("accountName").textContent = name;
+
+        const initials = name
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0,2)
+            .map(part => part.charAt(0).toUpperCase())
+            .join("");
+
+        document.getElementById("avatar").textContent =
+            initials || "P";
+
+    } catch {
+        document.getElementById("accountName").textContent =
+            "Merchant";
+    }
+}
+
+function getSelectedProvider() {
+    const selected = document.querySelector(
+        'input[name="provider"]:checked'
+    );
+
+    return selected ? selected.value : "";
+}
+
+function resetResult() {
+    resultBox.classList.remove("show");
+
+    document.getElementById("resultReference").textContent = "—";
+    document.getElementById("resultStatus").textContent = "—";
+    document.getElementById("resultAmount").textContent = "—";
+    document.getElementById("resultProvider").textContent = "—";
+}
+
+function resetForm() {
+    form.reset();
+
+    document.getElementById("currency").value = "KES";
+    document.getElementById("country").value = "KE";
+    document.getElementById("providerMpesa").checked = true;
+
+    currentIdempotencyKey = createIdempotencyKey();
+
+    document.getElementById("idempotencyPreview").textContent =
+        currentIdempotencyKey;
+
+    clearAlert();
+    resetResult();
+}
+
+function validateEmail(email) {
+    if (!email) {
+        return true;
+    }
+
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+form.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    clearAlert();
+    resetResult();
+
+    const amount = Number(
+        document.getElementById("amount").value
+    );
+
+    const currency =
+        document.getElementById("currency").value;
+
+    const provider =
+        getSelectedProvider();
+
+    const paymentMethod =
+        document.getElementById("paymentMethod").value.trim();
+
+    const country =
+        document.getElementById("country").value
+            .trim()
+            .toUpperCase();
+
+    const customerName =
+        document.getElementById("customerName").value.trim();
+
+    const customerEmail =
+        document.getElementById("customerEmail").value
+            .trim()
+            .toLowerCase();
+
+    const customerPhone =
+        document.getElementById("customerPhone").value.trim();
+
+    const description =
+        document.getElementById("description").value.trim();
+
+    if (!Number.isFinite(amount) || amount < 1) {
+        showAlert(
+            "Enter a valid payment amount of at least 1."
+        );
+
+        document.getElementById("amount").focus();
+        return;
+    }
+
+    if (!provider) {
+        showAlert("Select a payment provider.");
+        return;
+    }
+
+    if (!country || country.length !== 2) {
+        showAlert(
+            "Country must be a two-letter country code, such as KE."
+        );
+
+        document.getElementById("country").focus();
+        return;
+    }
+
+    if (!validateEmail(customerEmail)) {
+        showAlert("Enter a valid customer email address.");
+        document.getElementById("customerEmail").focus();
+        return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Creating payment...";
+
+    const controller = new AbortController();
+
+    const timeout = setTimeout(() => {
+        controller.abort();
+    }, 15000);
+
+    try {
+        const response = await fetch(
+            `${API_URL}/payments`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                    "Idempotency-Key": currentIdempotencyKey
+                },
+                body: JSON.stringify({
+                    amount,
+                    currency,
+                    country,
+                    provider,
+                    paymentMethod,
+                    customerName,
+                    customerEmail,
+                    customerPhone,
+                    description
+                }),
+                signal: controller.signal
+            }
+        );
+
+        let data = {};
+
+        try {
+            data = await response.json();
+        } catch {
+            throw new Error(
+                "The PrimePay server returned an invalid response."
+            );
+        }
+
+        if (response.status === 401) {
+            localStorage.removeItem("primepay_token");
+            localStorage.removeItem("primepay_user");
+
+            window.location.href = "../login.html";
+            return;
+        }
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message ||
+                "PrimePay could not create the payment."
+            );
+        }
+
+        const payment = data.payment || {};
+        const actualCurrency =
+            payment.currency || currency;
+
+        document.getElementById("resultReference").textContent =
+            payment.reference || "—";
+
+        document.getElementById("resultStatus").textContent =
+            payment.status || "pending";
+
+        document.getElementById("resultAmount").textContent =
+            formatAmount(
+                payment.amount ?? amount,
+                actualCurrency
+            );
+
+        document.getElementById("resultProvider").textContent =
+            payment.provider || provider;
+
+        resultBox.classList.add("show");
+
+        if (data.idempotentReplay) {
+            showAlert(
+                "The existing payment was returned for this idempotency key.",
+                "success"
+            );
+        } else {
+            showAlert(
+                "Payment created successfully.",
+                "success"
+            );
+        }
+
+        /*
+         * A successful request consumes this idempotency key.
+         * Generate a new one for the next independent payment.
+         */
+        currentIdempotencyKey = createIdempotencyKey();
+
+        document.getElementById("idempotencyPreview").textContent =
+            currentIdempotencyKey;
+
+    } catch (error) {
+
+        if (error.name === "AbortError") {
+            showAlert(
+                "The payment request timed out. Check the transaction status before trying again."
+            );
+        } else if (error instanceof TypeError) {
+            showAlert(
+                "Unable to connect to the PrimePay API. Make sure the backend is running."
+            );
+        } else {
+            showAlert(
+                error.message ||
+                "Unable to create the payment."
+            );
+        }
+
+    } finally {
+
+        clearTimeout(timeout);
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Create payment";
+    }
+});
+
+resetBtn.addEventListener("click", resetForm);
+
+document.getElementById("mobileMenu").addEventListener(
+    "click",
+    () => {
+        document
+            .getElementById("sidebar")
+            .classList.toggle("open");
+    }
+);
+
+document.getElementById("logoutBtn").addEventListener(
+    "click",
+    () => {
+        localStorage.removeItem("primepay_token");
+        localStorage.removeItem("primepay_user");
+
+        window.location.href = "../login.html";
+    }
+);
+
+loadUser();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PrimePay Admin | Settlements</title>
+
+<style>
+:root{
+    --bg:#050914;
+    --bg2:#08101f;
+    --panel:rgba(12,22,40,.82);
+    --panel2:rgba(16,29,51,.92);
+    --border:rgba(148,163,184,.14);
+    --text:#f8fafc;
+    --muted:#94a3b8;
+    --soft:#cbd5e1;
+    --accent:#38bdf8;
+    --accent2:#818cf8;
+    --success:#22c55e;
+    --warning:#f59e0b;
+    --danger:#ef4444;
+    --shadow:0 20px 60px rgba(0,0,0,.28);
+    --radius:20px;
+}
+
+*{box-sizing:border-box}
+
+html,body{
+    margin:0;
+    min-height:100%;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+body.light{
+    --bg:#eef3f9;
+    --bg2:#f8fafc;
+    --panel:rgba(255,255,255,.9);
+    --panel2:#fff;
+    --border:rgba(15,23,42,.11);
+    --text:#0f172a;
+    --muted:#64748b;
+    --soft:#334155;
+    --shadow:0 18px 45px rgba(15,23,42,.10);
+}
+
+button,input,select{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+a{
+    color:inherit;
+    text-decoration:none;
+}
+
+.app{
+    min-height:100vh;
+    display:flex;
+}
+
+.sidebar{
+    width:270px;
+    min-width:270px;
+    position:fixed;
+    inset:0 auto 0 0;
+    background:rgba(4,10,20,.96);
+    border-right:1px solid var(--border);
+    padding:22px 16px;
+    z-index:50;
+    transition:.25s ease;
+    overflow-y:auto;
+}
+
+body.light .sidebar{
+    background:#0b1424;
+}
+
+.sidebar.collapsed{
+    width:82px;
+    min-width:82px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:6px 8px 24px;
+}
+
+.brand-mark{
+    width:42px;
+    height:42px;
+    border-radius:13px;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:#020617;
+    font-weight:900;
+}
+
+.brand strong{
+    display:block;
+    font-size:16px;
+}
+
+.brand span{
+    display:block;
+    color:#64748b;
+    font-size:11px;
+    margin-top:2px;
+}
+
+.sidebar.collapsed .brand-copy,
+.sidebar.collapsed .nav-label,
+.sidebar.collapsed .nav-section,
+.sidebar.collapsed .sidebar-footer{
+    display:none;
+}
+
+.nav-section{
+    color:#64748b;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    padding:15px 11px 8px;
+}
+
+.nav-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 12px;
+    border-radius:12px;
+    color:#94a3b8;
+    margin:3px 0;
+    transition:.2s;
+}
+
+.nav-item:hover{
+    background:rgba(148,163,184,.08);
+    color:#fff;
+}
+
+.nav-item.active{
+    color:#fff;
+    background:linear-gradient(90deg,rgba(56,189,248,.16),rgba(129,140,248,.08));
+    border:1px solid rgba(56,189,248,.14);
+}
+
+.nav-icon{
+    width:22px;
+    text-align:center;
+    flex:none;
+}
+
+.sidebar-footer{
+    margin-top:25px;
+    padding:14px;
+    border:1px solid var(--border);
+    border-radius:15px;
+    color:#64748b;
+    font-size:11px;
+}
+
+.main{
+    margin-left:270px;
+    width:calc(100% - 270px);
+    min-width:0;
+    transition:.25s ease;
+}
+
+.sidebar.collapsed + .main{
+    margin-left:82px;
+    width:calc(100% - 82px);
+}
+
+.topbar{
+    height:72px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 28px;
+    border-bottom:1px solid var(--border);
+    background:rgba(5,9,20,.72);
+    backdrop-filter:blur(18px);
+    position:sticky;
+    top:0;
+    z-index:30;
+}
+
+body.light .topbar{
+    background:rgba(248,250,252,.84);
+}
+
+.top-left,.top-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.icon-btn{
+    width:40px;
+    height:40px;
+    border-radius:11px;
+    border:1px solid var(--border);
+    background:var(--panel);
+    color:var(--soft);
+}
+
+.icon-btn:hover{
+    border-color:rgba(56,189,248,.35);
+}
+
+.user-pill{
+    padding:8px 12px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    color:var(--soft);
+    font-size:13px;
+}
+
+.content{
+    padding:30px;
+    max-width:1700px;
+    margin:auto;
+}
+
+.hero{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    align-items:flex-start;
+    margin-bottom:24px;
+}
+
+.eyebrow{
+    color:var(--accent);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.15em;
+    font-weight:800;
+    margin-bottom:9px;
+}
+
+h1{
+    margin:0;
+    font-size:clamp(27px,3vw,43px);
+    line-height:1.05;
+}
+
+.hero p{
+    color:var(--muted);
+    max-width:760px;
+    line-height:1.65;
+    margin:12px 0 0;
+}
+
+.hero-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    border:1px solid var(--border);
+    background:var(--panel);
+    color:var(--text);
+    padding:10px 14px;
+    border-radius:11px;
+    font-weight:700;
+}
+
+.btn:hover{
+    border-color:rgba(56,189,248,.35);
+}
+
+.btn.primary{
+    border:0;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:#020617;
+}
+
+.notice{
+    border:1px solid rgba(245,158,11,.22);
+    background:rgba(245,158,11,.07);
+    padding:17px 19px;
+    border-radius:16px;
+    margin-bottom:22px;
+}
+
+.notice strong{
+    display:block;
+    color:#fbbf24;
+    margin-bottom:5px;
+}
+
+.notice span{
+    color:var(--muted);
+    line-height:1.55;
+    font-size:13px;
+}
+
+.grid{
+    display:grid;
+    gap:16px;
+}
+
+.stats{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    margin-bottom:22px;
+}
+
+.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+}
+
+.stat{
+    padding:20px;
+}
+
+.stat-label{
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:10px;
+}
+
+.stat-value{
+    font-size:25px;
+    font-weight:850;
+    letter-spacing:-.03em;
+}
+
+.stat-note{
+    color:#64748b;
+    font-size:11px;
+    margin-top:7px;
+}
+
+.two{
+    grid-template-columns:minmax(0,1.55fr) minmax(300px,.8fr);
+    margin-bottom:22px;
+}
+
+.section{
+    padding:22px;
+}
+
+.section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:15px;
+    margin-bottom:18px;
+}
+
+.section-title{
+    font-size:16px;
+    font-weight:800;
+}
+
+.section-subtitle{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.5;
+    margin-top:5px;
+}
+
+.badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 9px;
+    border-radius:999px;
+    font-size:10px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+}
+
+.badge.green{
+    color:#86efac;
+    background:rgba(34,197,94,.1);
+}
+
+.badge.amber{
+    color:#fcd34d;
+    background:rgba(245,158,11,.1);
+}
+
+.badge.red{
+    color:#fca5a5;
+    background:rgba(239,68,68,.1);
+}
+
+.badge.blue{
+    color:#7dd3fc;
+    background:rgba(56,189,248,.1);
+}
+
+.flow{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+
+.flow-item{
+    padding:17px;
+    border:1px solid var(--border);
+    border-radius:15px;
+    background:rgba(148,163,184,.035);
+}
+
+.flow-number{
+    color:var(--accent);
+    font-weight:900;
+    font-size:11px;
+}
+
+.flow-title{
+    font-weight:800;
+    margin:8px 0 5px;
+}
+
+.flow-text{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.5;
+}
+
+.kv{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:12px;
+    padding:12px 0;
+    border-bottom:1px solid var(--border);
+}
+
+.kv:last-child{
+    border-bottom:0;
+}
+
+.kv span:first-child{
+    color:var(--muted);
+    font-size:12px;
+}
+
+.kv span:last-child{
+    font-weight:700;
+    font-size:12px;
+    text-align:right;
+}
+
+.controls{
+    display:flex;
+    gap:9px;
+    flex-wrap:wrap;
+    margin-bottom:17px;
+}
+
+.input,.select{
+    background:var(--bg2);
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:10px 12px;
+    min-height:40px;
+    outline:none;
+}
+
+.input:focus,.select:focus{
+    border-color:rgba(56,189,248,.5);
+}
+
+.search{
+    min-width:250px;
+    flex:1;
+}
+
+.table-wrap{
+    overflow:auto;
+    border:1px solid var(--border);
+    border-radius:15px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1050px;
+}
+
+th,td{
+    text-align:left;
+    padding:13px 14px;
+    border-bottom:1px solid var(--border);
+    white-space:nowrap;
+}
+
+th{
+    color:#64748b;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    background:rgba(148,163,184,.035);
+}
+
+td{
+    font-size:12px;
+    color:var(--soft);
+}
+
+tr:last-child td{
+    border-bottom:0;
+}
+
+.ref{
+    color:var(--text);
+    font-weight:800;
+}
+
+.money{
+    font-variant-numeric:tabular-nums;
+    font-weight:750;
+}
+
+.muted{
+    color:var(--muted);
+}
+
+.empty{
+    padding:35px;
+    text-align:center;
+    color:var(--muted);
+}
+
+.pagination{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-top:14px;
+    color:var(--muted);
+    font-size:12px;
+}
+
+.pagination-actions{
+    display:flex;
+    gap:8px;
+}
+
+.capabilities{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    margin-bottom:22px;
+}
+
+.cap{
+    padding:19px;
+}
+
+.cap-icon{
+    width:38px;
+    height:38px;
+    display:grid;
+    place-items:center;
+    border-radius:11px;
+    background:rgba(56,189,248,.09);
+    color:var(--accent);
+    margin-bottom:13px;
+}
+
+.cap h3{
+    margin:0 0 7px;
+    font-size:14px;
+}
+
+.cap p{
+    margin:0;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.6;
+}
+
+.controls-panel{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.toggle{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:10px 12px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    color:var(--soft);
+    font-size:12px;
+    background:var(--panel);
+}
+
+.toggle input{
+    accent-color:var(--accent);
+}
+
+.detail{
+    margin-top:17px;
+    padding:17px;
+    border:1px solid var(--border);
+    border-radius:15px;
+    background:rgba(148,163,184,.035);
+    display:none;
+}
+
+.detail.open{
+    display:block;
+}
+
+.detail-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:10px;
+}
+
+.detail-item{
+    padding:12px;
+    border:1px solid var(--border);
+    border-radius:11px;
+}
+
+.detail-item small{
+    color:#64748b;
+    display:block;
+    margin-bottom:5px;
+}
+
+.detail-item strong{
+    word-break:break-word;
+    font-size:12px;
+}
+
+.hidden-panel{
+    display:none!important;
+}
+
+.loading{
+    opacity:.6;
+    pointer-events:none;
+}
+
+.toast{
+    position:fixed;
+    right:22px;
+    bottom:22px;
+    z-index:100;
+    padding:13px 16px;
+    background:#0f172a;
+    border:1px solid rgba(148,163,184,.2);
+    color:#fff;
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    transform:translateY(20px);
+    opacity:0;
+    pointer-events:none;
+    transition:.2s;
+    max-width:360px;
+    font-size:12px;
+}
+
+.toast.show{
+    transform:translateY(0);
+    opacity:1;
+}
+
+.mobile-overlay{
+    display:none;
+}
+
+body.compact td,
+body.compact th{
+    padding-top:8px;
+    padding-bottom:8px;
+}
+
+@media(max-width:1150px){
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .two{
+        grid-template-columns:1fr;
+    }
+
+    .capabilities{
+        grid-template-columns:1fr;
+    }
+
+    .detail-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:850px){
+    .sidebar{
+        transform:translateX(-100%);
+    }
+
+    .sidebar.open{
+        transform:translateX(0);
+    }
+
+    .main,
+    .sidebar.collapsed + .main{
+        margin-left:0;
+        width:100%;
+    }
+
+    .mobile-overlay{
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.55);
+        z-index:40;
+    }
+
+    .mobile-overlay.show{
+        display:block;
+    }
+
+    .content{
+        padding:20px 15px;
+    }
+
+    .topbar{
+        padding:0 15px;
+    }
+
+    .hero{
+        flex-direction:column;
+    }
+
+    .flow{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+@media(max-width:600px){
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .flow{
+        grid-template-columns:1fr;
+    }
+
+    .detail-grid{
+        grid-template-columns:1fr;
+    }
+
+    .user-pill{
+        display:none;
+    }
+
+    h1{
+        font-size:29px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+        <div class="brand-mark">P</div>
+        <div class="brand-copy">
+            <strong>PrimePay</strong>
+            <span>Administration</span>
+        </div>
+    </div>
+
+    <div class="nav-section">Operations</div>
+
+    <a class="nav-item" href="dashboard.html">
+        <span class="nav-icon">⌂</span>
+        <span class="nav-label">Dashboard</span>
+    </a>
+
+    <a class="nav-item" href="merchants.html">
+        <span class="nav-icon">◉</span>
+        <span class="nav-label">Merchants</span>
+    </a>
+
+    <a class="nav-item" href="applications.html">
+        <span class="nav-icon">▣</span>
+        <span class="nav-label">Applications</span>
+    </a>
+
+    <a class="nav-item" href="transactions.html">
+        <span class="nav-icon">↔</span>
+        <span class="nav-label">Transactions</span>
+    </a>
+
+    <a class="nav-item" href="providers.html">
+        <span class="nav-icon">◇</span>
+        <span class="nav-label">Providers</span>
+    </a>
+
+    <div class="nav-section">Controls</div>
+
+    <a class="nav-item" href="api-access.html">
+        <span class="nav-icon">⌘</span>
+        <span class="nav-label">API Access</span>
+    </a>
+
+    <a class="nav-item" href="fees.html">
+        <span class="nav-icon">%</span>
+        <span class="nav-label">Fees</span>
+    </a>
+
+    <a class="nav-item active" href="settlements.html">
+        <span class="nav-icon">⇄</span>
+        <span class="nav-label">Settlements</span>
+    </a>
+
+    <a class="nav-item" href="risk.html">
+        <span class="nav-icon">△</span>
+        <span class="nav-label">Risk</span>
+    </a>
+
+    <a class="nav-item" href="audit-logs.html">
+        <span class="nav-icon">☷</span>
+        <span class="nav-label">Audit Logs</span>
+    </a>
+
+    <div class="sidebar-footer">
+        Settlement operations in this V1 console are based on transaction and reconciliation data actually exposed by the backend.
+    </div>
+</aside>
+
+<main class="main">
+
+    <header class="topbar">
+        <div class="top-left">
+            <button class="icon-btn" id="menuBtn" aria-label="Open menu">☰</button>
+            <button class="icon-btn" id="collapseBtn" aria-label="Collapse sidebar">⇤</button>
+        </div>
+
+        <div class="top-actions">
+            <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">☼</button>
+            <div class="user-pill" id="adminUser">Administrator</div>
+        </div>
+    </header>
+
+    <section class="content">
+
+        <div class="hero">
+            <div>
+                <div class="eyebrow">Settlement Control Center</div>
+                <h1>Settlement Operations</h1>
+                <p>
+                    Monitor settlement-related transaction data, currencies, exchange-rate metadata
+                    and reconciliation state without pretending PrimePay already has a settlement
+                    batch engine that it does not.
+                </p>
+            </div>
+
+            <div class="hero-actions">
+                <button class="btn" id="refreshBtn">↻ Refresh</button>
+                <button class="btn primary" id="resetBtn">Reset View</button>
+            </div>
+        </div>
+
+        <div class="notice">
+            <strong>V1 settlement boundary</strong>
+            <span>
+                PrimePay V1 exposes settlement currency, exchange-rate and reconciliation information
+                on payment and transaction records. It does not currently expose dedicated settlement
+                batches, settlement schedules, bank payout instructions, settlement exports or an
+                administrator settlement-release endpoint. This page therefore reports actual
+                settlement metadata rather than manufacturing settlement events.
+            </span>
+        </div>
+
+        <div class="grid stats" id="statsPanel">
+
+            <div class="card stat">
+                <div class="stat-label">Loaded transactions</div>
+                <div class="stat-value" id="statTransactions">0</div>
+                <div class="stat-note">Current backend result set</div>
+            </div>
+
+            <div class="card stat">
+                <div class="stat-label">Settlement currency</div>
+                <div class="stat-value" id="statCurrency">—</div>
+                <div class="stat-note">Current page metadata</div>
+            </div>
+
+            <div class="card stat">
+                <div class="stat-label">Reconciliation activity</div>
+                <div class="stat-value" id="statReconciled">0</div>
+                <div class="stat-note">Records containing reconciliation data</div>
+            </div>
+
+            <div class="card stat">
+                <div class="stat-label">FX metadata</div>
+                <div class="stat-value" id="statFX">0</div>
+                <div class="stat-note">Records with exchange-rate data</div>
+            </div>
+
+        </div>
+
+        <div class="grid two">
+
+            <section class="card section">
+                <div class="section-head">
+                    <div>
+                        <div class="section-title">Settlement Data Flow</div>
+                        <div class="section-subtitle">
+                            The fields currently available to the administrative layer.
+                        </div>
+                    </div>
+                    <span class="badge blue">V1</span>
+                </div>
+
+                <div class="flow">
+
+                    <div class="flow-item">
+                        <div class="flow-number">01</div>
+                        <div class="flow-title">Payment</div>
+                        <div class="flow-text">
+                            A payment creates transaction-level financial records.
+                        </div>
+                    </div>
+
+                    <div class="flow-item">
+                        <div class="flow-number">02</div>
+                        <div class="flow-title">Accounting</div>
+                        <div class="flow-text">
+                            Fees, provider costs and merchant net amounts are recorded.
+                        </div>
+                    </div>
+
+                    <div class="flow-item">
+                        <div class="flow-number">03</div>
+                        <div class="flow-title">Settlement Metadata</div>
+                        <div class="flow-text">
+                            Settlement currency and exchange-rate fields may be attached.
+                        </div>
+                    </div>
+
+                    <div class="flow-item">
+                        <div class="flow-number">04</div>
+                        <div class="flow-title">Reconciliation</div>
+                        <div class="flow-text">
+                            Provider references and reconciliation state support matching.
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="card section">
+                <div class="section-head">
+                    <div>
+                        <div class="section-title">Control Status</div>
+                        <div class="section-subtitle">What this console can currently verify.</div>
+                    </div>
+                </div>
+
+                <div class="kv">
+                    <span>Transaction records</span>
+                    <span id="statusTransactions">Checking...</span>
+                </div>
+
+                <div class="kv">
+                    <span>Settlement currency field</span>
+                    <span id="statusCurrency">Checking...</span>
+                </div>
+
+                <div class="kv">
+                    <span>Exchange-rate field</span>
+                    <span id="statusFX">Checking...</span>
+                </div>
+
+                <div class="kv">
+                    <span>Settlement batch engine</span>
+                    <span class="badge amber">Not exposed</span>
+                </div>
+
+                <div class="kv">
+                    <span>Settlement release API</span>
+                    <span class="badge amber">Not exposed</span>
+                </div>
+            </section>
+
+        </div>
+
+        <section class="card section">
+            <div class="section-head">
+                <div>
+                    <div class="section-title">Settlement Transaction Monitor</div>
+                    <div class="section-subtitle">
+                        Actual transaction records with settlement and reconciliation metadata.
+                        Search operates on the currently loaded page.
+                    </div>
+                </div>
+
+                <span class="badge green" id="liveBadge">LIVE DATA</span>
+            </div>
+
+            <div class="controls">
+                <input
+                    class="input search"
+                    id="searchInput"
+                    placeholder="Search reference, provider, currency..."
+                    autocomplete="off"
+                >
+
+                <select class="select" id="statusFilter">
+                    <option value="">All statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="processing">Processing</option>
+                    <option value="completed">Completed</option>
+                    <option value="failed">Failed</option>
+                    <option value="cancelled">Cancelled</option>
+                    <option value="refunded">Refunded</option>
+                </select>
+
+                <select class="select" id="typeFilter">
+                    <option value="">All types</option>
+                    <option value="payment">Payment</option>
+                    <option value="refund">Refund</option>
+                    <option value="payout">Payout</option>
+                    <option value="deposit">Deposit</option>
+                    <option value="settlement">Settlement</option>
+                </select>
+
+                <select class="select" id="limitSelect">
+                    <option value="10">10 rows</option>
+                    <option value="20" selected>20 rows</option>
+                    <option value="50">50 rows</option>
+                    <option value="100">100 rows</option>
+                </select>
+            </div>
+
+            <div class="table-wrap" id="tableWrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Reference</th>
+                            <th>Status</th>
+                            <th>Provider</th>
+                            <th>Gross</th>
+                            <th>Settlement</th>
+                            <th>FX Rate</th>
+                            <th>Reconciliation</th>
+                            <th>Created</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionBody">
+                        <tr>
+                            <td colspan="9" class="empty">Loading settlement data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <div id="paginationText">Loading...</div>
+
+                <div class="pagination-actions">
+                    <button class="btn" id="prevBtn">Previous</button>
+                    <button class="btn" id="nextBtn">Next</button>
+                </div>
+            </div>
+
+            <div class="detail" id="detailPanel">
+                <div class="section-title">Settlement Record Detail</div>
+
+                <div class="detail-grid" id="detailGrid"></div>
+            </div>
+        </section>
+
+        <div class="grid capabilities" id="capabilityPanel">
+
+            <section class="card cap">
+                <div class="cap-icon">✓</div>
+                <h3>Available Now</h3>
+                <p>
+                    Transaction status, gross amount, currency, provider references,
+                    settlement currency, exchange rate and reconciliation metadata
+                    can be inspected where the backend provides them.
+                </p>
+            </section>
+
+            <section class="card cap">
+                <div class="cap-icon">⌁</div>
+                <h3>Reconciliation Ready</h3>
+                <p>
+                    Provider transaction references and reconciliation safeguards
+                    provide the foundation for matching provider activity without
+                    inventing settlement results.
+                </p>
+            </section>
+
+            <section class="card cap">
+                <div class="cap-icon">!</div>
+                <h3>Not Yet Exposed</h3>
+                <p>
+                    Settlement batches, payout destinations, settlement schedules,
+                    manual release controls and settlement exports require backend
+                    capabilities that are not part of the current V1 API.
+                </p>
+            </section>
+
+        </div>
+
+        <section class="card section" id="integrityPanel">
+            <div class="section-head">
+                <div>
+                    <div class="section-title">Settlement Integrity Rules</div>
+                    <div class="section-subtitle">
+                        Administrative interpretation of the current accounting model.
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid two" style="margin:0">
+
+                <div>
+                    <div class="kv">
+                        <span>Do not mix currencies</span>
+                        <span class="badge green">Enforced in UI</span>
+                    </div>
+
+                    <div class="kv">
+                        <span>Settlement currency ≠ payment currency</span>
+                        <span class="badge blue">Supported</span>
+                    </div>
+
+                    <div class="kv">
+                        <span>FX rate shown only when supplied</span>
+                        <span class="badge green">Truthful</span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="kv">
+                        <span>Manual settlement release</span>
+                        <span class="badge amber">Unavailable</span>
+                    </div>
+
+                    <div class="kv">
+                        <span>Settlement batch creation</span>
+                        <span class="badge amber">Unavailable</span>
+                    </div>
+
+                    <div class="kv">
+                        <span>Settlement schedule editing</span>
+                        <span class="badge amber">Unavailable</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="card section" id="controlsPanel" style="margin-top:22px">
+            <div class="section-head">
+                <div>
+                    <div class="section-title">Workspace Controls</div>
+                    <div class="section-subtitle">
+                        Preferences affect presentation only, not financial records.
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls-panel">
+
+                <label class="toggle">
+                    <input type="checkbox" id="compactSwitch">
+                    Compact tables
+                </label>
+
+                <label class="toggle">
+                    <input type="checkbox" id="capabilitySwitch" checked>
+                    Show capability panel
+                </label>
+
+                <label class="toggle">
+                    <input type="checkbox" id="integritySwitch" checked>
+                    Show integrity rules
+                </label>
+
+            </div>
+        </section>
+
+    </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API_URL = "http://localhost:5001/api/v1";
+
+const token = localStorage.getItem("primepay_token");
+const storedUser = localStorage.getItem("primepay_user");
+
+if (!token) {
+    window.location.href = "../login.html";
+}
+
+let adminUser = null;
+
+try {
+    adminUser = storedUser ? JSON.parse(storedUser) : null;
+} catch {
+    adminUser = null;
+}
+
+if (adminUser && adminUser.role && adminUser.role !== "admin") {
+    window.location.href = "../merchant/dashboard.html";
+}
+
+document.getElementById("adminUser").textContent =
+    adminUser?.name || adminUser?.email || "Administrator";
+
+const sidebar = document.getElementById("sidebar");
+const mobileOverlay = document.getElementById("mobileOverlay");
+const menuBtn = document.getElementById("menuBtn");
+const collapseBtn = document.getElementById("collapseBtn");
+const themeBtn = document.getElementById("themeBtn");
+const toast = document.getElementById("toast");
+
+const transactionBody = document.getElementById("transactionBody");
+const paginationText = document.getElementById("paginationText");
+
+const searchInput = document.getElementById("searchInput");
+const statusFilter = document.getElementById("statusFilter");
+const typeFilter = document.getElementById("typeFilter");
+const limitSelect = document.getElementById("limitSelect");
+
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+
+const detailPanel = document.getElementById("detailPanel");
+const detailGrid = document.getElementById("detailGrid");
+
+let page = 1;
+let totalPages = 1;
+let totalRecords = 0;
+let transactions = [];
+let requestController = null;
+
+function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    clearTimeout(showToast.timer);
+
+    showToast.timer = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3200);
+}
+
+function escapeHTML(value) {
+    return String(value ?? "—")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function formatDate(value) {
+    if (!value) return "—";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) return "—";
+
+    return new Intl.DateTimeFormat(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short"
+    }).format(date);
+}
+
+function formatNumber(value) {
+    const number = Number(value);
+
+    if (!Number.isFinite(number)) return "—";
+
+    return new Intl.NumberFormat(undefined, {
+        maximumFractionDigits: 2
+    }).format(number);
+}
+
+function formatMoney(value, currency = "") {
+    const number = Number(value);
+
+    if (!Number.isFinite(number)) return "—";
+
+    const code = String(currency || "").toUpperCase();
+
+    try {
+        return new Intl.NumberFormat(undefined, {
+            style: "currency",
+            currency: code || "USD",
+            maximumFractionDigits: 2
+        }).format(number);
+    } catch {
+        return `${code ? code + " " : ""}${formatNumber(number)}`;
+    }
+}
+
+function valueFrom(object, ...keys) {
+    for (const key of keys) {
+        if (
+            object &&
+            object[key] !== undefined &&
+            object[key] !== null &&
+            object[key] !== ""
+        ) {
+            return object[key];
+        }
+    }
+
+    return null;
+}
+
+function getStatusClass(status) {
+    const normalized = String(status || "").toLowerCase();
+
+    if (normalized === "completed") return "green";
+    if (normalized === "failed" || normalized === "cancelled") return "red";
+    if (normalized === "pending" || normalized === "processing") return "amber";
+
+    return "blue";
+}
+
+function settlementData(tx) {
+    const settlementCurrency = valueFrom(
+        tx,
+        "settlementCurrency",
+        "settlement_currency"
+    );
+
+    const exchangeRate = valueFrom(
+        tx,
+        "exchangeRate",
+        "exchange_rate"
+    );
+
+    const reconciliationStatus = valueFrom(
+        tx,
+        "reconciliationStatus",
+        "reconciliation_status",
+        "reconciliationState",
+        "reconciliation_state"
+    );
+
+    const reconciled =
+        tx.reconciled === true ||
+        tx.isReconciled === true ||
+        String(reconciliationStatus || "").toLowerCase() === "reconciled";
+
+    return {
+        settlementCurrency,
+        exchangeRate,
+        reconciliationStatus,
+        reconciled
+    };
+}
+
+function transactionCurrency(tx) {
+    return String(
+        valueFrom(tx, "currency", "settlementCurrency") || ""
+    ).toUpperCase();
+}
+
+function statusBadge(status) {
+    const normalized = String(status || "unknown").toLowerCase();
+
+    return `
+        <span class="badge ${getStatusClass(normalized)}">
+            ${escapeHTML(normalized)}
+        </span>
+    `;
+}
+
+function reconciliationBadge(tx) {
+    const data = settlementData(tx);
+
+    if (data.reconciled) {
+        return `<span class="badge green">Reconciled</span>`;
+    }
+
+    if (data.reconciliationStatus) {
+        return `
+            <span class="badge amber">
+                ${escapeHTML(data.reconciliationStatus)}
+            </span>
+        `;
+    }
+
+    return `<span class="badge blue">Not reported</span>`;
+}
+
+async function apiFetch(path, options = {}) {
+    if (requestController) {
+        requestController.abort();
+    }
+
+    requestController = new AbortController();
+
+    const timeout = setTimeout(() => {
+        requestController.abort();
+    }, 15000);
+
+    try {
+        const response = await fetch(`${API_URL}${path}`, {
+            ...options,
+            signal: requestController.signal,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+                ...(options.headers || {})
+            }
+        });
+
+        const text = await response.text();
+
+        let data = {};
+
+        try {
+            data = text ? JSON.parse(text) : {};
+        } catch {
+            data = {
+                success: false,
+                message: text || "Invalid server response."
+            };
+        }
+
+        if (response.status === 401) {
+            localStorage.removeItem("primepay_token");
+            localStorage.removeItem("primepay_user");
+            window.location.href = "../login.html";
+            throw new Error("Session expired.");
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                data.message ||
+                data.error ||
+                `Request failed with HTTP ${response.status}.`
+            );
+        }
+
+        return data;
+    } finally {
+        clearTimeout(timeout);
+        requestController = null;
+    }
+}
+
+async function loadTransactions() {
+    document.body.classList.add("loading");
+
+    transactionBody.innerHTML = `
+        <tr>
+            <td colspan="9" class="empty">Loading settlement data...</td>
+        </tr>
+    `;
+
+    try {
+        const params = new URLSearchParams();
+
+        params.set("page", page);
+        params.set("limit", limitSelect.value);
+
+        if (statusFilter.value) {
+            params.set("status", statusFilter.value);
+        }
+
+        if (typeFilter.value) {
+            params.set("type", typeFilter.value);
+        }
+
+        const data = await apiFetch(`/transactions?${params.toString()}`);
+
+        transactions = Array.isArray(data.transactions)
+            ? data.transactions
+            : [];
+
+        const pagination = data.pagination || {};
+
+        totalRecords = Number(pagination.total || transactions.length || 0);
+        totalPages = Math.max(
+            1,
+            Number(pagination.pages || 1)
+        );
+
+        if (page > totalPages) {
+            page = totalPages;
+        }
+
+        renderTransactions();
+        updateStats();
+
+    } catch (error) {
+        if (error.name === "AbortError") {
+            transactionBody.innerHTML = `
+                <tr>
+                    <td colspan="9" class="empty">
+                        Request timed out. Check the PrimePay backend.
+                    </td>
+                </tr>
+            `;
+        } else {
+            transactionBody.innerHTML = `
+                <tr>
+                    <td colspan="9" class="empty">
+                        ${escapeHTML(error.message || "Unable to load transactions.")}
+                    </td>
+                </tr>
+            `;
+        }
+
+        showToast(error.message || "Unable to load settlement data.");
+    } finally {
+        document.body.classList.remove("loading");
+    }
+}
+
+function getVisibleTransactions() {
+    const query = searchInput.value.trim().toLowerCase();
+
+    if (!query) {
+        return transactions;
+    }
+
+    return transactions.filter(tx => {
+        const data = settlementData(tx);
+
+        const values = [
+            tx.reference,
+            tx.provider,
+            tx.type,
+            tx.status,
+            tx.currency,
+            data.settlementCurrency,
+            data.exchangeRate,
+            data.reconciliationStatus,
+            tx.providerReference,
+            tx.providerTransactionId
+        ];
+
+        return values.some(value =>
+            String(value ?? "").toLowerCase().includes(query)
+        );
+    });
+}
+
+function renderTransactions() {
+    const visible = getVisibleTransactions();
+
+    if (!visible.length) {
+        transactionBody.innerHTML = `
+            <tr>
+                <td colspan="9" class="empty">
+                    No settlement-related transaction records match this view.
+                </td>
+            </tr>
+        `;
+    } else {
+        transactionBody.innerHTML = visible.map((tx, index) => {
+            const data = settlementData(tx);
+
+            const reference = valueFrom(tx, "reference", "transactionReference") || "—";
+            const status = valueFrom(tx, "status") || "unknown";
+            const provider = valueFrom(tx, "provider") || "—";
+            const amount = valueFrom(tx, "amount", "grossAmount");
+            const currency = transactionCurrency(tx);
+            const created = valueFrom(tx, "createdAt", "created");
+
+            return `
+                <tr>
+                    <td>
+                        <span class="ref">${escapeHTML(reference)}</span>
+                    </td>
+
+                    <td>
+                        ${statusBadge(status)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(provider)}
+                    </td>
+
+                    <td class="money">
+                        ${escapeHTML(formatMoney(amount, currency))}
+                    </td>
+
+                    <td>
+                        ${
+                            data.settlementCurrency
+                                ? escapeHTML(String(data.settlementCurrency).toUpperCase())
+                                : `<span class="muted">—</span>`
+                        }
+                    </td>
+
+                    <td>
+                        ${
+                            data.exchangeRate !== null
+                                ? escapeHTML(formatNumber(data.exchangeRate))
+                                : `<span class="muted">—</span>`
+                        }
+                    </td>
+
+                    <td>
+                        ${reconciliationBadge(tx)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(formatDate(created))}
+                    </td>
+
+                    <td>
+                        <button
+                            class="btn"
+                            data-detail-index="${index}"
+                            type="button"
+                        >
+                            Inspect
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    transactionBody.querySelectorAll("[data-detail-index]").forEach(button => {
+        button.addEventListener("click", () => {
+            const index = Number(button.dataset.detailIndex);
+            const visible = getVisibleTransactions();
+            showDetail(visible[index]);
+        });
+    });
+
+    const first = transactions.length
+        ? ((page - 1) * Number(limitSelect.value)) + 1
+        : 0;
+
+    const last = first
+        ? first + transactions.length - 1
+        : 0;
+
+    paginationText.textContent =
+        `Showing ${first}-${last} of ${totalRecords} records · Page ${page} of ${totalPages}`;
+
+    prevBtn.disabled = page <= 1;
+    nextBtn.disabled = page >= totalPages;
+}
+
+function showDetail(tx) {
+    if (!tx) return;
+
+    const settlement = settlementData(tx);
+
+    const fields = [
+        ["Reference", valueFrom(tx, "reference", "transactionReference")],
+        ["Status", valueFrom(tx, "status")],
+        ["Type", valueFrom(tx, "type")],
+        ["Provider", valueFrom(tx, "provider")],
+        ["Payment currency", transactionCurrency(tx)],
+        ["Amount", formatMoney(
+            valueFrom(tx, "amount", "grossAmount"),
+            transactionCurrency(tx)
+        )],
+        ["Settlement currency", settlement.settlementCurrency],
+        ["Exchange rate", settlement.exchangeRate],
+        ["Reconciliation", settlement.reconciliationStatus || (
+            settlement.reconciled ? "reconciled" : "not reported"
+        )],
+        ["Provider transaction ID", valueFrom(tx, "providerTransactionId")],
+        ["Provider reference", valueFrom(tx, "providerReference")],
+        ["Settlement reference", valueFrom(
+            tx,
+            "settlementReference",
+            "settlementId"
+        )],
+        ["Created", formatDate(valueFrom(tx, "createdAt", "created"))],
+        ["Updated", formatDate(valueFrom(tx, "updatedAt", "updated"))]
+    ];
+
+    detailGrid.innerHTML = fields.map(([label, value]) => `
+        <div class="detail-item">
+            <small>${escapeHTML(label)}</small>
+            <strong>${escapeHTML(value ?? "—")}</strong>
+        </div>
+    `).join("");
+
+    detailPanel.classList.add("open");
+
+    detailPanel.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+    });
+}
+
+function updateStats() {
+    document.getElementById("statTransactions").textContent =
+        formatNumber(transactions.length);
+
+    const currencies = new Set();
+
+    let reconciled = 0;
+    let fxCount = 0;
+
+    transactions.forEach(tx => {
+        const data = settlementData(tx);
+
+        if (data.settlementCurrency) {
+            currencies.add(
+                String(data.settlementCurrency).toUpperCase()
+            );
+        }
+
+        if (data.reconciled || data.reconciliationStatus) {
+            reconciled++;
+        }
+
+        if (
+            data.exchangeRate !== null &&
+            data.exchangeRate !== undefined
+        ) {
+            fxCount++;
+        }
+    });
+
+    const currencyValue =
+        currencies.size === 0
+            ? "—"
+            : currencies.size === 1
+                ? [...currencies][0]
+                : "Mixed";
+
+    document.getElementById("statCurrency").textContent =
+        currencyValue;
+
+    document.getElementById("statReconciled").textContent =
+        formatNumber(reconciled);
+
+    document.getElementById("statFX").textContent =
+        formatNumber(fxCount);
+
+    document.getElementById("statusTransactions").innerHTML =
+        transactions.length
+            ? `<span class="badge green">Available</span>`
+            : `<span class="badge amber">No records</span>`;
+
+    document.getElementById("statusCurrency").innerHTML =
+        transactions.some(tx => settlementData(tx).settlementCurrency)
+            ? `<span class="badge green">Present</span>`
+            : `<span class="badge amber">Not reported</span>`;
+
+    document.getElementById("statusFX").innerHTML =
+        transactions.some(tx =>
+            settlementData(tx).exchangeRate !== null &&
+            settlementData(tx).exchangeRate !== undefined
+        )
+            ? `<span class="badge green">Present</span>`
+            : `<span class="badge amber">Not reported</span>`;
+}
+
+function applyPreferences() {
+    const compact =
+        localStorage.getItem("primepay_admin_settlement_compact") === "true";
+
+    const showCapabilities =
+        localStorage.getItem("primepay_admin_settlement_capabilities") !== "false";
+
+    const showIntegrity =
+        localStorage.getItem("primepay_admin_settlement_integrity") !== "false";
+
+    document.getElementById("compactSwitch").checked = compact;
+    document.getElementById("capabilitySwitch").checked = showCapabilities;
+    document.getElementById("integritySwitch").checked = showIntegrity;
+
+    document.body.classList.toggle("compact", compact);
+
+    document
+        .getElementById("capabilityPanel")
+        .classList.toggle("hidden-panel", !showCapabilities);
+
+    document
+        .getElementById("integrityPanel")
+        .classList.toggle("hidden-panel", !showIntegrity);
+}
+
+function loadTheme() {
+    const theme =
+        localStorage.getItem("primepay_admin_theme") || "dark";
+
+    document.body.classList.toggle("light", theme === "light");
+
+    themeBtn.textContent =
+        theme === "light" ? "☾" : "☼";
+}
+
+function toggleTheme() {
+    const light = document.body.classList.toggle("light");
+
+    localStorage.setItem(
+        "primepay_admin_theme",
+        light ? "light" : "dark"
+    );
+
+    themeBtn.textContent = light ? "☾" : "☼";
+}
+
+function toggleSidebarMobile(open) {
+    sidebar.classList.toggle("open", open);
+    mobileOverlay.classList.toggle("show", open);
+}
+
+menuBtn.addEventListener("click", () => {
+    if (window.innerWidth <= 850) {
+        toggleSidebarMobile(true);
+    } else {
+        sidebar.classList.toggle("collapsed");
+
+        localStorage.setItem(
+            "primepay_admin_sidebar_collapsed",
+            sidebar.classList.contains("collapsed")
+        );
+    }
+});
+
+collapseBtn.addEventListener("click", () => {
+    if (window.innerWidth <= 850) {
+        toggleSidebarMobile(false);
+        return;
+    }
+
+    sidebar.classList.toggle("collapsed");
+
+    localStorage.setItem(
+        "primepay_admin_sidebar_collapsed",
+        sidebar.classList.contains("collapsed")
+    );
+});
+
+mobileOverlay.addEventListener("click", () => {
+    toggleSidebarMobile(false);
+});
+
+themeBtn.addEventListener("click", toggleTheme);
+
+document.getElementById("compactSwitch").addEventListener("change", event => {
+    document.body.classList.toggle("compact", event.target.checked);
+
+    localStorage.setItem(
+        "primepay_admin_settlement_compact",
+        event.target.checked
+    );
+});
+
+document.getElementById("capabilitySwitch").addEventListener("change", event => {
+    document
+        .getElementById("capabilityPanel")
+        .classList.toggle("hidden-panel", !event.target.checked);
+
+    localStorage.setItem(
+        "primepay_admin_settlement_capabilities",
+        event.target.checked
+    );
+});
+
+document.getElementById("integritySwitch").addEventListener("change", event => {
+    document
+        .getElementById("integrityPanel")
+        .classList.toggle("hidden-panel", !event.target.checked);
+
+    localStorage.setItem(
+        "primepay_admin_settlement_integrity",
+        event.target.checked
+    );
+});
+
+searchInput.addEventListener("input", renderTransactions);
+
+statusFilter.addEventListener("change", () => {
+    page = 1;
+    loadTransactions();
+});
+
+typeFilter.addEventListener("change", () => {
+    page = 1;
+    loadTransactions();
+});
+
+limitSelect.addEventListener("change", () => {
+    page = 1;
+    loadTransactions();
+});
+
+prevBtn.addEventListener("click", () => {
+    if (page <= 1) return;
+
+    page--;
+    loadTransactions();
+});
+
+nextBtn.addEventListener("click", () => {
+    if (page >= totalPages) return;
+
+    page++;
+    loadTransactions();
+});
+
+document.getElementById("refreshBtn").addEventListener("click", () => {
+    loadTransactions();
+    showToast("Settlement data refreshed.");
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+    searchInput.value = "";
+    statusFilter.value = "";
+    typeFilter.value = "";
+    limitSelect.value = "20";
+    page = 1;
+
+    detailPanel.classList.remove("open");
+
+    loadTransactions();
+
+    showToast("Settlement view reset.");
+});
+
+const savedSidebar =
+    localStorage.getItem("primepay_admin_sidebar_collapsed") === "true";
+
+if (savedSidebar && window.innerWidth > 850) {
+    sidebar.classList.add("collapsed");
+}
+
+loadTheme();
+applyPreferences();
+loadTransactions();
+</script>
+
+</body>
+</html>
