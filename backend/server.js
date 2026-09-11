@@ -1,5 +1,7 @@
 require("dotenv").config();
 
+process.env.FRONTEND_URL = "https://primepay-rho.vercel.app";
+
 const mongoose = require("mongoose");
 
 const app = require("./src/app");
