@@ -822,8 +822,9 @@ tbody tr:hover{background:rgba(30,41,59,.25)}
   </main>
 </div>
 
+<script src="../js/config.js"></script>
 <script>
-const API_URL = "http://localhost:5001/api/v1";
+const API_URL = window.PRIMEPAY_API_URL;
 
 const token = localStorage.getItem("primepay_token");
 const storedUser = (() => {

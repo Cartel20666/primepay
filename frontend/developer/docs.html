@@ -757,8 +757,7 @@ URL configurable in your integration rather than hard-coding it.
 <pre>https://YOUR-PRIMEPAY-HOST/api/v1</pre>
 
 <div class="alert">
-For local development, the backend used by the current PrimePay frontend is:
-<code>http://localhost:5001/api/v1</code>
+<code>https://primepay-t44w.onrender.com</code>
 </div>
 
 </section>
@@ -1610,8 +1609,9 @@ Retry the same logical request using the same idempotency key.
 </main>
 </div>
 
+<script src="../js/config.js"></script>
 <script>
-const API_URL = "http://localhost:5001/api/v1";
+const API_URL = window.PRIMEPAY_API_URL;
 
 const token = localStorage.getItem("primepay_token");
 const storedUser = localStorage.getItem("primepay_user");
