@@ -29,7 +29,7 @@ const providerValidationRoutes = require("./routes/providerValidation.routes");
  */
 
 const allowedOrigins = (
-    process.env.CORS_ORIGINS || ""
+    process.env.CORS_ORIGINS || "https://primepay-rho.vercel.app"
 )
     .split(",")
     .map(origin => origin.trim())
